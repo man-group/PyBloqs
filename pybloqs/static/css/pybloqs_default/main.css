@@ -1,0 +1,9 @@
+.pybloqs {
+    font-family: Helvetica, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+}
+
+.pybloqs pre code {
+    display: block;
+    margin-left: 1em;
+    font-family: monospace;
+}
