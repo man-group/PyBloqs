@@ -5,7 +5,7 @@ from pybloqs import Block
 import pybloqs.block.table_formatters as blformat
 import pybloqs.block.colors as colors
 
-from regression_framework import regression_test, update
+from generation_framework import assert_report_generated
 
 
 np.random.seed(123)
@@ -16,12 +16,12 @@ FLAT_DATA = pd.DataFrame(TABLE_DATA,
 FLAT_DATA.index.name = 'Index'
 
 
-@regression_test()
+@assert_report_generated
 def test_df_to_jinja_table_default():
     return Block(FLAT_DATA, use_default_formatters=False)
 
 
-@regression_test()
+@assert_report_generated
 def test_df_to_jinja_table_add_extra_formatters():
     fmt_heatmap = blformat.FmtHeatmap(threshold=0., axis=0)
     fmt_add_totals_mean = blformat.FmtAppendTotalsRow(row_name='Sum', operator=blformat.OP_SUM, bold=True)
@@ -31,13 +31,13 @@ def test_df_to_jinja_table_add_extra_formatters():
     return Block(FLAT_DATA, formatters=formatters, use_default_formatters=False)
 
 
-@regression_test()
+@assert_report_generated
 def test_df_to_jinja_table_extra_formatters_only():
     return Block(FLAT_DATA, formatters=[blformat.FmtHeatmap(threshold=0., axis=0)],
                  use_default_formatters=False)
 
 
-@regression_test()
+@assert_report_generated
 def test_multi_index_df_to_jinja_table():
     # Create multi-index table
     idx = np.array([['super1', 'super1', 'super1', 'super1', 'super2', 'super2', 'super2'],
@@ -60,7 +60,3 @@ def test_multi_index_df_to_jinja_table():
                   fmt_rotate_header, fmt_ndecimal]
 
     return Block(data, formatters=formatters, use_default_formatters=False)
-
-
-if __name__ == "__main__":
-    update()

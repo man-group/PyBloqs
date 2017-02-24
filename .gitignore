@@ -18,3 +18,7 @@ pybloqs/static/highmaps.js
 pybloqs/static/highstock.js
 pybloqs/static/highcharts-3d.js
 .ipynb_checkpoints/
+*~
+.coverage
+junit.xml
+coverage.xml

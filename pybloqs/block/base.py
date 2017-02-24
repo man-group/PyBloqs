@@ -185,18 +185,13 @@ class BaseBlock(object):
 
         if not is_html:
 
-            cmd = ["--no-stop-slow-scripts", "--debug-javascript", "--javascript-delay", str(java_script_delay)]
+            cmd = ["--debug-javascript"]
 
             if fmt.endswith("pdf"):
                 cmd.extend(["--page-size", pdf_page_size])
                 cmd.extend(["--orientation", orientation])
                 if pdf_zoom != 1:
                     cmd.extend(["--zoom", str(pdf_zoom)])
-
-                if pdf_auto_shrink:
-                    cmd.append("--enable-smart-shrinking")
-                else:
-                    cmd.append("--disable-smart-shrinking")
 
                 if header_block is not None:
                     header_file = str_base(hash(header_block._id)) + ".html"
@@ -231,7 +226,7 @@ class BaseBlock(object):
         :param kwargs: Keyword arguments to pass to `Block.save`.
         :return: Path to the published block file.
         """
-        full_path = os.path.join(user_config["public_url"], name)
+        full_path = os.path.join(user_config["public_dir"], name)
         full_path = os.path.expanduser(full_path)
 
         base_dir = os.path.dirname(full_path)
@@ -257,7 +252,7 @@ class BaseBlock(object):
                                  header_block=header_block, footer_block=footer_block)
 
         try:
-            url_base = user_config["public_url"]
+            url_base = user_config["public_dir"]
         except KeyError:
             path = file_path
         else:
@@ -462,6 +457,7 @@ class HRule(BaseBlock):
     """
     Draws a horizontal divider line.
     """
+
     def _write_block(self, parent, *args, **kwargs):
         # Add a `hr` element to the parent
         append_to(parent, "hr")

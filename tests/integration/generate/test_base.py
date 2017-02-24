@@ -1,55 +1,55 @@
 import pandas as pd
-import pybloqs.plot as abp
+import pybloqs.plot as pbp
 
 from pybloqs.block.text import Raw
 from pybloqs.block.base import HRule
-from regression_framework import regression_test, update
+from generation_framework import assert_report_generated
 
 HELLO_WORLD = Raw("Hello World!", title="A Title")
-MATCH_SLICE = slice(270, None, None)
 
 
 def _create_dynamic_content():
     d = pd.date_range("2012-01-01", periods=10)
     s = pd.Series(range(len(d)), d)
 
-    return abp.Plot(s, width="100%", height="100%")
+    return pbp.Plot(s, width="100%", height="100%")
 
 
-@regression_test
+@assert_report_generated
 def test_hrule():
     return HRule()
 
 
-@regression_test(match_slice=MATCH_SLICE, fmt="png")
+@assert_report_generated(fmt="png")
 def test_save_image():
     return HELLO_WORLD
 
 
-@regression_test(match_slice=MATCH_SLICE, fmt="png")
+@assert_report_generated(fmt="png")
 def test_save_image_dynamic_content():
     return _create_dynamic_content()
 
 
-@regression_test(match_slice=MATCH_SLICE, fmt="pdf")
+@assert_report_generated(fmt="html")
+def test_save_html():
+    return HELLO_WORLD
+
+
+@assert_report_generated(fmt="pdf")
 def test_save_pdf():
     return HELLO_WORLD
 
 
-@regression_test(match_slice=MATCH_SLICE, fmt="pdf", pdf_page_size="A3")
+@assert_report_generated(fmt="pdf", pdf_page_size="A3")
 def test_save_pdf_page_size():
     return HELLO_WORLD
 
 
-@regression_test(match_slice=MATCH_SLICE, fmt="pdf", pdf_zoom=4)
+@assert_report_generated(fmt="pdf", pdf_zoom=4)
 def test_save_pdf_zoom():
     return HELLO_WORLD
 
 
-@regression_test(match_slice=MATCH_SLICE, fmt="pdf")
+@assert_report_generated(fmt="pdf")
 def test_save_pdf_dynamic_content():
     return _create_dynamic_content()
-
-
-if __name__ == "__main__":
-    update()

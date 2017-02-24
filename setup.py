@@ -1,14 +1,16 @@
 #!/bin/env python
 from distutils.file_util import copy_file
+from distutils.dir_util import mkpath
 import glob
 import logging
 import os
+import six
 import sys
 
 
 from setuptools import setup, find_packages, Command
 from setuptools.command.install import install
-
+from setuptools.command.test import test as TestCommand
 
 # Convert Markdown to RST for PyPI
 # http://stackoverflow.com/a/26737672
@@ -37,9 +39,10 @@ def _copy_hc_files(source_paths, dest_path):
         logging.error(" No *.js files (excluding *.src.js) found in highcharts-paths: {}"
                       .format(source_paths))
         sys.exit(1)
-        
+
+
 def _copy_wkhtmltopdf(src_path):
-    files = ['wkhtmltopdf' , 'wkhtmltoimage']
+    files = ['wkhtmltopdf', 'wkhtmltoimage']
     for f in files:
         source = os.path.join(src_path, f)
         dest = os.path.join(sys.exec_prefix, 'bin', f)
@@ -65,6 +68,7 @@ class LoadHighcharts(Command):
 
     def run(self):
         self.copy_hc_files()
+
 
 class LoadWkhtmltopdf(Command):
     user_options = [
@@ -93,6 +97,7 @@ class PyBloqsInstall(install):
     def initialize_options(self):
         install.initialize_options(self)
         self.highcharts = None
+        self.wkhtmltopdf = None
 
     def finalize_options(self):
         install.finalize_options(self)
@@ -118,13 +123,41 @@ class PyBloqsInstall(install):
                         f_js.write(jsmin(content))
 
     def run(self):
-        install.run(self)
         logging.getLogger().setLevel(logging.INFO)
+        mkpath('build/lib/pybloqs/static')
         self.copy_hc_files()
         if self.wkhtmltopdf is not None:
             _copy_wkhtmltopdf(self.wkhtmltopdf)
         self.minimise_js_files()
+        self.do_egg_install()
 
+
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s', level='DEBUG')
+
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+
+        args = [self.pytest_args] if isinstance(self.pytest_args, six.string_types) else list(self.pytest_args)
+        args.extend(['--cov', 'pybloqs',
+                     '--cov-report', 'xml',
+                     '--cov-report', 'html',
+                     '--junitxml', 'junit.xml',
+                     ])
+        errno = pytest.main(args)
+        sys.exit(errno)
 
 setup(
     name="pybloqs",
@@ -145,7 +178,9 @@ setup(
         "docutils",
         "lxml",
         "pyyaml",
-        "jinja2"
+        "jinja2",
+        "html5lib",
+        "pyyaml",
     ],
     tests_require=[
         "mock",
@@ -162,12 +197,11 @@ setup(
     cmdclass={
         "install": PyBloqsInstall,
         "load_highcharts": LoadHighcharts,
-        "load_wkhtmltopdf": LoadWkhtmltopdf
+        "load_wkhtmltopdf": LoadWkhtmltopdf,
+        "test": PyTest,
     },
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    package_data={"pybloqs.static": ["block-core.js",
-                                  "jsinflate.js",
-                                  "css/pybloqs_default/main.css"],
-                  "pybloqs.htmlconv": ["wkhtmltoimage",
-                                    "wkhtmltopdf"]}
+    package_data={"pybloqs.static": ["*.js",
+                                     "css/pybloqs_default/main.css"],
+                  "pybloqs.jinja": ["table.html"]}
 )

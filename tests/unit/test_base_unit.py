@@ -1,5 +1,5 @@
 import os
-import pybloqs.config as abc
+import pybloqs.config as config
 import pybloqs.block.base as bbase
 
 from contextlib import nested
@@ -15,7 +15,7 @@ def test_publish_block():
     with patch("os.makedirs") as md, patch.object(b, "save") as save:
         b.publish(publish_name)
 
-        expected_path = os.path.expanduser(os.path.join(bbase.PYBLOQS_PUBLIC_DIR, publish_name))
+        expected_path = os.path.expanduser(os.path.join(config.user_config['public_dir'], publish_name))
         expected_dir = os.path.dirname(expected_path)
 
         md.assert_called_with(expected_dir)
@@ -26,8 +26,8 @@ def test_publish_pass_through_extra_params():
     b = bbase.BaseBlock()
 
     with patch("os.makedirs"), patch.object(b, "save") as save:
-        b.publish("filename.html", 1, 2, named_arg="poop")
-        save.assert_called_with(ANY, 1, 2, named_arg="poop")
+        b.publish("filename.html", 1, 2, named_arg="dummy")
+        save.assert_called_with(ANY, 1, 2, named_arg="dummy")
 
 
 def test_show_block_with_env_var():
@@ -35,28 +35,14 @@ def test_show_block_with_env_var():
 
     mock_url = "http://imgur.com/gallery/YLvFFS5/"
 
-    with nested(patch.dict(abc.user_config, {"pybloqs_public_url": mock_url}, clear=True),
+    with nested(patch.dict(config.user_config, {"tmp_html_dir": mock_url}, clear=True),
                 patch("webbrowser.open_new_tab"),
                 patch.object(b, "publish")) as (_, tab, pub):
-        pub.return_value = "moof"
+        pub.return_value = "dummy"
 
         b.show()
 
-        assert len(tab.mock_calls) == 1
-        assert tab.mock_calls[0][1][0].startswith(mock_url)
-
-
-def test_show_block_no_env_var():
-    b = bbase.BaseBlock()
-
-    mock_path = "/dev/null"
-
-    with patch("webbrowser.open_new_tab") as tab, patch.object(b, "publish") as pub:
-        pub.return_value = mock_path
-
-        b.show()
-
-        tab.assert_called_with(mock_path)
+        tab.assert_called_with('dummy')
 
 
 @pytest.mark.parametrize("filename, fmt, exp_name, exp_fmt, exp_output",
