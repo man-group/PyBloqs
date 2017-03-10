@@ -16,7 +16,7 @@ separately for fast development turnover. Lists of blocks can be stacked togethe
 
 ### Install PyBloqs
 
-For a minimal install without HichCharts support run:
+For a minimal install without HighCharts support run:
 
 ```
 pip install git+https://github.com/manahl/pybloqs.git
@@ -115,7 +115,7 @@ smtp_server: url.for.email.server   # Default: ''
 
 ## Documentation
 
-Have a look at the [detailed documentation](INSERT_LINK_HERE).
+Have a look at the [detailed documentation](docs/build/html/index.html).
 
 ## Requirements
 
