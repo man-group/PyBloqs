@@ -1,16 +1,15 @@
 #!/bin/env python
-from distutils.file_util import copy_file
 from distutils.dir_util import mkpath
+from distutils.file_util import copy_file
 import glob
 import logging
 import os
-import six
-import sys
-
-
 from setuptools import setup, find_packages, Command
 from setuptools.command.install import install
 from setuptools.command.test import test as TestCommand
+import six
+import sys
+
 
 # Convert Markdown to RST for PyPI
 # http://stackoverflow.com/a/26737672
@@ -159,6 +158,28 @@ class PyTest(TestCommand):
         errno = pytest.main(args)
         sys.exit(errno)
 
+
+class Docs(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        # Set backend explicitly to enable rendering docs from ipython notebooks in headless state
+        import matplotlib
+        matplotlib.use('Agg')
+        # Create module documentation from docstrings
+        import sphinx.apidoc as autodoc
+        autodoc.main(['', '-o', 'docs/source', 'pybloqs'])
+        # Create html files
+        import sphinx
+        sphinx.main(['', '-b', 'html', 'docs/source', 'docs/build'])
+
+
 setup(
     name="pybloqs",
     version="1.0.0",
@@ -179,13 +200,15 @@ setup(
         "lxml",
         "pyyaml",
         "jinja2",
-        "html5lib",
         "pyyaml",
+        "sphinx",
+        "nbsphinx",
+        "ipython[notebook]",
     ],
     tests_require=[
         "mock",
         "pytest",
-        "pytest-cov"
+        "pytest-cov",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -199,6 +222,7 @@ setup(
         "load_highcharts": LoadHighcharts,
         "load_wkhtmltopdf": LoadWkhtmltopdf,
         "test": PyTest,
+        "docs": Docs,
     },
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_data={"pybloqs.static": ["*.js",

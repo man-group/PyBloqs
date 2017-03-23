@@ -3,18 +3,37 @@ dependencies:
     # Load wkhtmltopdf from source since version in Ubuntu is ANCIENT!
     - wget http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
     - tar Jxvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+    # Install Ubuntu packages
     - sudo apt-get update
-    # Install pdfinfo for tests 
-    - sudo apt-get install poppler-utils
-    # Install python packages from Ubuntu (or with pip) to prevent easy_install compiling them from source
-    - sudo apt-get install python-pandas python-matplotlib python-pytest 
-    - sudo apt-get install python-six python-yaml python-jinja2 python-lxml
+    - sudo apt-get install poppler-utils     # pdfinfo for tests
+    - sudo apt-get install pandoc            # pandoc for converting iPython notebooks to html in docs
+    - sudo apt-get install python-tk         # for headless drawing of notebook content
+    # Install pdfinfo for tests
+    - pip install beautifulsoup4
+    - pip install matplotlib
+    - pip install markdown
+    - pip install html5lib
+    - pip install pandas
+    - pip install docutils
+    - pip install lxml
+    - pip install pyyaml
+    - pip install jinja2
+    - pip install mock
+    - pip install pytest
+    - pip install pytest-cov
+    - pip install sphinx
+    - pip install nbsphinx
+    - pip install ipython[notebook]
+    - pip install jsmin
     # Load highcharts files locally
     - npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
 
   override:
-    - python setup.py install  --highcharts=node_modules/highcharts/js,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv --wkhtmltopdf=wkhtmltox/bin
+    - python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv --wkhtmltopdf=wkhtmltox/bin
     # Also load highcharts files locally since tests are run within package source
     # and pkg_resources.resource_filename() resolves to local files if working directory is within package source.
     - python setup.py load_highcharts  --highcharts=node_modules/highcharts/js,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv
 
+test:
+  post:
+    - python setup.py docs

@@ -22,3 +22,11 @@ pybloqs/static/highcharts-3d.js
 .coverage
 junit.xml
 coverage.xml
+docs/build/
+docs/source/modules.rst
+docs/source/pybloqs.block.rst
+docs/source/pybloqs.htmlconv.rst
+docs/source/pybloqs.plot.rst
+docs/source/pybloqs.rst
+docs/source/pybloqs.static.rst
+

@@ -38,17 +38,18 @@ class TableFormatter(object):
     and a few helper functions, which may be useful within the hook functions.
 
     Provides the following hooks, which can be implemented by derived classes:
+
     _modify_dataframe()
-        Changes to the underlying dataframe, e.g. adding or removing rows or columns
+    Changes to the underlying dataframe, e.g. adding or removing rows or columns
 
     _create_table_level_css()
-        Provides CSS styles to the <table> HTML tag.
+    Provides CSS styles to the <table> HTML tag.
 
     _modify_cell_content()
-        Is applied to cell value, e.g. divide by 1e6 or convert number to string with specific number format.
+    Is applied to cell value, e.g. divide by 1e6 or convert number to string with specific number format.
 
     _create_cell_level_css()
-        Provides CSS styles to all <th> and <td> HTML tags. 
+    Provides CSS styles to all <th> and <td> HTML tags. 
     """
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
