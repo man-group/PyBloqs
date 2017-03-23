@@ -37,7 +37,7 @@ pip install --install-option="INSTALL OPTIONS" git+https://github.com/manahl/pyb
 e.g.
 
 ```
-pip install --install-option="--highcharts=~/node_modules/highcharts/js,~/node_modules/highcharts-heatmap/" git+https://github.com/manahl/pybloqs.git
+pip install --install-option="--highcharts=~/node_modules/highcharts/,~/node_modules/highcharts-heatmap/" git+https://github.com/manahl/pybloqs.git
 ```
 
 
@@ -69,14 +69,14 @@ separately(e.g. with `npm install highcharts`, `npm install highcharts-heatmap` 
  highcharts-export-csv (this example assumes, npm installed files into directory ~/node_modules).
 
 ```
---highcharts=~/node_modules/highcharts/js,
+--highcharts=~/node_modules/highcharts/,
 ~/node_modules/highcharts-heatmap/,~/node_modules/highcharts-funnel,~/node_modules/highcharts-exporting,
 ~/node_modules/highcharts-export-csv
 ```
 
 When installing in development mode you can load highcharts explicitly (this example assumes, npm installed files into directory ~/node_modules)
 ```
-python setup.py load_highcharts --highcharts=~/node_modules/highcharts/js,~/node_modules/highcharts-heatmap/,\
+python setup.py load_highcharts --highcharts=~/node_modules/highcharts/,~/node_modules/highcharts-heatmap/,\
 ~/node_modules/highcharts-funnel,~/node_modules/highcharts-exporting,~/node_modules/highcharts-export-csv
 ```
 
