@@ -42,14 +42,12 @@ pip install --install-option="--highcharts=~/node_modules/highcharts/,~/node_mod
 
 
 - Libraries bundled with PyBloqs: 
-jsinflate.js (https://github.com/augustl/js-inflate; MIT License):
-jquery (https://jquery.com/; )
-
+  - jsinflate.js (https://github.com/augustl/js-inflate; MIT License):
 
 
 - wkhtmltopdf/wkhtmltoimage (http://wkhtmltopdf.org/; LGPLv3):
 
-The binaries wkhtmltopdf and wkhtmltoimage are used for output other than HTML. PyBloqs will search for the binaries on the system path. If you would like to use a local copy of the binaries, install with following option:
+wkhtmltopdf is not bundled with PyBloqs. You need to install it from your distribution's repository (Linux) or download it from the project page (https://wkhtmltopdf.org).The binaries wkhtmltopdf and wkhtmltoimage are used for file output other than HTML. PyBloqs will search for the binaries on the system path. If you would like to use a local copy of the binaries, install with following option:
 ```
 --wkhtmltopdf=/path/to/binary
 ```  
@@ -63,7 +61,7 @@ python setup.py load_wkhtmltopdf --wkhtmltopdf=/path/to/binary
 - HighCharts (optional; proprietery license, see https://shop.highsoft.com/highcharts-t2):
 
 Highcharts is not bundled with PyBloqs. To create blocks with Highcharts plots, you need to download Highcharts 
-separately(e.g. with `npm install highcharts`, `npm install highcharts-heatmap` etc.), and provide the path to your
+separately (e.g. with `npm install highcharts`, `npm install highcharts-heatmap` etc.), and provide the path to your
  highcharts installation. Please make sure you have the right license for Highcharts. For full functionality you will 
  need the following highcharts packages: highcharts, highcharts-heatmap, highcharts-funnel, highcharts-exporting, 
  highcharts-export-csv (this example assumes, npm installed files into directory ~/node_modules).
@@ -132,7 +130,7 @@ PyBloqs works with:
 
 ## Acknowledgements
 
-PyBloqs has been under active development at [Man AHL](http://www.ahl.com/) since 2012.
+PyBloqs has been under active development at [Man AHL](http://www.ahl.com/) since 2013.
 
 Original concept and implementation: [Tom Farnbauer](https://github.com/SleepingPills)
 
