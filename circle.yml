@@ -36,4 +36,4 @@ dependencies:
 
 test:
   post:
-    - python setup.py docs
+    - python setup.py build_sphinx

@@ -1,6 +1,7 @@
 # [![pybloqs](logo/logo50.png)](https://github.com/manahl/pybloqs)
 
 [![CircleCI](https://circleci.com/gh/manahl/PyBloqs.svg?style=svg)](https://circleci.com/gh/manahl/PyBloqs)
+[![CircleCI](https://readthedocs.org/projects/pybloqs/badge)](pybloqs.readthedocs.io)
 
 PyBloqs is a flexible framework for visualizing data and automated creation of reports. 
 
@@ -103,7 +104,7 @@ report.save('report.pdf')
 
 ## Configuration
 
-You can specify per-user default paramaters in a yaml-formatted file ~/.pybloqs.cfg:
+You can specify per-user default parameters in a yaml-formatted file ~/.pybloqs.cfg:
 ```
 user_email_address: some@email.com  # Default: user name 
 public_dir: /some/dir               # Default: /tmp
@@ -113,7 +114,7 @@ smtp_server: url.for.email.server   # Default: ''
 
 ## Documentation
 
-Have a look at the [detailed documentation](docs/build/html/index.html).
+Have a look at the [detailed documentation](https://pybloqs.readthedocs.io).
 
 ## Requirements
 
