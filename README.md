@@ -1,17 +1,18 @@
 # [![pybloqs](logo/logo50.png)](https://github.com/manahl/pybloqs)
 
 [![CircleCI](https://circleci.com/gh/manahl/PyBloqs.svg?style=svg)](https://circleci.com/gh/manahl/PyBloqs)
-[![CircleCI](https://readthedocs.org/projects/pybloqs/badge)](pybloqs.readthedocs.io)
+[![ReadTheDocs](https://readthedocs.org/projects/pybloqs/badge)](https://pybloqs.readthedocs.io)
 
 PyBloqs is a flexible framework for visualizing data and automated creation of reports. 
 
 ![pybloqs in use in ipython notebook](pybloqs_in_notebook.png)
 
-It works with [Pandas](http://pandas.pydata.org/), [matplotlib](http://matplotlib.org/) and 
-[highcharts](http>//www.highcharts.com/). PyBloqs creates atomic blocks containing text, tables (from Pandas DataFrame), 
+&nbsp;
+
+It works with [Pandas](http://pandas.pydata.org), [matplotlib](http://matplotlib.org) and 
+[highcharts](http://www.highcharts.com). PyBloqs creates atomic blocks containing text, tables (from Pandas DataFrame), 
 plots (matplotlib or highcharts) or images. All blocks can be styled with CSS. Each block can be created and displayed 
 separately for fast development turnover. Lists of blocks can be stacked together to form reports. Reports can be displayed as HTML in the browser or exported in a variety of formats (including HTML, PDF, SVG, PNG).
-
 
 ## Quickstart
 
@@ -20,7 +21,7 @@ separately for fast development turnover. Lists of blocks can be stacked togethe
 For a minimal install without HighCharts support run:
 
 ```
-pip install git+https://github.com/manahl/pybloqs.git
+pip install pybloqs
 ```
 or when installing in development mode:
 ```
@@ -48,7 +49,7 @@ pip install --install-option="--highcharts=~/node_modules/highcharts/,~/node_mod
 
 - wkhtmltopdf/wkhtmltoimage (http://wkhtmltopdf.org/; LGPLv3):
 
-wkhtmltopdf is not bundled with PyBloqs. You need to install it from your distribution's repository (Linux) or download it from the project page (https://wkhtmltopdf.org).The binaries wkhtmltopdf and wkhtmltoimage are used for file output other than HTML. PyBloqs will search for the binaries on the system path. If you would like to use a local copy of the binaries, install with following option:
+wkhtmltopdf is not bundled with PyBloqs. You need to install it from your distribution's repository (Linux) or download it from the project page (https://wkhtmltopdf.org) . The binaries wkhtmltopdf and wkhtmltoimage are used for file output other than HTML. PyBloqs will search for the binaries on the system path. If you would like to use a local copy of the binaries, install with following option:
 ```
 --wkhtmltopdf=/path/to/binary
 ```  
@@ -62,10 +63,10 @@ python setup.py load_wkhtmltopdf --wkhtmltopdf=/path/to/binary
 - HighCharts (optional; proprietery license, see https://shop.highsoft.com/highcharts-t2):
 
 Highcharts is not bundled with PyBloqs. To create blocks with Highcharts plots, you need to download Highcharts 
-separately (e.g. with `npm install highcharts`, `npm install highcharts-heatmap` etc.), and provide the path to your
- highcharts installation. Please make sure you have the right license for Highcharts. For full functionality you will 
- need the following highcharts packages: highcharts, highcharts-heatmap, highcharts-funnel, highcharts-exporting, 
- highcharts-export-csv (this example assumes, npm installed files into directory ~/node_modules).
+separately (e.g. with `npm install highcharts`, `npm install highcharts-heatmap` etc.), and provide the path to your 
+highcharts installation. Please make sure you have the right license for Highcharts. For full functionality you will 
+need the following highcharts packages: highcharts, highcharts-heatmap, highcharts-funnel, highcharts-exporting, 
+highcharts-export-csv (this example assumes, npm installed files into directory ~/node_modules).
 
 ```
 --highcharts=~/node_modules/highcharts/,
