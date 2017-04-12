@@ -128,7 +128,7 @@ class PyBloqsInstall(install):
         if self.wkhtmltopdf is not None:
             _copy_wkhtmltopdf(self.wkhtmltopdf)
         self.minimise_js_files()
-        self.do_egg_install()
+        install.run(self)
 
 
 class PyTest(TestCommand):
@@ -159,27 +159,6 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-class Docs(Command):
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        # Set backend explicitly to enable rendering docs from ipython notebooks in headless state
-        import matplotlib
-        matplotlib.use('Agg')
-        # Create module documentation from docstrings
-        import sphinx.apidoc as autodoc
-        autodoc.main(['', '-o', 'docs/source', 'pybloqs'])
-        # Create html files
-        import sphinx
-        sphinx.main(['', '-b', 'html', 'docs/source', 'docs/build'])
-
-
 setup(
     name="pybloqs",
     version="1.0.0",
@@ -200,7 +179,6 @@ setup(
         "lxml",
         "pyyaml",
         "jinja2",
-        "pyyaml",
         "sphinx",
         "nbsphinx",
         "ipython[notebook]",
@@ -222,7 +200,6 @@ setup(
         "load_highcharts": LoadHighcharts,
         "load_wkhtmltopdf": LoadWkhtmltopdf,
         "test": PyTest,
-        "docs": Docs,
     },
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_data={"pybloqs.static": ["*.js",
