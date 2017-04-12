@@ -41,6 +41,7 @@ def _copy_hc_files(source_paths, dest_path):
 
 
 def _copy_wkhtmltopdf(src_path):
+    src_path = os.path.abspath(os.path.expanduser(src_path))
     files = ['wkhtmltopdf', 'wkhtmltoimage']
     for f in files:
         source = os.path.join(src_path, f)
@@ -80,7 +81,6 @@ class LoadWkhtmltopdf(Command):
     def finalize_options(self):
         assert self.wkhtmltopdf is not None, "Please provide --wkhtmltopdf parameter"
         self.ensure_string("wkhtmltopdf")
-        self.wkhtmltopdf = os.path.abspath(os.path.expanduser(self.wkhtmltopdf))
 
     def run(self):
         _copy_wkhtmltopdf(self.wkhtmltopdf)
@@ -105,7 +105,7 @@ class PyBloqsInstall(install):
             self.highcharts = [os.path.abspath(os.path.expanduser(p)) for p in self.highcharts]
 
     def copy_hc_files(self):
-        dest_path = os.path.join("build", "lib", "pybloqs", "static")
+        dest_path = os.path.join(self.build_lib, "pybloqs", "static")
         _copy_hc_files(self.highcharts, dest_path)
 
     def minimise_js_files(self):
@@ -123,7 +123,7 @@ class PyBloqsInstall(install):
 
     def run(self):
         logging.getLogger().setLevel(logging.INFO)
-        mkpath('build/lib/pybloqs/static')
+        mkpath(os.path.join(self.build_lib, 'pybloqs', 'static'))
         self.copy_hc_files()
         if self.wkhtmltopdf is not None:
             _copy_wkhtmltopdf(self.wkhtmltopdf)
