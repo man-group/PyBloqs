@@ -43,9 +43,11 @@ def _copy_hc_files(source_paths, dest_path):
 def _copy_wkhtmltopdf(src_path):
     src_path = os.path.abspath(os.path.expanduser(src_path))
     files = ['wkhtmltopdf', 'wkhtmltoimage']
+    if os.name == 'nt':
+        files = [f + '.exe' for f in files]
     for f in files:
         source = os.path.join(src_path, f)
-        dest = os.path.join(sys.exec_prefix, 'bin', f)
+        dest = os.path.join(os.path.split(sys.executable)[0], f)
         copy_file(source, dest)
 
 

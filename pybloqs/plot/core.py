@@ -425,9 +425,9 @@ class Plot(BaseBlock):
             stream.write(str(np_dt_epoch_msec(value)))
         elif isinstance(value, datetime):
             stream.write(str(dt_epoch_msecs(value)))
-        elif isinstance(value, bool):
+        elif isinstance(value, (bool, np.bool_)):
             stream.write("true" if value else "false")
-        elif isinstance(value, (int, long, float, np.int, np.float)):
+        elif isinstance(value, (int, long, float, np.int, np.float, np.number)):
             if np.isnan(value):
                 stream.write('null')
             elif np.isinf(value):
