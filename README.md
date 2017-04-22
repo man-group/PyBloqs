@@ -1,6 +1,7 @@
 # [![pybloqs](logo/logo50.png)](https://github.com/manahl/pybloqs)
 
 [![CircleCI](https://circleci.com/gh/manahl/PyBloqs.svg?style=svg)](https://circleci.com/gh/manahl/PyBloqs)
+[![PyPI](https://img.shields.io/pypi/pyversions/pybloqs.svg)]()
 [![ReadTheDocs](https://readthedocs.org/projects/pybloqs/badge)](https://pybloqs.readthedocs.io)
 
 PyBloqs is a flexible framework for visualizing data and automated creation of reports. 
