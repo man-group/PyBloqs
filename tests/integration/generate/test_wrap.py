@@ -3,7 +3,7 @@ import pandas as pd
 
 from pybloqs.block.image import ImgBlock
 from pybloqs.block.wrap import Box, Paragraph
-from generation_framework import assert_report_generated
+from .generation_framework import assert_report_generated
 
 
 @assert_report_generated

@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import pybloqs.plot as pbp
 
-from generation_framework import assert_report_generated
+from .generation_framework import assert_report_generated
 
 
 script_dir = os.path.dirname(__file__)

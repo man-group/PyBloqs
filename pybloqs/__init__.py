@@ -12,7 +12,7 @@ from pybloqs import plot as bxpl
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from six import StringIO
 
 
 def interactive(verbose=True):

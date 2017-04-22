@@ -1,5 +1,5 @@
 from pybloqs.block.text import Raw, Pre, Span, Markdown
-from generation_framework import assert_report_generated
+from .generation_framework import assert_report_generated
 
 
 @assert_report_generated

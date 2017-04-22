@@ -3,6 +3,7 @@ import zlib
 import base64
 import calendar
 import itertools
+from six import iterkeys, iteritems
 from io import BytesIO
 
 def dt_epoch_msecs(value):
@@ -57,7 +58,7 @@ def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v:
 
     Underscores are replaced with dashes and values are converted to lower case.
     """
-    return separator.join(["%s:%s" % (key_transform(key), value_transform(value)) for key, value in cfg.iteritems()])
+    return separator.join(["%s:%s" % (key_transform(key), value_transform(value)) for key, value in iteritems(cfg)])
 
 
 def str_base(num, base=36, numerals="0123456789abcdefghijklmnopqrstuvwxyz"):
@@ -135,7 +136,7 @@ class Cfg(dict):
 
     @staticmethod
     def _mergedicts(dict1, dict2, take_second):
-        for k in set(itertools.chain(dict1.iterkeys(), dict2.iterkeys())):
+        for k in set(itertools.chain(iterkeys(dict1), iterkeys(dict2))):
             if k in dict1 and k in dict2:
                 v1 = dict1[k]
                 v2 = dict2[k]

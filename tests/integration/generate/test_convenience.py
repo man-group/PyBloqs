@@ -1,7 +1,7 @@
 import pandas as pd
 
 from pybloqs.block.convenience import Block
-from generation_framework import assert_report_generated
+from .generation_framework import assert_report_generated
 
 series = pd.Series([1, 2, 3])
 df = pd.DataFrame({"a": series, "b": series})

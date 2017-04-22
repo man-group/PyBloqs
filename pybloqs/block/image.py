@@ -14,7 +14,7 @@ from pybloqs.util import cfg_to_css_string
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from six import StringIO
 
 
 _MIME_TYPES = {
