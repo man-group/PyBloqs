@@ -1,7 +1,7 @@
 import os
 import uuid
 import getpass
-import urlparse
+from six.moves.urllib.parse import urlparse
 import webbrowser
 import tempfile
 
@@ -16,7 +16,7 @@ from pybloqs.html import root, append_to, render, js_elem, id_generator
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from six import StringIO
 
 # Valid page sizes with widths in mm
 _page_width = {

@@ -1,6 +1,7 @@
 from collections import namedtuple
 import itertools
 import numbers
+from six import iteritems, string_types
 
 import pybloqs.block.colors as colors
 import numpy as np
@@ -250,7 +251,7 @@ class FmtMultiplyCellValue(TableFormatter):
 
     def _modify_cell_content(self, data):
         """Divide cell value by number"""
-        if (data.row_name == HEADER_ROW_NAME and isinstance(data.cell, basestring)
+        if (data.row_name == HEADER_ROW_NAME and isinstance(data.cell, string_types)
                 and (self.columns is None or data.column_name in self.columns)):
             return data.cell + self.suffix
 
@@ -726,7 +727,7 @@ class FmtAddCellPadding(TableFormatter):
 
     def _create_cell_level_css(self, data):
         css_substrings = []
-        for side, value in self.padding.iteritems():
+        for side, value in iteritems(self.padding):
             if value is not None:
                 css_substrings.append('padding-' + side + ':' + str(value) + self.length_unit)
         return "; ".join(css_substrings)
@@ -749,7 +750,7 @@ class FmtAddCellBorder(TableFormatter):
 
     def _create_cell_level_css(self, data):
         css_substrings = []
-        for side, value in self.padding.iteritems():
+        for side, value in iteritems(self.padding):
             if value is not None:
                 css_substrings.append('border-' + side + ':' + str(value) + self.length_unit + ' ' + self.style + ' '
                                       + colors.css_color(self.color))

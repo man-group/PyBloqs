@@ -48,7 +48,7 @@ def htmlconv(html_string=None, fmt="pdf", toc=True, tool_args=(), input_file=Non
     if proc.returncode != 0:
         raise ValueError(msg)
     else:
-        print msg
+        print(msg)
 
     # Return the raw output if no output file was provided
     return output, errors

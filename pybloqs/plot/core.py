@@ -10,11 +10,15 @@ from pybloqs.block.image import ImgBlock
 from pybloqs.html import js_elem, append_to
 from pybloqs.util import camelcase, Cfg, dt_epoch_msecs, np_dt_epoch_msec
 from pybloqs.static import JScript, register_interactive
+from six import text_type, iteritems
 
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from six import StringIO
+import sys
+if sys.version_info > (3,):
+    long = int
 
 
 # Sets of plots based on dimensionality
@@ -292,13 +296,13 @@ class Plot(BaseBlock):
         """
 
         def _decompose_l1(cfg):
-            return [cfg.override_many(data=value).inherit_many(name=key) for key, value in data.iteritems()]
+            return [cfg.override_many(data=value).inherit_many(name=key) for key, value in iteritems(data)]
 
         def _decompose_l2(cfg):
             component_series = []
 
-            for k1, v1 in data.iteritems():
-                for k2, v2 in v1.iteritems():
+            for k1, v1 in iteritems(data):
+                for k2, v2 in iteritems(v1):
                     component_series.append(cfg.override_many(data=v2).inherit_many(name="%s - %s" % (k1, k2)))
 
             return component_series
@@ -436,7 +440,7 @@ class Plot(BaseBlock):
                 stream.write(str(value))
         elif isinstance(value, str):
             stream.write("'" + value + "'")
-        elif isinstance(value, unicode):
+        elif isinstance(value, text_type):
             stream.write("'" + str(value) + "'")
         elif isinstance(value, dict):
             self._write_dict(stream, value)
@@ -474,7 +478,7 @@ class Plot(BaseBlock):
         Write out a dictionary.
         """
         stream.write("{")
-        for i, item in enumerate(dct.iteritems()):
+        for i, item in enumerate(iteritems(dct)):
             # If this is not the first item at this level, prepend a comma
             if i > 0:
                 stream.write(",")

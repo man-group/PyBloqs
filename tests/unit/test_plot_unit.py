@@ -1,7 +1,7 @@
 from numpy import nan
 from pandas import Series, Index
 from pybloqs.plot import Plot
-from cStringIO import StringIO
+from six import StringIO
 from pytest import fixture
 
 

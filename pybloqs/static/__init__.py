@@ -8,7 +8,7 @@ from pkg_resources import resource_filename
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from six import StringIO
 
 
 class Resource(object):

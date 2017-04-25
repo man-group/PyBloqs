@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 from pybloqs.block.image import PlotBlock, ImgBlock
-from generation_framework import assert_report_generated
+from .generation_framework import assert_report_generated
 
 
 @assert_report_generated
