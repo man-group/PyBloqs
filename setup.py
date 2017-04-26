@@ -196,8 +196,6 @@ setup(
         "Intended Audience :: Science/Research",
         "Programming Language :: Python",
         "Topic :: Scientific/Engineering",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 2 :: Only"
     ],
     cmdclass={
         "install": PyBloqsInstall,
