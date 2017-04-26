@@ -12,10 +12,11 @@ dependencies:
     - pip install tox-pyenv
     # Load highcharts files locally
     - npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
-
   override:
     - pyenv local 2.7.12 3.5.3 
 
 test:
+  override:
+    - tox
   post:
     - python setup.py build_sphinx
