@@ -1,8 +1,9 @@
 # [![pybloqs](logo/logo50.png)](https://github.com/manahl/pybloqs)
 
-[![CircleCI](https://circleci.com/gh/manahl/PyBloqs.svg?style=svg)](https://circleci.com/gh/manahl/PyBloqs)
-[![PyPI](https://img.shields.io/pypi/pyversions/pybloqs.svg)]()
+[![CircleCI](https://circleci.com/gh/manahl/PyBloqs.svg?style=shield)](https://circleci.com/gh/manahl/PyBloqs)
+[![PyPI](https://img.shields.io/pypi/pyversions/pybloqs.svg)](https://pypi.python.org/pypi/pybloqs/)
 [![ReadTheDocs](https://readthedocs.org/projects/pybloqs/badge)](https://pybloqs.readthedocs.io)
+[![Coverage Status](https://coveralls.io/repos/github/manahl/PyBloqs/badge.svg?branch=master)](https://coveralls.io/github/manahl/PyBloqs?branch=master)
 
 PyBloqs is a flexible framework for visualizing data and automated creation of reports. 
 
@@ -95,7 +96,7 @@ df = pd.DataFrame([[1., 2.],[3.,4.]], columns =['a', 'b'])
 table_block = Block(df)
 table_block.show()
 
-plot = Block(plt.plot(df['a'], df['b']))
+plot_block = Block(plt.plot(df['a'], df['b']))
 plot_block.show()
 
 plot_and_table = HStack([plot_block, table_block])

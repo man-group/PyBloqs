@@ -1,3 +1,7 @@
+machine:
+  environment:
+    COVERALLS_REPO_TOKEN: WnzSri2b3no9Fh0buPancG1krS4jVfQiG
+
 dependencies:
   pre:
     # Load wkhtmltopdf from source since version in Ubuntu is ANCIENT!
@@ -10,6 +14,7 @@ dependencies:
     - sudo apt-get install python-tk         # for headless drawing of notebook content
     - pip install tox
     - pip install tox-pyenv
+    - pip install coveralls
     # Load highcharts files locally
     - npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
   override:
@@ -19,4 +24,6 @@ test:
   override:
     - tox
   post:
+    - coveralls
     - python setup.py build_sphinx
+    
