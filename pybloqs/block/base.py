@@ -1,7 +1,7 @@
 import os
 import uuid
 import getpass
-from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import urljoin
 import webbrowser
 import tempfile
 
@@ -256,7 +256,7 @@ class BaseBlock(object):
         except KeyError:
             path = file_path
         else:
-            path = urlparse.urljoin(url_base, user_config["tmp_html_dir"] + "/" + file_name)
+            path = urljoin(url_base, user_config["tmp_html_dir"] + "/" + file_name)
 
         webbrowser.open_new_tab(path)
 
