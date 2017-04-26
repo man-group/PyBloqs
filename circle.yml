@@ -1,3 +1,7 @@
+machine:
+  environment:
+    COVERALLS_REPO_TOKEN: WnzSri2b3no9Fh0buPancG1krS4jVfQiG
+
 dependencies:
   pre:
     # Load wkhtmltopdf from source since version in Ubuntu is ANCIENT!
@@ -21,6 +25,7 @@ dependencies:
     - pip install mock
     - pip install pytest
     - pip install pytest-cov
+    - pip install coveralls
     - pip install sphinx
     - pip install nbsphinx
     - pip install ipython[notebook]
@@ -36,4 +41,5 @@ dependencies:
 
 test:
   post:
+    - coveralls
     - python setup.py build_sphinx
