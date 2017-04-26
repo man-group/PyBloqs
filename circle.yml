@@ -14,7 +14,7 @@ dependencies:
     - npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
 
   override:
-    - pyenv local 2.7 3.5 
+    - pyenv local 2.7.12 3.5.3 
 
 test:
   post:
