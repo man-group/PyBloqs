@@ -14,4 +14,7 @@ Changelog
   * Metadata and badge for Python version.
   * Python 3 compatibility changes, part 1.
   * Installation with Coveralls.
-  
+
+### 1.0.3 (2017-04-26)
+
+  * Bugfix: Import of urlparse corrected, fixes Block.show() .
