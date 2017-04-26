@@ -25,6 +25,7 @@ dependencies:
     - pip install nbsphinx
     - pip install ipython[notebook]
     - pip install jsmin
+    - pip install tox
     # Load highcharts files locally
     - npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
 
