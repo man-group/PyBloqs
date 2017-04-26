@@ -8,4 +8,10 @@ Changelog
 
   * Integration with pypi and ReadTheDocs.
   * Installation on Mac and Windows.
+
+### 1.0.2 (2017-04-26)
+
+  * Metadata and badge for Python version.
+  * Python 3 compatibility changes, part 1.
+  * Installation with Coveralls.
   
