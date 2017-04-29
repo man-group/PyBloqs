@@ -10,11 +10,7 @@ from pybloqs.html import append_to
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
 from pybloqs.util import cfg_to_css_string
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+from io import BytesIO
 
 
 _MIME_TYPES = {
@@ -93,8 +89,8 @@ class ImgBlock(BaseBlock):
         super(ImgBlock, self).__init__(**kwargs)
 
     def _write_contents(self, container, *args, **kwargs):
-        src = StringIO()
-        src.write("data:image/{};base64,".format(self._mime_type))
+        src = BytesIO()
+        src.write(("data:image/{};base64,".format(self._mime_type)).encode('utf-8'))
         src.write(self._img_data)
 
         img = append_to(container, "img", src=src.getvalue())
@@ -150,7 +146,7 @@ class PlotBlock(ImgBlock):
         else:
             raise ValueError("Unexpected plot object type %s", type(plot))
 
-        img_data = StringIO()
+        img_data = BytesIO()
 
         legends = []
 
@@ -171,6 +167,7 @@ class PlotBlock(ImgBlock):
             # empty plot, disable bbox_inches to that savefig still works
             bbox_inches = None
 
+        print(type(img_data))
         figure.savefig(img_data, dpi=_PLOT_DPI, format=_PLOT_FORMAT,
                        bbox_extra_artists=legends, bbox_inches=bbox_inches)
 

@@ -8,11 +8,7 @@ from pybloqs.block.image import ImgBlock, PlotBlock, set_plot_format
 from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.wrap import Box, Paragraph
 from pybloqs import plot as bxpl
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+from io import BytesIO
 
 
 def interactive(verbose=True):
@@ -25,7 +21,7 @@ def interactive(verbose=True):
 
     set_id_generator(id_generator_uuid)
 
-    stream = StringIO()
+    stream = BytesIO()
 
     write_interactive(stream)
 

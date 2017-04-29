@@ -2,6 +2,7 @@ import copy
 import math
 import pandas as pd
 
+from six.moves import xrange
 from pybloqs.util import Cfg
 from pybloqs.html import append_to
 from pybloqs.block.base import BaseBlock

@@ -4,11 +4,7 @@ from pybloqs.html import js_elem, append_to, root, render
 from pybloqs.util import encode_string
 
 from pkg_resources import resource_filename
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+from io import BytesIO
 
 
 class Resource(object):
@@ -62,10 +58,10 @@ class JScript(Resource):
         self._sentinel_var_name = "_pybloqs_load_sentinel_%s" % name.replace("-", "_")
 
     def write(self, parent=None):
-        stream = StringIO()
+        stream = BytesIO()
 
         # Write out init condition
-        stream.write("if(typeof(%s) == 'undefined'){" % self._sentinel_var_name)
+        stream.write(("if(typeof(%s) == 'undefined'){" % self._sentinel_var_name).encode('utf-8'))
 
         with open(self._local_path, "rb") as f:
             if self._encode:
@@ -73,18 +69,18 @@ class JScript(Resource):
             else:
                 stream.write(f.read())
 
-        stream.write("%s = true;" % self._sentinel_var_name)
+        stream.write(("%s = true;" % self._sentinel_var_name).encode('utf-8'))
 
-        stream.write("}")
+        stream.write(b"}")
 
-        return js_elem(parent, stream.getvalue())
+        return js_elem(parent, stream.getvalue().decode('utf-8'))
 
     @classmethod
     def write_compressed(cls, stream, data):
         if cls.global_encode:
-            stream.write('blocksEval(RawDeflate.inflate(atob("')
+            stream.write(b'blocksEval(RawDeflate.inflate(atob("')
             stream.write(encode_string(data))
-            stream.write('")));')
+            stream.write(b'")));')
         else:
             stream.write(data)
 
@@ -105,7 +101,7 @@ class Css(Resource):
         if self._tag_id is not None:
             el["id"] = self._tag_id
 
-        with open(self._local_path, "rb") as f:
+        with open(self._local_path, "r") as f:
             el.string = f.read()
 
         return el
