@@ -45,7 +45,7 @@ def render(item, pretty=True, encoding="utf8"):
     return item.prettify(encoding=encoding) if pretty else str(item)
 
 
-def append_to(parent, tag, *args, **kwargs):
+def append_to(parent, tag, **kwargs):
     """
     Append an element to the supplied parent.
 
@@ -60,7 +60,9 @@ def append_to(parent, tag, *args, **kwargs):
     else:
         soup = parent.find_parent("html")
 
-    new_tag = soup.new_tag(tag, *args, **kwargs)
+    # Create Tag explicitly instead of using new_tag, otherwise attribute "name" leads to clash with tag-name in bs4
+    new_tag = bs4.Tag(builder=soup.builder, name=tag, attrs=kwargs)
+
     new_tag.soup = soup
 
     parent.append(new_tag)

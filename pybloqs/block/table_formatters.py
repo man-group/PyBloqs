@@ -35,22 +35,22 @@ CSS_FONTSTYLE = 'font-style:'
 class TableFormatter(object):
     """Base class for table formatters.
 
-    Consists of hook functions, which are called by HTMLJinjaTableBlock 
+    Consists of hook functions, which are called by HTMLJinjaTableBlock
     and a few helper functions, which may be useful within the hook functions.
 
     Provides the following hooks, which can be implemented by derived classes:
 
     _modify_dataframe()
-    Changes to the underlying dataframe, e.g. adding or removing rows or columns
+        Changes to the underlying dataframe, e.g. adding or removing rows or columns
 
     _create_table_level_css()
-    Provides CSS styles to the <table> HTML tag.
+        Provides CSS styles to the <table> HTML tag.
 
     _modify_cell_content()
-    Is applied to cell value, e.g. divide by 1e6 or convert number to string with specific number format.
+        Is applied to cell value, e.g. divide by 1e6 or convert number to string with specific number format.
 
     _create_cell_level_css()
-    Provides CSS styles to all <th> and <td> HTML tags. 
+        Provides CSS styles to all <th> and <td> HTML tags.
     """
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
@@ -76,8 +76,8 @@ class TableFormatter(object):
     def _is_selected_cell(self, row_name, column_name):
         if (row_name == HEADER_ROW_NAME or column_name == INDEX_COL_NAME) and self.apply_to_header_and_index:
             return True
-        is_outside_selection = (self.columns is not None and column_name not in self.columns
-                                or self.rows is not None and row_name not in self.rows)
+        is_outside_selection = (self.columns is not None and column_name not in self.columns or
+                                self.rows is not None and row_name not in self.rows)
         is_selected_cell = not is_outside_selection
         if not self.apply_to_header_and_index:
             if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
@@ -114,6 +114,10 @@ class TableFormatter(object):
         """Formatting on CSS level, e.g. colors, borders, etc. """
         raise NotImplementedError('format_cell_css')
 
+    def _create_table_level_css_class(self):
+        """CSS class of table"""
+        raise NotImplementedError('create_table_level_css_class')
+
     def insert_additional_html(self):
         """Inserts additional html (or java-script) before <table>."""
         return self._insert_additional_html()
@@ -147,6 +151,11 @@ class TableFormatter(object):
             return self._create_cell_level_css(data)
         else:
             return None
+
+    def create_table_level_css_class(self):
+        """CSS class of table"""
+        return self._create_table_level_css_class()
+
 
 #
 # Formatter specialisations
@@ -251,8 +260,8 @@ class FmtMultiplyCellValue(TableFormatter):
 
     def _modify_cell_content(self, data):
         """Divide cell value by number"""
-        if (data.row_name == HEADER_ROW_NAME and isinstance(data.cell, string_types)
-                and (self.columns is None or data.column_name in self.columns)):
+        if (data.row_name == HEADER_ROW_NAME and isinstance(data.cell, string_types) and
+                (self.columns is None or data.column_name in self.columns)):
             return data.cell + self.suffix
 
         if isinstance(data.cell, numbers.Number):
@@ -264,7 +273,7 @@ class FmtMultiplyCellValue(TableFormatter):
 class FmtValueToMillion(FmtMultiplyCellValue):
     """Divide cell values by 1e6 and add suffix to column name (if it is a string)."""
 
-    def __init__(self, suffix=' $m', rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(self, suffix='', rows=None, columns=None, apply_to_header_and_index=True):
         super(FmtValueToMillion, self).__init__(1 / 1e6, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
@@ -272,7 +281,7 @@ class FmtValueToMillion(FmtMultiplyCellValue):
 class FmtValueToBps(FmtMultiplyCellValue):
     """Divide cell values by 1e4 and add suffix to column name (if it is a string)."""
 
-    def __init__(self, suffix=' bps', rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(self, suffix='', rows=None, columns=None, apply_to_header_and_index=True):
         super(FmtValueToBps, self).__init__(1e4, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
@@ -280,38 +289,39 @@ class FmtValueToBps(FmtMultiplyCellValue):
 class FmtValueToPercent(FmtMultiplyCellValue):
     """Divide cell values by 1e2 and add suffix to column name (if it is a string)."""
 
-    def __init__(self, suffix=' %', rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(self, suffix='', rows=None, columns=None, apply_to_header_and_index=True):
         super(FmtValueToPercent, self).__init__(1e2, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
 
 class FmtReplaceNaN(TableFormatter):
-    """Base class for dividing cell value by some number and adding suffix to columns"""
+    """Replace NaN and Inf (if replace_inf is True) values."""
 
-    def __init__(self, value='', rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(self, value='', replace_inf=True, rows=None, columns=None, apply_to_header_and_index=True):
         super(FmtReplaceNaN, self).__init__(rows, columns, apply_to_header_and_index)
         self.value = value
+        self.replace_inf = replace_inf
 
-    def _modify_cell_content(self, data):
+    def _modify_dataframe(self, df):
         """Check if value is NaN and replace with self.value"""
-        if isinstance(data.cell, numbers.Number) and np.isnan(data.cell):
-            return self.value
+        if self.replace_inf:
+            return df.replace([np.inf, -np.inf], np.nan).fillna(self.value)
         else:
-            return data.cell
+            return df.fillna(self.value)
 
 
 class FmtFontsize(TableFormatter):
     """Set fontsize in table cells."""
 
-    def __init__(self, fontsize, format='px', rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(self, fontsize, unit='px', rows=None, columns=None, apply_to_header_and_index=True):
         super(FmtFontsize, self).__init__(rows, columns)
         self.fontsize = fontsize
-        self.format = format
+        self.unit = unit
         return
 
     def _create_cell_level_css(self, data):
         """Set fontsize for cell as CSS format."""
-        return 'font-size:' + str(self.fontsize) + self.format
+        return 'font-size:' + str(self.fontsize) + self.unit
 
 
 class FmtHighlightText(TableFormatter):
@@ -465,12 +475,13 @@ class FmtHeatmap(TableFormatter):
     """Color cell background by value. For column-wise or row-wise min/max coloring, set axis parameter."""
 
     def __init__(self, min_color=colors.HEATMAP_RED, max_color=colors.HEATMAP_GREEN, threshold=0.,
-                 axis=None, rows=None, columns=None, apply_to_header_and_index=False):
+                 axis=None, rows=None, columns=None, apply_to_header_and_index=False, cache=None):
         super(FmtHeatmap, self).__init__(rows, columns, apply_to_header_and_index)
         self.axis = axis
         self.min_color = min_color
         self.max_color = max_color
         self.threshold = threshold
+        self.cache = cache
         return
 
     def _get_selected_cell_values(self, rows, columns, df):
@@ -490,6 +501,19 @@ class FmtHeatmap(TableFormatter):
 
         return selection
 
+    def _get_min_max_from_selected_cell_values(self, rows, columns, df):
+        """ Returns the min and max from the selected cell values, possibly using a cache to store the results. """
+
+        if self.cache is None:
+            cell_values = self._get_selected_cell_values(rows, columns, df)
+            return (np.nanmin(cell_values), np.nanmax(cell_values))
+        else:
+            cache_key = (rows and frozenset(rows), columns and frozenset(columns))
+            if cache_key not in self.cache:
+                cell_values = self._get_selected_cell_values(rows, columns, df)
+                self.cache[cache_key] = (np.nanmin(cell_values), np.nanmax(cell_values))
+            return self.cache[cache_key]
+
     def _create_cell_level_css(self, data):
         """Create heatmap with ranges from min to (-threshold) and from threshold to max."""
         if isinstance(data.cell, numbers.Number):
@@ -500,15 +524,15 @@ class FmtHeatmap(TableFormatter):
                 rows = [data.row_name]
             elif self.axis == 1:
                 columns = [data.column_name]
-            cell_values = self._get_selected_cell_values(rows, columns, data.df)
 
-            # Find min or max value and create color with alpha according to value / (min or max)
+            # Get min max values from selected cells
+            (min_value, max_value) = self._get_min_max_from_selected_cell_values(rows, columns, data.df)
+
+            # Create color with alpha according to value / (min or max)
             if data.cell > self.threshold:
-                max_value = np.nanmax(cell_values)
                 cell_color_alpha = data.cell / max_value
                 cell_color = self.max_color + (cell_color_alpha,)
             elif data.cell < -self.threshold:
-                min_value = np.nanmin(cell_values)
                 cell_color_alpha = data.cell / min_value
                 cell_color = self.min_color + (cell_color_alpha,)
             else:
@@ -545,7 +569,7 @@ class FmtAppendTotalsRow(TableFormatter):
         else:
             columns = self.total_columns
         if self.operator is not OP_NONE:
-            last_row = self.operator(df)
+            last_row = self.operator(df[df.applymap(np.isreal)])
             last_row[~last_row.index.isin(columns)] = ''
         else:
             last_row = pd.Series('', index=df.columns)
@@ -601,7 +625,7 @@ class FmtAppendTotalsColumn(TableFormatter):
         else:
             rows = self.total_rows
         if self.operator is not OP_NONE:
-            new_column = self.operator(df, axis=1)
+            new_column = self.operator(df[df.applymap(np.isreal)], axis=1)
             new_column[~new_column.index.isin(rows)] = ''
         else:
             new_column = pd.Series('', index=df.index)
@@ -650,6 +674,7 @@ class FmtExpandMultiIndex(TableFormatter):
 
     def _modify_dataframe(self, df):
         """Create single index dataframe inserting grouping rows for higher levels."""
+
         if self.total_columns == []:
             columns = df.columns
         else:
@@ -672,7 +697,8 @@ class FmtExpandMultiIndex(TableFormatter):
                             # For operator None fill row with empty string for each column
                             data_row = pd.Series('', index=df.columns)
                         else:
-                            data_row = self.operator(df.loc[index_tuple[:level_i + 1]])
+                            df_subset = df.loc[index_tuple[:level_i + 1]]
+                            data_row = self.operator(df_subset[df_subset.applymap(np.isreal)])
                             data_row[~data_row.index.isin(columns)] = ''
                     data_row.name = sub_index
                     data_row[ORG_ROW_NAMES] = index_tuple[:level_i + 1]
@@ -752,8 +778,8 @@ class FmtAddCellBorder(TableFormatter):
         css_substrings = []
         for side, value in iteritems(self.padding):
             if value is not None:
-                css_substrings.append('border-' + side + ':' + str(value) + self.length_unit + ' ' + self.style + ' '
-                                      + colors.css_color(self.color))
+                css_substrings.append('border-' + side + ':' + str(value) + self.length_unit + ' ' + self.style + ' ' +
+                                      colors.css_color(self.color))
         return "; ".join(css_substrings)
 
 
@@ -819,11 +845,11 @@ class FmtPageBreak(TableFormatter):
     """Various settings controlling printed page output. Please see notes below regarding repeated headers.
 
     Webkit has a bug so it will not repeat table headers after page-break. This is a bug that has not been fixed for
-    over 6 years and affects, e.g. Chrome. wkhtmltopdf is webkit based, but fixes this issue separately. This fix 
+    over 6 years and affects, e.g. Chrome. wkhtmltopdf is webkit based, but fixes this issue separately. This fix
     relies in part on a patched version of qt. The fix does not work for rotated headers, which are not repeated.
 
     Handling of repeated headers (including rotated ones) is fine, e.g. in Firefox, where repeat_header option works as
-    expected. 
+    expected.
     """
 
     def __init__(self, no_break=True, repeat_header=True):
@@ -855,9 +881,9 @@ class FmtColumnMultiIndexBasic(TableFormatter):
     """Fine grained control of CSS output for column multi-index.
 
     :param cell_css: `list of lists`
-        Per cell CSS tags arranged as one list per row and then a list of all row lists. Please note: Number of cells is 
-        variable in cells above the lowest line as repeating cell values are interpreted . In the last line, number of 
-        cells equals the number of columns in DataFrame. 
+        Per cell CSS tags arranged as one list per row and then a list of all row lists. Please note: Number of cells is
+        variable in cells above the lowest line as repeating cell values are interpreted . In the last line, number of
+        cells equals the number of columns in DataFrame.
         An entry in cell_css can be None, if no CSS should be set for this cell.
     :param index_col_css: `list of strings`
         Per cell CSS tags for each cell in index column.
@@ -952,6 +978,7 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
 # Definition of default formatter
 #
 
+fmt_fontsize_12 = FmtFontsize(fontsize=12)
 fmt_fontsize_14 = FmtFontsize(fontsize=14)
 fmt_stripes_bg = FmtStripeBackground()
 fmt_table_center = FmtAlignTable(alignment='center')

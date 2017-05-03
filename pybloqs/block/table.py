@@ -66,11 +66,12 @@ class HTMLJinjaTableBlock(BaseBlock):
                 continue
         return html_string
 
-    def _join_css_substrings(self, css_substrings):
-        return "style=\"" + "; ".join(css_substrings) + "\""
+    def _join_css_substrings(self, css_substrings, prefix):
+        return prefix + "=\"" + "; ".join(css_substrings) + "\""
 
-    def _aggregate_css_formatters(self, function_name, *fmt_args):
+    def _aggregate_css_formatters(self, function_name, fmt_args=None, prefix='style'):
         css_substrings = []
+        fmt_args = fmt_args if fmt_args else []
         for formatter in self.formatters:
             try:
                 fmt_func = getattr(formatter, function_name)
@@ -79,11 +80,14 @@ class HTMLJinjaTableBlock(BaseBlock):
                 continue
             if not css_substring is None:
                 css_substrings.append(css_substring)
-        return self._join_css_substrings(css_substrings)
+        return self._join_css_substrings(css_substrings, prefix)
 
     def create_table_level_css(self):
         self.row_index = -self.n_header_rows - 1
         return self._aggregate_css_formatters('create_table_level_css')
+    
+    def create_table_level_css_class(self):
+        return self._aggregate_css_formatters('create_table_level_css_class', prefix='class')
 
     def create_thead_level_css(self):
         return self._aggregate_css_formatters('create_thead_level_css')
@@ -93,19 +97,19 @@ class HTMLJinjaTableBlock(BaseBlock):
         if ORG_ROW_NAMES in self.df.columns and self.row_index >= 0:
             row_name = self.df[ORG_ROW_NAMES].iloc[self.row_index]
         data = pd.Series(row, name=row_name)
-        return self._aggregate_css_formatters('create_row_level_css', data)
+        return self._aggregate_css_formatters('create_row_level_css', fmt_args=[data])
 
     def create_cell_level_css(self, cell, row_name, column_name):
         if ORG_ROW_NAMES in self.df.columns and self.row_index >= 0:
             row_name = self.df[ORG_ROW_NAMES].iloc[self.row_index]
         data = self.FormatterData(cell, row_name, column_name, self.df)
-        return self._aggregate_css_formatters('create_cell_level_css', data)
-
+        return self._aggregate_css_formatters('create_cell_level_css', fmt_args=[data])
+    
     def _get_header_iterable(self):
         """Reformats all but the last header rows."""
         df_clean = self.df.loc[:, self.df.columns.get_level_values(0) != ORG_ROW_NAMES]
         if isinstance(df_clean.columns, pd.MultiIndex):
-            transpose_tuples = list(zip(*df_clean.columns.tolist()))
+            transpose_tuples = zip(*df_clean.columns.tolist())
             header_values = []
             for i, t in enumerate(transpose_tuples):
                 if i < len(transpose_tuples) - 1:
@@ -125,6 +129,7 @@ class HTMLJinjaTableBlock(BaseBlock):
                  'insert_additional_html': self.insert_additional_html,
                  'create_thead_level_css': self.create_thead_level_css,
                  'create_table_level_css': self.create_table_level_css,
+                 'create_table_level_css_class' : self.create_table_level_css_class,
                  'create_row_level_css': self.create_row_level_css,
                  'create_cell_level_css': self.create_cell_level_css,
                  'modify_cell_content': self.modify_cell_content}

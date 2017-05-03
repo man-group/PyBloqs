@@ -1,8 +1,10 @@
 import os
+from pandas.util.testing import assert_series_equal
+
+from pybloqs import Block
 
 import numpy as np
 import pandas as pd
-from pybloqs import Block
 import pybloqs.block.colors as colors
 import pybloqs.block.table_formatters as tf
 
@@ -17,12 +19,12 @@ def test_multi_index_df_to_jinja_table():
     columns = ['This is an incredibly long column name', 'column2', 'column3', 'column4', 'column5']
     data = pd.DataFrame(np.random.rand(7, 5) * 2 - 1, index=multi_index, columns=columns)
     fmt_expand_multi_index = tf.FmtExpandMultiIndex(operator=tf.OP_SUM, bold=True,
-                                                      hline_color=colors.DARK_BLUE)
+                                                    hline_color=colors.DARK_BLUE)
     fmt_nDecimal = tf.FmtDecimals(n=2)
     fmt_align_cells = tf.FmtAlignCellContents(alignment='right')
     fmt_heatmap_1 = tf.FmtHeatmap(columns=['column2', 'column3'], rows=['aa', 'ab', 'ac'], threshold=0., axis=0)
     fmt_heatmap_2 = tf.FmtHeatmap(columns=['column4', 'column5'], rows=['ca', 'cb', 'cc'], threshold=0.3,
-                                    min_color=colors.PURPLE, max_color=colors.ORANGE)
+                                  min_color=colors.PURPLE, max_color=colors.ORANGE)
     fmt_stripes_bg = tf.FmtStripeBackground(first_color=colors.LIGHT_GREY)
     fmt_rotate_header = tf.FmtHeader(fixed_width='500px', top_padding='200px')
 
@@ -73,3 +75,19 @@ def test_column_multi_index_df_to_jinja_table_narrow_multiindex():
     table.save(filename)
     # And clean up file afterwards
     os.remove(filename)
+
+
+def test_formatters_with_operator_on_df_with_nans_replaces():
+    df = pd.DataFrame(np.arange(8, dtype=float).reshape(2, 4), index=['a', 'b'], columns=['aa', 'bb', 'cc', 'dd'])
+    df.iloc[0, 0] = np.nan
+    fmt_nan_replace = tf.FmtReplaceNaN()
+    fmt_sum_rows = tf.FmtAppendTotalsRow()
+    fmt_sum_columns = tf.FmtAppendTotalsColumn()
+
+    b_no_replace = Block(df, formatters=[fmt_sum_rows, fmt_sum_columns], use_default_formatters=False)
+
+    b_replace = Block(df, formatters=[fmt_nan_replace, fmt_sum_rows, fmt_sum_columns],
+                      use_default_formatters=False)
+
+    assert_series_equal(b_replace.df.iloc[:, -1],  b_no_replace.df.iloc[:, -1], check_dtype=False)
+    assert_series_equal(b_replace.df.iloc[-1, :],  b_no_replace.df.iloc[-1, :], check_dtype=False)
