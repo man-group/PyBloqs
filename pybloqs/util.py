@@ -4,7 +4,13 @@ import base64
 import calendar
 import itertools
 from six import iterkeys, iteritems
-from io import BytesIO
+from io import StringIO
+
+import sys
+if sys.version_info > (3,):
+    long = int
+
+
 
 def dt_epoch_msecs(value):
     """
@@ -37,8 +43,8 @@ def camelcase(value):
     :param value: Underscore separated string
     :return: CamelCased string
     """
-    rest = value.split("_")
-    return rest[0] + "".join(word.title() for word in rest[1:])
+    rest = value.split(b"_")
+    return rest[0] + b"".join(word.title() for word in rest[1:])
 
 
 def underscorecase(camelcased):
@@ -76,14 +82,15 @@ def str_base(num, base=36, numerals="0123456789abcdefghijklmnopqrstuvwxyz"):
     if num == 0:
         return '0'
 
-    buf = BytesIO()
+    buf = StringIO()
 
     if num < 0:
         buf.write("-")
         num = -num
 
     while num:
-        buf.write(numerals[num % base])
+        idx = num % base
+        buf.write(str(numerals[idx]))
         num //= base
 
     return buf.getvalue()

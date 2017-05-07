@@ -5,6 +5,7 @@ from six.moves.urllib.parse import urljoin
 import webbrowser
 import tempfile
 
+from six import string_types
 from pybloqs.email import send_html_report
 from pybloqs.htmlconv import htmlconv
 from pybloqs.static import DependencyTracker, JScript, Css, script_inflate, script_block_core, register_interactive
@@ -12,11 +13,8 @@ from pybloqs.util import Cfg, cfg_to_css_string, str_base
 from pybloqs.config import user_config
 
 from pybloqs.html import root, append_to, render, js_elem, id_generator
+from io import BytesIO
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
 
 # Valid page sizes with widths in mm
 _page_width = {
@@ -107,7 +105,7 @@ class BaseBlock(object):
 
         if static_output:
             # Set styling specific to non-HTML output
-            if isinstance(pdf_page_size, basestring):
+            if isinstance(pdf_page_size, string_types):
                 pdf_page_size = _page_width[pdf_page_size]
             body["style"] = cfg_to_css_string(Cfg(margin="0 auto;", width="{:d}mm".format(int(pdf_page_size))))
 
@@ -180,7 +178,7 @@ class BaseBlock(object):
             html_filename = os.path.join(tempdir, name)
 
         # File with HTML content is needed either directly or as input for conversion
-        with open(html_filename, "w") as f:
+        with open(html_filename, "wb") as f:
             f.write(content)
 
         if not is_html:
@@ -445,7 +443,7 @@ class BaseBlock(object):
         self._write_block(container, Cfg(), id_generator())
 
         # Write children into the output
-        output = StringIO()
+        output = BytesIO()
 
         for child in container.children:
             output.write(render(child))

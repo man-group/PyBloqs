@@ -11,11 +11,10 @@ from pybloqs.html import js_elem, append_to
 from pybloqs.util import camelcase, Cfg, dt_epoch_msecs, np_dt_epoch_msec
 from pybloqs.static import JScript, register_interactive
 from six import text_type, iteritems
+from io import BytesIO
+import six
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+
 import sys
 if sys.version_info > (3,):
     long = int
@@ -53,7 +52,7 @@ class Expr(object):
         self.fun_str = fun_str
 
     def write_jscript(self, stream):
-        stream.write(self.fun_str)
+        stream.write(self.fun_str.encode('utf-8'))
 
     def __repr__(self):
         return "Expr('''%s''')" % self.fun_str
@@ -223,7 +222,7 @@ class Plot(BaseBlock):
         data = [list(index) + [value] for index, value in list(np.ndenumerate(data))]
 
         if switch_zy:
-            for i in xrange(len(data)):
+            for i in six.moves.range(len(data)):
                 tmp = data[i][-1]
                 data[i][-1] = data[i][-2]
                 data[i][-2] = tmp
@@ -252,7 +251,7 @@ class Plot(BaseBlock):
                 y_axes = chart_cfg.y_axis
 
                 # Set the default on all y axes
-                for i in xrange(len(y_axes)):
+                for i in six.moves.range(len(y_axes)):
                     y_axes[i] = y_axes[i].inherit(base_cfg)
 
             return chart_cfg
@@ -367,7 +366,7 @@ class Plot(BaseBlock):
 
     def _write_contents(self, container, actual_cfg, id_gen, static_output=False, **kwargs):
         plot_container = append_to(container, "div")
-        plot_container["id"] = plot_container_id = id_gen.next()
+        plot_container["id"] = plot_container_id = six.next(id_gen)
 
         # Write the config to the plot target as well
         self._write_container_attrs(plot_container, actual_cfg)
@@ -378,16 +377,16 @@ class Plot(BaseBlock):
         """
         Write out the chart construction machinery.
         """
-        js_timer_var_name = "_ins_timer_" + id_gen.next()
+        js_timer_var_name = "_ins_timer_" + six.next(id_gen)
 
         # Plumbing to make sure script rendering waits until the container element is ready
-        stream = StringIO()
+        stream = BytesIO()
 
         chart_cfg = self._chart_cfg.override(Chart(render_to=container_id))
 
         if static_output:
             # Chart load wait handles for static output.
-            stream.write("registerWaitHandle('%s');" % container_id)
+            stream.write(("registerWaitHandle('%s');" % container_id).encode('utf-8')) 
             overrides = [Chart(Events(load=Expr("function(){setLoaded('%s');}" % container_id))),
                          Exporting(enabled=False), Navigator(enabled=False), Scrollbar(enabled=False),
                          PlotOptions(Series(enable_mouse_tracking=False, shadow=False, animation=False)),
@@ -395,27 +394,27 @@ class Plot(BaseBlock):
 
             chart_cfg = chart_cfg.override_many(*overrides)
 
-        stream.write(("var %s=setInterval(function(){"
+        stream.write((("var %s=setInterval(function(){"
                       "var container=document.getElementById('%s');"
                       "if(container){clearInterval(%s);")
-                     % (js_timer_var_name, container_id, js_timer_var_name))
+                     % (js_timer_var_name, container_id, js_timer_var_name)).encode('utf-8'))
 
         # Write out the chart script into a separate buffer beffore running it through
         # the encoding/compression
-        chart_buf = StringIO()
-        chart_buf.write("var cfg=")
+        chart_buf = BytesIO()
+        chart_buf.write(b"var cfg=")
         self._write_dict(chart_buf, chart_cfg)
-        chart_buf.write(";")
+        chart_buf.write(b";")
 
-        chart_buf.write("var chart = new Highcharts." + self._chart_cls + "(cfg);")
+        chart_buf.write(b"var chart = new Highcharts." + self._chart_cls.encode('utf-8') + b"(cfg);")
 
         self._write_plot_postprocess(chart_buf)
 
         JScript.write_compressed(stream, chart_buf.getvalue())
 
-        stream.write("}},10);")
+        stream.write(b"}},10);")
 
-        js_elem(container, stream.getvalue())
+        js_elem(container, stream.getvalue().decode('utf-8'))
 
     def _write_plot_postprocess(self, chart_buf):
         pass
@@ -428,20 +427,20 @@ class Plot(BaseBlock):
         if isinstance(value, np.datetime64):
             stream.write(str(np_dt_epoch_msec(value)))
         elif isinstance(value, datetime):
-            stream.write(str(dt_epoch_msecs(value)))
+            stream.write(str(dt_epoch_msecs(value)).encode('utf-8'))
         elif isinstance(value, (bool, np.bool_)):
-            stream.write("true" if value else "false")
+            stream.write(b"true" if value else b"false")
         elif isinstance(value, (int, long, float, np.int, np.float, np.number)):
             if np.isnan(value):
-                stream.write('null')
+                stream.write(b"null")
             elif np.isinf(value):
-                stream.write('null')
+                stream.write(b"null")
             else:
-                stream.write(str(value))
+                stream.write(str(value).encode('utf-8'))
         elif isinstance(value, str):
-            stream.write("'" + value + "'")
+            stream.write(b"'" + str(value).encode('utf-8') + b"'")
         elif isinstance(value, text_type):
-            stream.write("'" + str(value) + "'")
+            stream.write(b"'" + str(value) + "'")
         elif isinstance(value, dict):
             self._write_dict(stream, value)
         elif isinstance(value, (list, tuple, set)):
@@ -454,7 +453,7 @@ class Plot(BaseBlock):
 
             # Merge DFrame into a single list of lists
             merged = []
-            for i in xrange(len(labels)):
+            for i in six.moves.range(len(labels)):
                 label = labels[i]
                 ndval = values[i]
 
@@ -469,7 +468,7 @@ class Plot(BaseBlock):
         elif hasattr(value, "write_jscript"):
             value.write_jscript(stream)
         elif value is None:
-            stream.write("null")
+            stream.write(b"null")
         else:
             raise ValueError("Unhandled config item type " + str(type(value)))
 
@@ -477,31 +476,32 @@ class Plot(BaseBlock):
         """
         Write out a dictionary.
         """
-        stream.write("{")
+        stream.write(b"{")
         for i, item in enumerate(iteritems(dct)):
             # If this is not the first item at this level, prepend a comma
             if i > 0:
-                stream.write(",")
+                stream.write(b",")
 
             key, value = item
+            key = key.encode('utf-8')
             # camelCase the key as appropriate
-            stream.write(camelcase(key) + ":")
+            stream.write(camelcase(key) + b":")
             self._write_value(stream, value)
-        stream.write("}")
+        stream.write(b"}")
 
     def _write_iterable(self, stream, iterable):
         """
         Write out an iterable.
         """
-        stream.write("[")
+        stream.write(b"[")
         for i, item in enumerate(iterable):
             # If this is not the first item at this level, prepend a comma
             if i > 0:
-                stream.write(",")
+                stream.write(b",")
 
             self._write_value(stream, item)
 
-        stream.write("]")
+        stream.write(b"]")
 
     def _to_static(self):
         return ImgBlock(self)

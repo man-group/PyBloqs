@@ -58,4 +58,4 @@ class Markdown(Raw):
     encoding = "UTF-8"
 
     def _process_raw_contents(self, contents):
-        return markdown.markdown(contents.decode(self.encoding), output_format="html").encode(self.encoding)
+        return markdown.markdown(contents, output_format="html").encode(self.encoding)
