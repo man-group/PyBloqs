@@ -65,7 +65,7 @@ class ImgBlock(BaseBlock):
 
         if width is None and height is None:
             if mime_type.lower() == "png":
-                assert struct.unpack('ccc', data[1:4]) == ('P', 'N', 'G')
+                assert(struct.unpack('ccc', data[1:4]) == (b'P', b'N', b'G'))
                 x, y = struct.unpack(">ii", data[16:24])
             elif mime_type.lower() == "gif":
                 x, y = struct.unpack("<HH", data[6:10])
@@ -167,7 +167,6 @@ class PlotBlock(ImgBlock):
             # empty plot, disable bbox_inches to that savefig still works
             bbox_inches = None
 
-        print(type(img_data))
         figure.savefig(img_data, dpi=_PLOT_DPI, format=_PLOT_FORMAT,
                        bbox_extra_artists=legends, bbox_inches=bbox_inches)
 

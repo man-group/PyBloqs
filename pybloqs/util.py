@@ -43,8 +43,8 @@ def camelcase(value):
     :param value: Underscore separated string
     :return: CamelCased string
     """
-    rest = value.split("_")
-    return rest[0] + "".join(word.title() for word in rest[1:])
+    rest = value.split(b"_")
+    return rest[0] + b"".join(word.title() for word in rest[1:])
 
 
 def underscorecase(camelcased):

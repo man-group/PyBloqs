@@ -222,7 +222,7 @@ class Plot(BaseBlock):
         data = [list(index) + [value] for index, value in list(np.ndenumerate(data))]
 
         if switch_zy:
-            for i in xrange(len(data)):
+            for i in six.moves.range(len(data)):
                 tmp = data[i][-1]
                 data[i][-1] = data[i][-2]
                 data[i][-2] = tmp
@@ -251,7 +251,7 @@ class Plot(BaseBlock):
                 y_axes = chart_cfg.y_axis
 
                 # Set the default on all y axes
-                for i in xrange(len(y_axes)):
+                for i in six.moves.range(len(y_axes)):
                     y_axes[i] = y_axes[i].inherit(base_cfg)
 
             return chart_cfg
@@ -432,9 +432,9 @@ class Plot(BaseBlock):
             stream.write(b"true" if value else b"false")
         elif isinstance(value, (int, long, float, np.int, np.float, np.number)):
             if np.isnan(value):
-                stream.write(b'null')
+                stream.write(b"null")
             elif np.isinf(value):
-                stream.write(b'null')
+                stream.write(b"null")
             else:
                 stream.write(str(value).encode('utf-8'))
         elif isinstance(value, str):
@@ -453,7 +453,7 @@ class Plot(BaseBlock):
 
             # Merge DFrame into a single list of lists
             merged = []
-            for i in xrange(len(labels)):
+            for i in six.moves.range(len(labels)):
                 label = labels[i]
                 ndval = values[i]
 
@@ -468,7 +468,7 @@ class Plot(BaseBlock):
         elif hasattr(value, "write_jscript"):
             value.write_jscript(stream)
         elif value is None:
-            stream.write("null")
+            stream.write(b"null")
         else:
             raise ValueError("Unhandled config item type " + str(type(value)))
 
@@ -483,8 +483,9 @@ class Plot(BaseBlock):
                 stream.write(b",")
 
             key, value = item
+            key = key.encode('utf-8')
             # camelCase the key as appropriate
-            stream.write(camelcase(key).encode('utf-8') + b":")
+            stream.write(camelcase(key) + b":")
             self._write_value(stream, value)
         stream.write(b"}")
 
