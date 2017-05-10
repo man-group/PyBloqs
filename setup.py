@@ -163,7 +163,7 @@ class PyTest(TestCommand):
 
 setup(
     name="pybloqs",
-    version="1.1.0",
+    version="1.1.1",
     author="Man AHL Technology",
     author_email="ManAHLTech@ahl.com",
     description="Data Visualization and Report Building",
@@ -207,6 +207,7 @@ setup(
     },
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_data={"pybloqs.static": ["*.js",
+                                     "css/*.css",
                                      "css/pybloqs_default/main.css"],
                   "pybloqs.jinja": ["table.html"]}
 )
