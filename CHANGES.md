@@ -18,3 +18,10 @@ Changelog
 ### 1.0.3 (2017-04-26)
 
   * Bugfix: Import of urlparse corrected, fixes Block.show() .
+
+### 1.1.0 (2017-05-10)
+
+  * jQuery DataTables support.
+  * HTML anchors.
+  * Bugfix: Width of HTML-body no longer hard-coded.
+  

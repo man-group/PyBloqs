@@ -146,6 +146,7 @@ Contributors from AHL Tech team:
  * [Barry Fitzgerald](https://github.com/pablojim)
  * [Wilfred Hughes](https://github.com/wilfred)
  * [James Munro](https://github.com/jamesmunro)
+ * [Bogdan Cozmaciuc](https://github.com/cozmacib)
  * ... and many others ...
 
 Contributions welcome!
