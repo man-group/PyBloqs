@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 
 from pybloqs.block.image import ImgBlock
 from pybloqs.block.wrap import Box, Paragraph

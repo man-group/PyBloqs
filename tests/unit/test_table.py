@@ -38,7 +38,7 @@ def test_HTMLJinjaTableBlock_constructor_df_formatter(mock_formatter):
 
 def test_HTMLJinjaTableBlock_join_css_substrings():
     table = abt.HTMLJinjaTableBlock(df)
-    res = table._join_css_substrings(['a', 'b'])
+    res = table._join_css_substrings(['a', 'b'], 'style')
     assert res == 'style="a; b"'
 
 
@@ -100,7 +100,7 @@ def test__aggregate_css_formatters_args():
     formatter = abtf.TableFormatter()
     formatter.dummy_function = MagicMock(side_effect=lambda x: dummy_css + x)
     table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
-    res = table._aggregate_css_formatters('dummy_function', dummy_parameter)
+    res = table._aggregate_css_formatters('dummy_function', fmt_args=[dummy_parameter])
     assert res == 'style="' + dummy_css + dummy_parameter + '"'
     formatter.dummy_function.assert_called_once_with(dummy_parameter)
 

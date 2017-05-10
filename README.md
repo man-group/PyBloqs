@@ -46,7 +46,9 @@ pip install --install-option="--highcharts=~/node_modules/highcharts/,~/node_mod
 
 
 - Libraries bundled with PyBloqs: 
-  - jsinflate.js (https://github.com/augustl/js-inflate; MIT License):
+  - jsinflate.js (https://github.com/augustl/js-inflate; MIT License)
+  - jquery.js (https://jquery.com; MIT License)
+  - jquery-DataTables.js (https://datatables.net; MIT License)
 
 
 - wkhtmltopdf/wkhtmltoimage (http://wkhtmltopdf.org/; LGPLv3):

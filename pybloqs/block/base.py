@@ -67,7 +67,7 @@ class BaseBlock(object):
 
     def __init__(self, title=None, title_level=3, title_wrap=False,
                  width=None, height=None, inherit_cfg=True,
-                 styles=None, classes=(), **kwargs):
+                 styles=None, classes=(), anchor=None, **kwargs):
         self._settings = Cfg(title=title,
                              title_level=title_level,
                              title_wrap=title_wrap,
@@ -77,7 +77,8 @@ class BaseBlock(object):
                              width=width,
                              height=height,
                              classes=["pybloqs"] + ([classes] if isinstance(classes, str) else list(classes)))
-
+        # Anchor should not be inherited, so keep outside of Cfg
+        self._anchor = anchor
         self._id = str(uuid.uuid4())
 
     def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None, pdf_page_size="A4"):
@@ -106,11 +107,6 @@ class BaseBlock(object):
         script_block_core.write(head)
 
         if static_output:
-            # Set styling specific to non-HTML output
-            if isinstance(pdf_page_size, basestring):
-                pdf_page_size = _page_width[pdf_page_size]
-            body["style"] = cfg_to_css_string(Cfg(margin="0 auto;", width="{:d}mm".format(int(pdf_page_size))))
-
             # Add the load wait poller if there are any JS resources
             js_elem(body, "var loadWaitPoller=runWaitPoller();")
 
@@ -185,13 +181,19 @@ class BaseBlock(object):
 
         if not is_html:
 
-            cmd = ["--debug-javascript"]
+            cmd = ["--no-stop-slow-scripts", "--debug-javascript", "--javascript-delay", str(java_script_delay)]
 
             if fmt.endswith("pdf"):
-                cmd.extend(["--page-size", pdf_page_size])
+                if pdf_page_size is not None:
+                    cmd.extend(["--page-size", pdf_page_size])
                 cmd.extend(["--orientation", orientation])
                 if pdf_zoom != 1:
                     cmd.extend(["--zoom", str(pdf_zoom)])
+
+                if pdf_auto_shrink:
+                    cmd.append("--enable-smart-shrinking")
+                else:
+                    cmd.append("--disable-smart-shrinking")
 
                 if header_block is not None:
                     header_file = str_base(hash(header_block._id)) + ".html"
@@ -378,8 +380,8 @@ class BaseBlock(object):
         else:
             container = parent
 
+        self._write_anchor(container)
         self._write_title(container)
-
         self._write_contents(container, actual_cfg, id_gen, resource_deps=resource_deps, static_output=static_output)
 
     def _write_container_attrs(self, container, actual_cfg):
@@ -406,6 +408,15 @@ class BaseBlock(object):
             title = append_to(container, "H%s" % self._settings.title_level,
                               style="white-space: %s" % ("normal" if self._settings.title_wrap else "nowrap"))
             title.string = self._settings.title
+
+    def _write_anchor(self, container):
+        """
+        Write HTML anchor for linking within page
+
+        :param container: Container element.
+        """
+        if self._anchor is not None:
+            append_to(container, "a", name=self._anchor)
 
     def _write_contents(self, container, actual_cfg, id_gen, resource_deps=None, static_output=None):
         """
