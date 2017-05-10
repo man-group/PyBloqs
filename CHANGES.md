@@ -24,4 +24,8 @@ Changelog
   * jQuery DataTables support.
   * HTML anchors.
   * Bugfix: Width of HTML-body no longer hard-coded.
+
+### 1.1.1 (2017-05-10)
+
+  * Bugfix: Static data including DataTables CSS.
   
