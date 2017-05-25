@@ -176,8 +176,8 @@ class PlotBlock(ImgBlock):
 
         plt_width, plt_height = figure.get_size_inches()
 
-        width = width or "%.0fin" % plt_width
-        height = height or "%.0fin" % plt_height
+        width = width or "{:0.3f}in".format(plt_width)
+        height = height or "{:0.3f}in".format(plt_height)
 
         if close_plot:
             plt.close(figure)
