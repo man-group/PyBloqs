@@ -28,4 +28,9 @@ Changelog
 ### 1.1.1 (2017-05-10)
 
   * Bugfix: Static data including DataTables CSS.
-  
+
+### 1.1.2 (2017-06-2)
+
+  * Bugfix: Image size for Matplotlib figure no longer truncated to whole number.
+  * Updated download path for wkhtmltopdf in CI setup.
+    
