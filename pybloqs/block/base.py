@@ -250,15 +250,15 @@ class BaseBlock(object):
         :return: Path to the block file.
         """
         file_name = str_base(hash(self._id)) + "." + fmt
-        file_path = self.publish(os.path.join(user_config["tmp_html_dir"], file_name),
+        file_path = self.publish(os.path.expanduser(os.path.join(user_config["tmp_html_dir"], file_name)),
                                  header_block=header_block, footer_block=footer_block)
 
         try:
             url_base = user_config["public_dir"]
         except KeyError:
-            path = file_path
+            path = os.path.expanduser(file_path)
         else:
-            path = urljoin(url_base, user_config["tmp_html_dir"] + "/" + file_name)
+            path = urljoin(url_base, os.path.expanduser(user_config["tmp_html_dir"] + "/" + file_name))
 
         webbrowser.open_new_tab(path)
 

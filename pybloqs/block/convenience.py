@@ -1,15 +1,18 @@
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
+import collections
+
+_block_types = dict()
 
 
-_block_types = list()
+def add_block_types(objects, block_cls):
+    if not isinstance(objects, collections.Iterable):
+        objects = [objects]
+    for o in objects:
+        _block_types[o] = block_cls
 
 
-def add_block_types(types, block_cls):
-    _block_types.append((types, block_cls))
-
-
-#noinspection PyPep8Naming
+# noinspection PyPep8Naming
 def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cfg=True, **kwargs):
     """
     Constructs a composable layout element that will be rendered automatically by
@@ -44,9 +47,10 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
     :return: A block instance.
     """
     block_cls = None
-    for types, cls in _block_types:
-        if isinstance(contents, types):
-            block_cls = cls
+    # Need to loop to catch inherited classes as well
+    for key, value in _block_types.iteritems():
+        if isinstance(contents, key):
+            block_cls = value
             break
 
     # Try some additional transformations if no suitable mapping found
