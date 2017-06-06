@@ -33,4 +33,9 @@ Changelog
 
   * Bugfix: Image size for Matplotlib figure no longer truncated to whole number.
   * Updated download path for wkhtmltopdf in CI setup.
-    
+ 
+### 1.1.3 (2017-06-6)
+
+  * Bugfix: Expansion of user home directory for show().
+  * Bugfix: Flexible definition of default type handling for Block() that allows updating.
+ 
