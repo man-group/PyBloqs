@@ -181,10 +181,15 @@ setup(
         "lxml",
         "pyyaml",
         "jinja2",
-        "sphinx",
-        "nbsphinx",
-        "ipython[notebook]",
+
     ],
+    extras_require={
+        "docs_and_notebook": [
+            "sphinx",
+            "nbsphinx",
+            "ipython[notebook]",
+        ],
+    },
     tests_require=[
         "mock",
         "pytest",

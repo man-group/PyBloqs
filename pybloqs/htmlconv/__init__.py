@@ -1,7 +1,7 @@
 import os
-import sys
 import subprocess
-from pkg_resources import resource_filename
+import sys
+
 
 _CONF_PATH = os.path.join(sys.exec_prefix, "conf")
 
@@ -52,4 +52,3 @@ def htmlconv(html_string=None, fmt="pdf", toc=True, tool_args=(), input_file=Non
 
     # Return the raw output if no output file was provided
     return output, errors
-
