@@ -38,4 +38,8 @@ Changelog
 
   * Bugfix: Expansion of user home directory for show().
   * Bugfix: Flexible definition of default type handling for Block() that allows updating.
- 
+
+### 1.1.4 (2017-06-22)
+
+  * Bugfix: When applying operator on rows or columns (e.g. in totals row), replace nan with zero.
+  
