@@ -1,12 +1,12 @@
 from collections import namedtuple
+import datetime
 import itertools
 import numbers
 from six import iteritems, string_types
 
-import pybloqs.block.colors as colors
 import numpy as np
 import pandas as pd
-import datetime
+import pybloqs.block.colors as colors
 
 
 OP_SUM = np.sum
@@ -570,6 +570,7 @@ class FmtAppendTotalsRow(TableFormatter):
             columns = self.total_columns
         if self.operator is not OP_NONE:
             last_row = self.operator(df[df.applymap(np.isreal)])
+            last_row = last_row.fillna(0.)
             last_row[~last_row.index.isin(columns)] = ''
         else:
             last_row = pd.Series('', index=df.columns)
@@ -626,6 +627,7 @@ class FmtAppendTotalsColumn(TableFormatter):
             rows = self.total_rows
         if self.operator is not OP_NONE:
             new_column = self.operator(df[df.applymap(np.isreal)], axis=1)
+            new_column = new_column.fillna(0.)
             new_column[~new_column.index.isin(rows)] = ''
         else:
             new_column = pd.Series('', index=df.index)
@@ -699,6 +701,7 @@ class FmtExpandMultiIndex(TableFormatter):
                         else:
                             df_subset = df.loc[index_tuple[:level_i + 1]]
                             data_row = self.operator(df_subset[df_subset.applymap(np.isreal)])
+                            data_row = data_row.fillna(0.)
                             data_row[~data_row.index.isin(columns)] = ''
                     data_row.name = sub_index
                     data_row[ORG_ROW_NAMES] = index_tuple[:level_i + 1]
