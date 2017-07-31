@@ -1,3 +1,8 @@
 nbsphinx
 matplotlib
 ipython[notebook]
+pyyaml
+bs4
+markdown
+pandas
+matplotlib
