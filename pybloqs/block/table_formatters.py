@@ -314,7 +314,7 @@ class FmtFontsize(TableFormatter):
     """Set fontsize in table cells."""
 
     def __init__(self, fontsize, unit='px', rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtFontsize, self).__init__(rows, columns)
+        super(FmtFontsize, self).__init__(rows, columns, apply_to_header_and_index)
         self.fontsize = fontsize
         self.unit = unit
         return
@@ -682,33 +682,35 @@ class FmtExpandMultiIndex(TableFormatter):
         else:
             columns = self.total_columns
 
-        flat_df = pd.DataFrame(columns=df.columns)
+        flat_row_list = []
         n_ix_levels = len(df.index.levels)
 
         # For each row compare index tuple to previous one and see if it changed on any level.
         previous_tuple = [''] * n_ix_levels
-        for index_tuple in df.index:
+        for level_k, index_tuple in enumerate(df.index):
             for level_i, sub_index in enumerate(index_tuple):
                 if index_tuple[:level_i + 1] != previous_tuple[:level_i + 1]:
                     if level_i == n_ix_levels - 1:
                         # If we are on lowest level, add entire row to flat_df
-                        data_row = df.loc[index_tuple]
+                        data_rows = df.iloc[[level_k], :]
                     else:
                         # If we are on higher level, add row filled with operator on lower level data
                         if self.operator is OP_NONE:
                             # For operator None fill row with empty string for each column
-                            data_row = pd.Series('', index=df.columns)
+                            data_rows = pd.DataFrame('', columns=df.columns, index=[sub_index])
                         else:
                             df_subset = df.loc[index_tuple[:level_i + 1]]
-                            data_row = self.operator(df_subset[df_subset.applymap(np.isreal)])
-                            data_row = data_row.fillna(0.)
-                            data_row[~data_row.index.isin(columns)] = ''
-                    data_row.name = sub_index
-                    data_row[ORG_ROW_NAMES] = index_tuple[:level_i + 1]
-                    flat_df = flat_df.append(data_row)
+                            data_rows = self.operator(df_subset[df_subset.applymap(np.isreal)]).to_frame().T
+                            data_rows = data_rows.fillna(0.)
+                            data_rows.loc[:, ~data_rows.columns.isin(columns)] = ''
+                    n_rows = len(data_rows)
+                    data_rows.index = [sub_index] * n_rows
+                    data_rows.loc[:, ORG_ROW_NAMES] = pd.Series([index_tuple[:level_i + 1]], index=data_rows.index)
+                    flat_row_list.append(data_rows)
                     # Need to address index_level with i instead of sub_index, because sub_index can repeat many times.
-                    self.index_level.append(level_i)
+                    self.index_level += [level_i] * n_rows
             previous_tuple = index_tuple
+        flat_df = pd.concat(flat_row_list)
         flat_df.index.name = ''
         return flat_df
 
