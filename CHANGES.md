@@ -42,4 +42,8 @@ Changelog
 ### 1.1.4 (2017-06-22)
 
   * Bugfix: When applying operator on rows or columns (e.g. in totals row), replace nan with zero.
-  
+ 
+### 1.1.5 (2017-08-22)
+
+  * Bugfix: Multi-index formatter can now digest DataFrame with nun-unique multi-index.
+  * Bugfix: ReadTheDocs autodoc build fixed.
