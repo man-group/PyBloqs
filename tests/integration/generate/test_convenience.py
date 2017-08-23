@@ -15,7 +15,7 @@ def test_string():
 
 @assert_report_generated
 def test_unicode_string():
-    return Block(u"Hello World!", title=u"Salutations")
+    return Block(u"Hello £&ö World!", title=u"Salutations")
 
 
 @assert_report_generated
