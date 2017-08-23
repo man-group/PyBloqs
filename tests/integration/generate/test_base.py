@@ -1,9 +1,10 @@
 import pandas as pd
+from pybloqs.block.base import HRule
+from pybloqs.block.text import Raw
 import pybloqs.plot as pbp
 
-from pybloqs.block.text import Raw
-from pybloqs.block.base import HRule
 from .generation_framework import assert_report_generated
+
 
 HELLO_WORLD = Raw("Hello World!", title="A Title")
 
@@ -53,3 +54,8 @@ def test_save_pdf_zoom():
 @assert_report_generated(fmt="pdf")
 def test_save_pdf_dynamic_content():
     return _create_dynamic_content()
+
+
+def test_meta_tags_in_head():
+    output = Raw(u"test").render_html()
+    assert 'charset="utf8"' in output

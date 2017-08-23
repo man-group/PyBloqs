@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 
 from pybloqs.block.convenience import Block
@@ -11,6 +12,11 @@ panel = pd.WidePanel({1: df, 2: df})
 @assert_report_generated
 def test_string():
     return Block("Hello World!", title="Salutations")
+
+
+@assert_report_generated
+def test_unicode_string():
+    return Block(u"Hello £&ö World!", title=u"Salutations")
 
 
 @assert_report_generated

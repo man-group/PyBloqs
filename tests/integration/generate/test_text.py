@@ -3,8 +3,13 @@ from .generation_framework import assert_report_generated
 
 
 @assert_report_generated
-def test_raw():
+def test_raw_plain():
     return Raw("Hello World!")
+
+
+@assert_report_generated
+def test_raw_unicode():
+    return Raw(u"Hello World!")
 
 
 @assert_report_generated

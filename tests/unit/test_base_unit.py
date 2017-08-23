@@ -1,9 +1,9 @@
+from mock import patch, ANY, mock_open
 import os
-import pybloqs.config as config
-import pybloqs.block.base as bbase
-
-from mock import patch, MagicMock, ANY, mock_open
 import pytest
+
+import pybloqs.block.base as bbase
+import pybloqs.config as config
 
 
 def test_publish_block():
@@ -35,8 +35,8 @@ def test_show_block_with_env_var():
     mock_url = "http://imgur.com/gallery/YLvFFS5/"
 
     with patch.dict(config.user_config, {"tmp_html_dir": mock_url}, clear=True) as _, \
-                patch("webbrowser.open_new_tab") as tab, \
-                patch.object(b, "publish") as pub:
+            patch("webbrowser.open_new_tab") as tab, \
+            patch.object(b, "publish") as pub:
         pub.return_value = "dummy"
 
         b.show()
