@@ -47,3 +47,8 @@ Changelog
 
   * Bugfix: Multi-index formatter can now digest DataFrame with nun-unique multi-index.
   * Bugfix: ReadTheDocs autodoc build fixed.
+  
+### 1.1.6 (2017-08-23)
+
+  * Bugfix: Unicode meta tag set in html output and unicode strings working wit Raw() block.
+ 
