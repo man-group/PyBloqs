@@ -1,6 +1,8 @@
+import collections
+
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
-import collections
+
 
 _block_types = dict()
 
@@ -55,7 +57,7 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
 
     # Try some additional transformations if no suitable mapping found
     if block_cls is None:
-        if isinstance(contents, str):
+        if isinstance(contents, basestring):
             block_cls = Raw
         elif isinstance(contents, BaseBlock):
             # If there is no title, there is no point to wrap the existing block

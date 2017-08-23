@@ -9,6 +9,7 @@ from pybloqs.html import parse
 
 
 class Raw(BaseBlock):
+
     def __init__(self, contents, dedent=True, **kwargs):
         """
         Writes out the content as raw text or HTML.
@@ -21,7 +22,7 @@ class Raw(BaseBlock):
         """
         super(Raw, self).__init__(**kwargs)
 
-        if not isinstance(contents, str):
+        if not isinstance(contents, basestring):
             raise ValueError("Expected string content type but got %s", type(contents))
 
         if dedent:

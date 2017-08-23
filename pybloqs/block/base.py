@@ -1,17 +1,16 @@
 import os
-import uuid
-import getpass
-from six.moves.urllib.parse import urljoin
-import webbrowser
 import tempfile
+import uuid
+import webbrowser
 
-from pybloqs.email import send_html_report
-from pybloqs.htmlconv import htmlconv
-from pybloqs.static import DependencyTracker, JScript, Css, script_inflate, script_block_core, register_interactive
-from pybloqs.util import Cfg, cfg_to_css_string, str_base
 from pybloqs.config import user_config
-
+from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
+from pybloqs.htmlconv import htmlconv
+from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
+from pybloqs.util import Cfg, cfg_to_css_string, str_base
+from six.moves.urllib.parse import urljoin
+
 
 try:
     from cStringIO import StringIO
@@ -89,6 +88,7 @@ class BaseBlock(object):
         # Render the contents
         html = root("html", doctype="html")
         head = append_to(html, "head")
+        head = append_to(head, "meta", charset='utf-8')
         body = append_to(html, "body")
 
         # Make sure that the main style sheet is always included
@@ -282,7 +282,7 @@ class BaseBlock(object):
         :param body_block: The block to use as the email body. The default behavior is
                           to use the current block.
         :param footer_text: string to be used in place of the default footer text
-        :param from_address: sender of the message. Defaults to user name. 
+        :param from_address: sender of the message. Defaults to user name.
             Can be overwritten in .pybloqs.cfg with yaml format: 'user_email_address: a@b.com'
         :param cc: cc recipient
         :param kwargs: Optional arguments to pass to `Block.save()`
