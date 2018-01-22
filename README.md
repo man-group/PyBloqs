@@ -109,13 +109,31 @@ report.save('report.pdf')
 
 ## Configuration
 
-You can specify per-user default parameters in a yaml-formatted file ~/.pybloqs.cfg:
+You can specify per-user default parameters in a yaml-formatted file ~/.pybloqs.cfg. This
+config file allows you to setup a call setup and login sequence against an smtplib.SMTP (https://docs.python.org/2/library/smtplib.html#smtplib.SMTP)
+object. The following works for Google gmail - more details here (https://support.google.com/a/answer/176600?hl=en)
 ```
-user_email_address: some@email.com  # Default: user name 
-public_dir: /some/dir               # Default: /tmp
-tmp_html_dir: /some/dir             # Default: /tmp
-smtp_server: url.for.email.server   # Default: ''
+smtp_kwargs:
+  host: smtp.gmail.com
+  port: 587
+smtp_pre_login_calls:
+- !!python/tuple
+  - ehlo
+  - {}
+- !!python/tuple
+  - starttls
+  - {}
+- !!python/tuple
+  - ehlo
+  - {}
+smtp_login:
+  user: me@gmail.com
+  password: a_secret
+public_dir: /tmp
+tmp_html_dir: /tmp
+user_email_address: me@gmail.com
 ```
+
 
 ## Documentation
 

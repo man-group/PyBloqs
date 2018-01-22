@@ -46,7 +46,13 @@ def send(message, recipients):
     if not message["To"]:
         message["To"] = ",".join(recipients)
 
-    s = smtplib.SMTP(user_config["smtp_server"])
+    s = smtplib.SMTP(**user_config["smtp_kwargs"])
+    if 'smtp_pre_login_calls' in user_config:
+        smtp_pre_login_calls = user_config['smtp_pre_login_calls']
+        for method, kwargs in smtp_pre_login_calls:
+            getattr(s, method)(**kwargs)
+    if 'smtp_login' in user_config:
+        s.login(**user_config['smtp_login'])
     s.sendmail(message["From"], recipients, message.as_string())
     s.quit()
 
