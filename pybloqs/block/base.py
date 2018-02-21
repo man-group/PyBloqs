@@ -266,7 +266,8 @@ class BaseBlock(object):
 
     def email(self, title="", recipients=(user_config["user_email_address"],),
               footer_text=None, header_block=None, footer_block=None,
-              from_address=None, cc=None, attachments=None, **kwargs):
+              from_address=None, cc=None, bcc=None, attachments=None,
+              convert_to_ascii=True, **kwargs):
         """
         Send the rendered blocks as email. Each output format chosen will be added as an
         attachment.
@@ -285,6 +286,8 @@ class BaseBlock(object):
         :param from_address: sender of the message. Defaults to user name.
             Can be overwritten in .pybloqs.cfg with yaml format: 'user_email_address: a@b.com'
         :param cc: cc recipient
+        :param bcc: bcc recipient
+        :param convert_to_ascii: bool to control convertion of html email to ascii or to leave in current format
         :param kwargs: Optional arguments to pass to `Block.save()`
         """
         if from_address is None:
@@ -293,7 +296,7 @@ class BaseBlock(object):
         # The email body needs to be static without any dynamic elements.
         email_html = self.render_html(header_block=header_block, footer_block=footer_block)
 
-        send_html_report(email_html, recipients, subject=title, attachments=attachments, From=from_address, Cc=cc)
+        send_html_report(email_html, recipients, subject=title, attachments=attachments, From=from_address, Cc=cc, Bcc=bcc, convert_to_ascii=convert_to_ascii)
 
     def to_static(self):
         return self._visit(lambda block: block._to_static())
