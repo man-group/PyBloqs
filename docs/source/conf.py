@@ -369,4 +369,4 @@ import matplotlib
 matplotlib.use('Agg')
 # Create module documentation from docstrings
 import sphinx.apidoc as autodoc
-autodoc.main(['', '-o', '../../docs/source', '../../pybloqs'])
+autodoc.main(['-o', '../../docs/source', '../../pybloqs'])
