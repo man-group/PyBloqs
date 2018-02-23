@@ -367,6 +367,10 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 import matplotlib
 matplotlib.use('Agg')
+
+# TODO: Once ReadTheDocs switches to sphinx>=1.7.0 this will be required (and unpinning version in circle.yml)
 # Create module documentation from docstrings
+#import sphinx.ext.apidoc as autodoc
+#autodoc.main(['-o', '../../docs/source', '../../pybloqs'])
 import sphinx.apidoc as autodoc
-autodoc.main(['-o', '../../docs/source', '../../pybloqs'])
+autodoc.main(['', '-o', '../../docs/source', '../../pybloqs'])
