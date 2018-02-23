@@ -57,7 +57,7 @@ def send(message, recipients):
     s.quit()
 
 
-def _htmlimages2mime(dom, message=None):
+def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
     """
     Takes HTML dom object and constructs email object (MIMEMultipart)
     images referenced in html <img src=c:/test.png /> are attached as MIMEImage and
@@ -67,6 +67,7 @@ def _htmlimages2mime(dom, message=None):
     Returns - MIMEMultipart object
     :param dom: dom of the html message
     :param message: MIMEMultipart object (new instance created if None)
+    :param convert_to_ascii: bool convert html format to ascii
     """
     # Create MIME
     if not message:
@@ -79,7 +80,7 @@ def _htmlimages2mime(dom, message=None):
     # replace image paths with embedded images
     for img_tag in dom.getElementsByTagName("img"):
         src = img_tag.getAttribute("src")
-        # Embedded images need speacial treatment
+        # Embedded images need special treatment
         if src.startswith("data:image"):
             name = "%s_embedded" % idx
 
@@ -111,12 +112,12 @@ def _htmlimages2mime(dom, message=None):
 
         idx += 1
 
-    # convert dom back to a unicode string and attach as us-ascii
-    # (amazingly outlook doesn't handle utf-8 html)
     html = dom.toxml()
-    if isinstance(html, unicode):
+    if isinstance(html, unicode) and convert_to_ascii:
         html = html.encode("us-ascii", "ignore")
-    message.attach(MIMEText(html, "html", "us-ascii"))
+        message.attach(MIMEText(html, "html", "us-ascii"))
+    else:
+        message.attach(MIMEText(html, "html", "utf-8"))
 
     for img_mime in img_mimes:
         message.attach(img_mime)
@@ -124,7 +125,7 @@ def _htmlimages2mime(dom, message=None):
     return message
 
 
-def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc=None):
+def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc=None, Bcc=None, convert_to_ascii=True):
     """
     Email html report and embed any images.
     Extract html title to email subject.
@@ -137,6 +138,8 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
     :param footer_text: string to be used in place of the default footer text
     :param From: from, sender of the message
     :param Cc: cc recipient
+    :param Bcc: bcc recipient
+    :param convert_to_ascii: bool convert html format to ascii
      """
     # create the dom for querying/modifying the html document
     parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
@@ -150,7 +153,7 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
                 break
 
     # create the message and embed any images
-    mime_msg = _htmlimages2mime(dom)
+    mime_msg = _set_email_mime_types(dom, convert_to_ascii=convert_to_ascii)
 
     if subject:
         mime_msg["Subject"] = subject
@@ -158,8 +161,13 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
     if From:
         mime_msg["From"] = From
 
+    mime_msg["To"] = ",".join(to)
+
     if Cc:
-        mime_msg["Cc"] = Cc
+        mime_msg["Cc"] = ",".join(Cc)
+
+    # set recipients to be union of to, cc'd and bcc'd addresses
+    to = sorted(set(to) | set(Cc or []) | set(Bcc or []))
 
     if attachments is not None:
         for attachment_spec in attachments:
@@ -171,7 +179,7 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
                 # Exclude the dot from the extension, gosh darn it!
                 fmt = fmt[1:]
                 if fmt == '':
-                    raise ValueError('Attachement file name has no extension:', attachment_spec)
+                    raise ValueError('Attachment file name has no extension:', attachment_spec)
 
                 with open(attachment_spec, "rb") as f:
                     content = f.read()
