@@ -165,6 +165,8 @@ Contributors from AHL Tech team:
  * [Wilfred Hughes](https://github.com/wilfred)
  * [James Munro](https://github.com/jamesmunro)
  * [Bogdan Cozmaciuc](https://github.com/cozmacib)
+ * [Dave Jepson](https://github.com/swedishhh)
+ * [Jason Matthews](https://github.com/jjbmatthews)
  * ... and many others ...
 
 Contributions welcome!

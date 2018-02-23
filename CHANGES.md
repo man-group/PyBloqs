@@ -52,3 +52,9 @@ Changelog
 
   * Bugfix: Unicode meta tag set in html output and unicode strings working wit Raw() block.
  
+### 1.1.7 (2018-02-23)
+
+  * Feature: More SMTP options
+  * Feature: UTF-8 email mime-type
+  * Feature: Allow BCC for email
+  
