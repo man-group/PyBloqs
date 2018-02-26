@@ -340,10 +340,8 @@ class FmtHighlightText(TableFormatter):
         css_substrings = [CSS_COLOR + colors.css_color(self.font_color)]
         if self.bold:
             css_substrings.append(CSS_BOLD)
-        else:
-            css_substrings.append('font-weight:normal')
         if self.italic:
-            css_substrings.append('font-style:italic')
+            css_substrings.append('font-style:italic;')
         return "; ".join(css_substrings)
 
 
