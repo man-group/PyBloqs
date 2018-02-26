@@ -298,7 +298,7 @@ def test_FmtHighlightText_bold():
 
     fmt = pbtf.FmtHighlightText(bold=False)
     res = fmt._create_cell_level_css(None)
-    assert 'font-weight:bold' not in res
+    assert 'font-weight:normal' in res
 
 
 def test_FmtHighlightText_italic():
