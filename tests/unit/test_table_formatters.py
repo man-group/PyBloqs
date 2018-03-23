@@ -331,6 +331,12 @@ def test_FmtBold():
     assert res == pbtf.CSS_BOLD
 
 
+@pytest.mark.parametrize('apply_to_header_and_index', [True, False])
+def test_test_FmtBold_headerandindex(apply_to_header_and_index):
+    fmt = pbtf.FmtBold(apply_to_header_and_index=apply_to_header_and_index)
+    assert fmt.apply_to_header_and_index == apply_to_header_and_index
+
+
 def test_FmtAlignCellContents():
     fmt = pbtf.FmtAlignCellContents()
     res = fmt._create_cell_level_css(None)
@@ -392,6 +398,12 @@ def test_FmtStripeBackground():
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.RED))
 
 
+@pytest.mark.parametrize('apply_to_header_and_index', [True, False])
+def test_FmtStripeBackground_headerandindex(apply_to_header_and_index):
+    fmt = pbtf.FmtStripeBackground(apply_to_header_and_index=apply_to_header_and_index)
+    assert fmt.apply_to_header_and_index == apply_to_header_and_index
+
+
 def test_FmtAlignTable():
     fmt = pbtf.FmtAlignTable('center')
     res = fmt._create_table_level_css()
@@ -404,6 +416,12 @@ def test_FmtAlignTable():
     fmt = pbtf.FmtAlignTable('left')
     res = fmt._create_table_level_css()
     assert pbtf.CSS_MARGIN_RIGHT in res
+
+
+@pytest.mark.parametrize('apply_to_header_and_index', [True, False])
+def test_FmtAlignTable(apply_to_header_and_index):
+    fmt = pbtf.FmtAlignTable('center', apply_to_header_and_index=apply_to_header_and_index)
+    assert fmt.apply_to_header_and_index == apply_to_header_and_index
 
 
 @pytest.mark.xfail(raises=ValueError)
