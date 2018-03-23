@@ -331,6 +331,12 @@ def test_FmtBold():
     assert res == pbtf.CSS_BOLD
 
 
+@pytest.mark.parametrize('apply_to_header_and_index', [True, False])
+def test_test_FmtBold_headerandindex(apply_to_header_and_index):
+    fmt = pbtf.FmtBold(apply_to_header_and_index=apply_to_header_and_index)
+    assert fmt.apply_to_header_and_index == apply_to_header_and_index
+
+
 def test_FmtAlignCellContents():
     fmt = pbtf.FmtAlignCellContents()
     res = fmt._create_cell_level_css(None)
@@ -392,18 +398,28 @@ def test_FmtStripeBackground():
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.RED))
 
 
-def test_FmtAlignTable():
-    fmt = pbtf.FmtAlignTable('center')
-    res = fmt._create_table_level_css()
-    assert pbtf.CSS_MARGIN_LEFT in res and pbtf.CSS_MARGIN_RIGHT in res
+def test_FmtStripeBackground_headerandindex():
+    fmt = pbtf.FmtStripeBackground(first_color=colors.BLACK, second_color=colors.RED, header_color=colors.GREEN)
+    # Check header color is applied
+    data = FormatterData(0., pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME, df)
+    res = fmt._create_cell_level_css(data)
+    assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.GREEN))
 
-    fmt = pbtf.FmtAlignTable('right')
-    res = fmt._create_table_level_css()
-    assert pbtf.CSS_MARGIN_LEFT in res
+    # Check that first line is filled with first_color
+    data = FormatterData(0., 'a', 'aa', df)
+    res = fmt._create_cell_level_css(data)
+    assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.BLACK))
 
-    fmt = pbtf.FmtAlignTable('left')
-    res = fmt._create_table_level_css()
-    assert pbtf.CSS_MARGIN_RIGHT in res
+    # Check that second line is filled with second color
+    data = FormatterData(0., 'b', pbtf.INDEX_COL_NAME, df)
+    res = fmt._create_cell_level_css(data)
+    assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.RED))
+
+
+@pytest.mark.parametrize('apply_to_header_and_index', [True, False])
+def test_FmtAlignTable(apply_to_header_and_index):
+    fmt = pbtf.FmtAlignTable('center', apply_to_header_and_index=apply_to_header_and_index)
+    assert fmt.apply_to_header_and_index == apply_to_header_and_index
 
 
 @pytest.mark.xfail(raises=ValueError)
@@ -468,6 +484,12 @@ def test_FmtHeatmap_cell_css():
     data = FormatterData(0.1, None, None, df_pn)
     res = fmt._create_cell_level_css(data)
     assert res == pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.WHITE)
+
+
+@pytest.mark.parametrize('apply_to_header_and_index', [True, False])
+def test_FmtHeatmap_headerandindex(apply_to_header_and_index):
+    fmt = pbtf.FmtHeatmap(apply_to_header_and_index=apply_to_header_and_index)
+    assert fmt.apply_to_header_and_index == apply_to_header_and_index
 
 
 def test_FmtAppendTotalsRow_modify_dataframe():

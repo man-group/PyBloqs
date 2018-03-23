@@ -364,7 +364,7 @@ class FmtBold(TableFormatter):
     """Set bold font in table cells."""
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtBold, self).__init__(rows, columns)
+        super(FmtBold, self).__init__(rows, columns, apply_to_header_and_index)
         return
 
     def _create_cell_level_css(self, data):
@@ -433,7 +433,7 @@ class FmtStripeBackground(TableFormatter):
 
     def __init__(self, first_color=colors.LIGHT_GREY, second_color=colors.WHITE, header_color=colors.WHITE,
                  rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtStripeBackground, self).__init__(rows, columns)
+        super(FmtStripeBackground, self).__init__(rows, columns, apply_to_header_and_index)
         self.first_color = colors.css_color(first_color)
         self.second_color = colors.css_color(second_color)
         self.header_color = colors.css_color(header_color)
@@ -457,7 +457,7 @@ class FmtAlignTable(TableFormatter):
     """Set table alignment on page. Possible alignment paramters: left, center, right."""
 
     def __init__(self, alignment, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtAlignTable, self).__init__(rows, columns)
+        super(FmtAlignTable, self).__init__(rows, columns, apply_to_header_and_index)
 
         if alignment == 'center':
             self.TABLE_CSS = CSS_MARGIN_LEFT + '; ' + CSS_MARGIN_RIGHT
