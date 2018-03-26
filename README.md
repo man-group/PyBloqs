@@ -167,6 +167,8 @@ Contributors from AHL Tech team:
  * [Bogdan Cozmaciuc](https://github.com/cozmacib)
  * [Dave Jepson](https://github.com/swedishhh)
  * [Jason Matthews](https://github.com/jjbmatthews)
+ * [Rhodri Richards](https://github.com/rhodrich)
+ * [Doug Bruce](https://github.com/douglasbruce88)
  * ... and many others ...
 
 Contributions welcome!

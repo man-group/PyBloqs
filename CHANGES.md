@@ -57,4 +57,10 @@ Changelog
   * Feature: More SMTP options
   * Feature: UTF-8 email mime-type
   * Feature: Allow BCC for email
+
+### 1.1.8 (2018-03-26)
+
+  * Bugfix: FmtHighlightText - explicitly set non-bold for column header
+  * Feature: Add page break example to documentation
+  * Bugfix: Pass `apply_to_header_and_index` to base class on all formatters
   
