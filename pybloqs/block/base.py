@@ -6,54 +6,18 @@ import webbrowser
 
 from six import BytesIO
 
-from pybloqs.config import user_config
+from pybloqs.config import user_config, ID_PRECISION
 from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
-from pybloqs.htmlconv import htmlconv
+from pybloqs.htmlconv import get_converter, html_converter
+
 from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
 from pybloqs.util import Cfg, cfg_to_css_string
 from six.moves.urllib.parse import urljoin
 
 
-# Valid page sizes with widths in mm
-_page_width = {
-    "A0": 841,
-    "A1": 594,
-    "A2": 420,
-    "A3": 297,
-    "A4": 210,
-    "A5": 148,
-    "A6": 105,
-    "A7": 74,
-    "A8": 52,
-    "A9": 37,
-    "B0": 1000,
-    "B1": 707,
-    "B2": 500,
-    "B3": 353,
-    "B4": 250,
-    "B5": 176,
-    "B6": 125,
-    "B7": 88,
-    "B8": 62,
-    "B9": 33,
-    "B10": 31,
-    "C5E": 163,
-    "Comm10E": 105,
-    "DLE": 110,
-    "Executive": 190.5,
-    "Folio": 210,
-    "Ledger": 431.8,
-    "Legal": 215.9,
-    "Letter": 215.9,
-    "Tabloid": 279.4
-}
-
-
 default_css_main = Css(os.path.join("css", "pybloqs_default", "main"))
 register_interactive(default_css_main)
-
-ID_PRECISION = 10
 
 
 class BaseBlock(object):
@@ -83,25 +47,52 @@ class BaseBlock(object):
     def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None):
         """Returns html output of the block
         :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
+        :param static_output: Passed down to _write_block. Will render static version of blocks which support this.
+        :param header_block: If not None, header is inlined into a HTML body as table.
+        :param footer_block: If not None, header is inlined into a HTML body as table.
         :return html-code of the block
         """
         # Render the contents
         html = root("html", doctype="html")
         head = append_to(html, "head")
-        head = append_to(head, "meta", charset='utf-8')
+        append_to(head, "meta", charset='utf-8')
+
         body = append_to(html, "body")
 
         # Make sure that the main style sheet is always included
         resource_deps = DependencyTracker(default_css_main)
-        if header_block is not None:
-            header_block._write_block(body, Cfg(), id_generator(), resource_deps=resource_deps,
-                                      static_output=static_output)
 
-        self._write_block(body, Cfg(), id_generator(), resource_deps=resource_deps, static_output=static_output)
+        # If header or footer are passed into this function, inline them in the following structure:
+        #
+        # <body>
+        # <table>
+        #    <thead><tr><td>Header html</td></tr></thead>
+        #    <tfoot><tr><td>Footer html</td></tr></tfoot>
+        #    <tbody><tr><td>Body html</td></tr></tbody>
+        # </table>
+        # </body>
+        if header_block is not None or footer_block is not None:
+            content_table = append_to(body, "table")
+            if header_block is not None:
+                header_thead = append_to(content_table, "thead")
+                header_tr = append_to(header_thead, "tr")
+                header_td = append_to(header_tr, "th")
+                header_block._write_block(header_td, Cfg(), id_generator(), resource_deps=resource_deps,
+                                          static_output=static_output)
 
-        if footer_block is not None:
-            footer_block._write_block(body, Cfg(), id_generator(), resource_deps=resource_deps,
-                                      static_output=static_output)
+            if footer_block is not None:
+                footer_tfoot = append_to(content_table, "tfoot", id='footer')
+                footer_tr = append_to(footer_tfoot, "tr")
+                footer_td = append_to(footer_tr, "td")
+                footer_block._write_block(footer_td, Cfg(), id_generator(), resource_deps=resource_deps,
+                                          static_output=static_output)
+
+            body_tbody = append_to(content_table, "tbody")
+            body_tr = append_to(body_tbody, "tr")
+            body_td = append_to(body_tr, "td")
+            self._write_block(body_td, Cfg(), id_generator(), resource_deps=resource_deps, static_output=static_output)
+        else:
+            self._write_block(body, Cfg(), id_generator(), resource_deps=resource_deps, static_output=static_output)
 
         script_inflate.write(head)
         script_block_core.write(head)
@@ -118,9 +109,9 @@ class BaseBlock(object):
         content = render(html.parent, pretty=pretty)
         return content
 
-    def save(self, filename=None, fmt=None, toc=False, pdf_zoom=1, pdf_page_size="A4", pdf_auto_shrink=True,
-             orientation='Portrait', header_block=None, header_spacing=5, footer_block=None,
-             footer_spacing=5, java_script_delay=200, **kwargs):
+    def save(self, filename=None, fmt=None, pdf_zoom=1, pdf_page_size=html_converter.A4, pdf_auto_shrink=True,
+             orientation=html_converter.PORTRAIT, header_block=None, header_spacing=5, footer_block=None,
+             footer_spacing=5, **kwargs):
         """
         Render and save the block. Depending on whether the filename or the format is
         provided, the content will either be written out to a file or returned as a string.
@@ -133,11 +124,14 @@ class BaseBlock(object):
                          - JPG
         :param fmt: Specifies the format of a temporary output file. When supplied, the filename
                     parameter must be omitted.
-        :param toc: Toggles the generation of Table of Contents.
-                    Note: currently supported for PDF output only.
-        :param pdf_zoom: The zooming to apply when rendering the page to PDF.
+        :param pdf_zoom: The zooming to apply when rendering the page.
         :param pdf_page_size: The page size to use when rendering the page to PDF.
-        :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size.
+        :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size (wkhtmltopdf only)
+        :param orientation: Either html_converter.PORTRAIT or html_converter.LANDSCAPE
+        :param header_block: Block to be used as header (and repeated on every page). Only used for PDF output.
+        :param header_spacing: Size of header block. Numbers are in mm. HTML sizes (e.g. '5cm') work in chrome_headless only.
+        :param footer_block: Block to be used as footer (and repeated on every page). Only used for PDF output.
+        :param footer_spacing: Size of header block. Numbers are in mm. HTML sizes (e.g. '5cm') work in chrome_headless only.
         :return: html filename
         """
         # Ensure that exactly one of filename or fmt is provided
@@ -168,55 +162,19 @@ class BaseBlock(object):
 
         if is_html:
             content = self.render_html(static_output=False, header_block=header_block, footer_block=footer_block)
-            html_filename = filename
+            with open(filename, "w") as f:
+                f.write(content)
         else:
-            content = self.render_html(static_output=True)
-            name = self._id[:ID_PRECISION] + ".html"
-            html_filename = os.path.join(tempdir, name)
-
-        # File with HTML content is needed either directly or as input for conversion
-        with open(html_filename, 'w', encoding='utf8') as f:
-            f.write(content)
-
-        if not is_html:
-
-            cmd = ["--no-stop-slow-scripts", "--debug-javascript", "--javascript-delay", str(java_script_delay)]
-
-            if fmt.endswith("pdf"):
-                if pdf_page_size is not None:
-                    cmd.extend(["--page-size", pdf_page_size])
-                cmd.extend(["--orientation", orientation])
-                if pdf_zoom != 1:
-                    cmd.extend(["--zoom", str(pdf_zoom)])
-
-                if pdf_auto_shrink:
-                    cmd.append("--enable-smart-shrinking")
-                else:
-                    cmd.append("--disable-smart-shrinking")
-
-                if header_block is not None:
-                    header_file = header_block._id[:ID_PRECISION] + ".html"
-                    file_path = header_block.publish(os.path.join(tempdir, header_file))
-                    cmd += ['--header-html', file_path]
-                    cmd += ['--header-spacing', str(header_spacing)]
-
-                if footer_block is not None:
-                    footer_file = footer_block._id[:ID_PRECISION] + ".html"
-                    file_path = footer_block.publish(os.path.join(tempdir, footer_file))
-                    cmd += ['--footer-html', file_path]
-                    cmd += ['--footer-spacing', str(footer_spacing)]
-
-            else:
-                # In case the output is an image (not html or pdf), set width to 0
-                # so that it fits the content exactly, without any extra margin.
-                cmd.extend(["--width", "0"])
-            # Add kwargs as additional htmlto... arguments
-            [cmd.extend([k, v]) for k, v in kwargs.items()]
-
-            htmlconv(input_file=html_filename, fmt=fmt, toc=toc, tool_args=cmd, output_file=filename)
-            return filename
-
-        return html_filename
+            converter = get_converter(fmt)
+            converter.htmlconv(self, filename,
+                               header_block=header_block, header_spacing=header_spacing,
+                               footer_block=footer_block, footer_spacing=footer_spacing,
+                               pdf_page_size=pdf_page_size,
+                               orientation=orientation,
+                               pdf_auto_shrink=pdf_auto_shrink,
+                               pdf_zoom=pdf_zoom,
+                               **kwargs)
+        return filename
 
     def publish(self, name, *args, **kwargs):
         """

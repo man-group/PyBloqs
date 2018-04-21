@@ -31,3 +31,4 @@ docs/source/pybloqs.rst
 docs/source/pybloqs.static.rst
 .vscode
 .pytest_cache
+node_modules

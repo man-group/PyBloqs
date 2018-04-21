@@ -9,7 +9,9 @@ user_config = {
     "tmp_html_dir": "/tmp",
     "smtp_kwargs": {
         "host": ""
-    }
+    },
+    "pdf_converter": "wkhtmltopdf",  # options: wkhtmltopdf or chrome_headless
+    "image_converter": "wkhtmltoimage",
 }
 
 try:
@@ -18,3 +20,6 @@ try:
         user_config.update(stored_config)
 except IOError:
     pass
+
+# Number of digits to use from the id hash
+ID_PRECISION = 10

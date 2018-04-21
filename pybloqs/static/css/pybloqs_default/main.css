@@ -7,3 +7,10 @@
     margin-left: 1em;
     font-family: monospace;
 }
+
+@media print {
+	#footer {
+	    position: fixed;
+	    bottom: 0;
+	}
+}
