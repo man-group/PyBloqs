@@ -189,6 +189,12 @@ setup(
             "nbsphinx",
             "ipython[notebook]",
         ],
+        "plotly":[
+            "plotly"
+        ],
+        "bokeh":[
+            "bokeh"
+        ]
     },
     tests_require=[
         "mock",
