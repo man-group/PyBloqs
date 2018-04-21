@@ -189,6 +189,9 @@ setup(
             "nbsphinx",
             "ipython[notebook]",
         ],
+        "plotly":[
+            "plotly"
+        ]
     },
     tests_require=[
         "mock",
