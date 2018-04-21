@@ -1,0 +1,78 @@
+defaults: &defaults
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+      COVERALLS_REPO_TOKEN: WnzSri2b3no9Fh0buPancG1krS4jVfQiG
+    steps:
+    - checkout
+    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+    # Restore the dependency cache
+    - restore_cache:
+        keys:
+        # This branch if available
+        - v1-dep-{{ .Branch }}-
+        # Default branch if not
+        - v1-dep-master-
+        # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
+        - v1-dep-
+    - run: wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+    - run: tar Jxvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+    - run: sudo apt-get install npm
+    - run: sudo apt-get install poppler-utils
+    - run: sudo apt-get install pandoc
+    - run: npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
+    - run:
+       name: Create and activate virtualenv
+       command: |
+         virtualenv ci
+         . ci/bin/activate
+         pip install jsmin
+         pip install six
+         pip install lxml
+         pip install coveralls
+         pip install -r docs/source/requirements.txt
+         python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv --wkhtmltopdf=wkhtmltox/bin
+         python setup.py load_highcharts  --highcharts=node_modules/highcharts/js,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv
+    # Save dependency cache
+    - save_cache:
+        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        paths:
+        - ~/ci
+        - ~/wkhtmltox
+    # Test
+    - run:
+       name: Run all tests
+       command: |
+         set -e
+         . ci/bin/activate
+         python setup.py test
+         python setup.py build_sphinx
+    - run: 
+       name: Get code coverage
+       command: |
+         . ci/bin/activate
+         coveralls
+    # Save test results
+    - store_test_results:
+        path: /tmp/circleci-test-results
+    # Save artifacts
+    - store_artifacts:
+        path: /tmp/circleci-artifacts
+    - store_artifacts:
+        path: /tmp/circleci-test-results
+
+
+version: 2
+jobs:
+  build_2_7:
+    working_directory: ~/manahl/PyBloqs_2_7
+    docker:
+    - image: circleci/python:2.7-jessie
+    <<: *defaults
+workflows:
+  version: 2
+  build_all:
+    jobs:
+      - build_2_7
