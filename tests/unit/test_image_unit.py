@@ -28,3 +28,7 @@ def test_create_PlotBlock_with_bbox_inches_none():
 def test_create_Plotly_with_invalid_data():
     with pytest.raises(ValueError):
         PlotlyPlotBlock(pd.Series([1, 2, 3]).plot())
+
+def test_create_Bokeh_with_invalid_data():
+    with pytest.raises(ValueError):
+        PlotlyPlotBlock(pd.Series([1, 2, 3]).plot())

@@ -1,8 +1,10 @@
 import os
 import pandas as pd
 import numpy as np
+from bokeh.models import ColumnDataSource, FactorRange
+from bokeh.plotting import figure
 
-from pybloqs.block.image import PlotBlock, ImgBlock, PlotlyPlotBlock
+from pybloqs.block.image import PlotBlock, ImgBlock, PlotlyPlotBlock, BokehPlotBlock
 from .generation_framework import assert_report_generated
 import plotly.graph_objs as go
 
@@ -48,3 +50,25 @@ def test_plotlyplot():
                                                 xaxis=dict(title='X-axis'), yaxis=dict(title='Y-axis')))
 
     return PlotlyPlotBlock(fig)
+
+@assert_report_generated
+def test_bokehplot():
+    fruits = ['Apples', 'Pears', 'Nectarines', 'Plums', 'Grapes', 'Strawberries']
+    years = ['2015', '2016', '2017']
+
+    data = {'fruits': fruits,
+            '2015': [2, 1, 4, 3, 2, 4],
+            '2016': [5, 3, 3, 2, 4, 6],
+            '2017': [3, 2, 4, 4, 5, 3]}
+
+    x = [(fruit, year) for fruit in fruits for year in years]
+    counts = sum(zip(data['2015'], data['2016'], data['2017']), ())  # like an hstack
+
+    source = ColumnDataSource(data=dict(x=x, counts=counts))
+
+    fig = figure(x_range=FactorRange(*x), plot_height=350, title="Fruit Counts by Year",
+               toolbar_location=None, tools="")
+
+    return BokehPlotBlock(fig)
+
+

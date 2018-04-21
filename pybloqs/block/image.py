@@ -13,6 +13,10 @@ from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
 from pybloqs.util import cfg_to_css_string
 
+from bokeh.resources import CDN
+from bokeh.embed import file_html
+from bokeh.plotting.figure import Figure as BokehFigure
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -220,6 +224,31 @@ class PlotlyPlotBlock(BaseBlock):
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
 
+class BokehPlotBlock(BaseBlock):
+
+    def __init__(self, contents, **kwargs):
+        """
+        Writes out the content as raw text or HTML.
+
+        :param contents: Raw text. Can contain arbitrary HTML.
+        :param kwargs: Optional styling arguments. The `style` keyword argument has special
+                       meaning in that it allows styling to be grouped as one argument.
+                       It is also useful in case a styling parameter name clashes with a standard
+                       block parameter.
+        """
+        super(BokehPlotBlock, self).__init__(**kwargs)
+
+        if not isinstance(contents, BokehFigure):
+            raise ValueError("Expected bokeh.plotting.figure.Figure type but got %s", type(contents))
+
+        self._contents = file_html(contents, CDN, "test")
+
+    def _process_raw_contents(self, contents):
+        return contents
+
+    def _write_contents(self, container, *args, **kwargs):
+        container.append(parse(self._contents))
 
 add_block_types(Artist, PlotBlock)
 add_block_types(PlotlyFigure, PlotlyPlotBlock)
+add_block_types(BokehFigure, BokehPlotBlock)
