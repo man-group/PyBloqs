@@ -6,7 +6,7 @@ import webbrowser
 from pybloqs.config import user_config
 from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
-from pybloqs.htmlconv import htmlconv
+from pybloqs.htmlconv import html_converter
 from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
 from pybloqs.util import Cfg, cfg_to_css_string, str_base
 from six.moves.urllib.parse import urljoin
@@ -118,9 +118,9 @@ class BaseBlock(object):
         content = render(html.parent, pretty=pretty)
         return content
 
-    def save(self, filename=None, fmt=None, toc=False, pdf_zoom=1, pdf_page_size="A4", pdf_auto_shrink=True,
-             pretty=True, orientation='Portrait', header_block=None, header_spacing=5, footer_block=None,
-             footer_spacing=5, java_script_delay=200, **kwargs):
+    def save(self, filename=None, fmt=None, pdf_zoom=1, pdf_page_size=html_converter.A4, pdf_auto_shrink=True,
+             pretty=True, orientation=html_converter.PORTRAIT, header_block=None, header_spacing=5, footer_block=None,
+             footer_spacing=5, **kwargs):
         """
         Render and save the block. Depending on whether the filename or the format is
         provided, the content will either be written out to a file or returned as a string.
@@ -133,13 +133,17 @@ class BaseBlock(object):
                          - JPG
         :param fmt: Specifies the format of a temporary output file. When supplied, the filename
                     parameter must be omitted.
-        :param toc: Toggles the generation of Table of Contents.
-                    Note: currently supported for PDF output only.
-        :param pdf_zoom: The zooming to apply when rendering the page to PDF.
+        :param pdf_zoom: The zooming to apply when rendering the page to PDF or image.
         :param pdf_page_size: The page size to use when rendering the page to PDF.
-        :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size.
+        :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size for PDF output.
         :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
-        :return: html filename
+        :param orientation: Either portrait or landscape, supported by some output converters
+        :param header_block: Block to display as (repeated) page header - if supported by converter.
+        :param header_spacing: Spacing between header and body in mm.
+        :param footer_block: Block to display as (repeated) page footer - if supported by converter.
+        :param footer_spacing: Spacing between body and footer in mm.
+        :param kwargs: Extra arguements passed down to converter tool.
+        :return: Output filename. If no filename specified, will generate new filename from hash.
         """
         # Ensure that exactly one of filename or fmt is provided
         if filename is None and fmt is None:
@@ -181,40 +185,28 @@ class BaseBlock(object):
 
         if not is_html:
 
-            cmd = ["--no-stop-slow-scripts", "--debug-javascript", "--javascript-delay", str(java_script_delay)]
-
-            if fmt.endswith("pdf"):
-                if pdf_page_size is not None:
-                    cmd.extend(["--page-size", pdf_page_size])
-                cmd.extend(["--orientation", orientation])
-                if pdf_zoom != 1:
-                    cmd.extend(["--zoom", str(pdf_zoom)])
-
-                if pdf_auto_shrink:
-                    cmd.append("--enable-smart-shrinking")
-                else:
-                    cmd.append("--disable-smart-shrinking")
-
-                if header_block is not None:
-                    header_file = str_base(hash(header_block._id)) + ".html"
-                    file_path = header_block.publish(os.path.join(tempdir, header_file))
-                    cmd += ['--header-html', file_path]
-                    cmd += ['--header-spacing', str(header_spacing)]
-
-                if footer_block is not None:
-                    footer_file = str_base(hash(footer_block._id)) + ".html"
-                    file_path = footer_block.publish(os.path.join(tempdir, footer_file))
-                    cmd += ['--footer-html', file_path]
-                    cmd += ['--footer-spacing', str(footer_spacing)]
-
+            if header_block is not None:
+                header_file = str_base(hash(header_block._id)) + ".html"
+                header_filename = header_block.publish(os.path.join(tempdir, header_file))
             else:
-                # In case the output is an image (not html or pdf), set width to 0
-                # so that it fits the content exactly, without any extra margin.
-                cmd.extend(["--width", "0"])
-            # Add kwargs as additional htmlto... arguments
-            [cmd.extend([k, v]) for k, v in kwargs.items()]
+                header_filename = None
 
-            htmlconv(input_file=html_filename, fmt=fmt, toc=toc, tool_args=cmd, output_file=filename)
+            if footer_block is not None:
+                footer_file = str_base(hash(footer_block._id)) + ".html"
+                footer_filename = footer_block.publish(os.path.join(tempdir, footer_file))
+            else:
+                footer_filename = None
+
+            converter = html_converter.get_converter(fmt,
+                                                     zoom=pdf_zoom,
+                                                     page_orientation=orientation,
+                                                     page_size=pdf_page_size,
+                                                     fit_to_page=pdf_auto_shrink)
+
+            converter.htmlconv(html_filename, filename,
+                               header_filename=header_filename, header_spacing=str(header_spacing),
+                               footer_filename=footer_filename, footer_spacing=str(footer_spacing),
+                               **kwargs)
             return filename
 
         return html_filename
@@ -296,7 +288,15 @@ class BaseBlock(object):
         # The email body needs to be static without any dynamic elements.
         email_html = self.render_html(header_block=header_block, footer_block=footer_block)
 
-        send_html_report(email_html, recipients, subject=title, attachments=attachments, From=from_address, Cc=cc, Bcc=bcc, convert_to_ascii=convert_to_ascii)
+        send_html_report(
+            email_html,
+            recipients,
+            subject=title,
+            attachments=attachments,
+            From=from_address,
+            Cc=cc,
+            Bcc=bcc,
+            convert_to_ascii=convert_to_ascii)
 
     def to_static(self):
         return self._visit(lambda block: block._to_static())

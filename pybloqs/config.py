@@ -9,7 +9,9 @@ user_config = {
     "tmp_html_dir": "/tmp",
     "smtp_kwargs": {
         "host": ""
-    }
+    },
+    "pdf_converter": "wkhtmltopdf",
+    "image_converter": "wkhtmltopdf",
 }
 
 try:

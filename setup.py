@@ -181,7 +181,7 @@ setup(
         "lxml",
         "pyyaml",
         "jinja2",
-
+        "attr"
     ],
     extras_require={
         "docs_and_notebook": [
