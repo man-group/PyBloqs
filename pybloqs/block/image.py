@@ -5,11 +5,17 @@ import matplotlib.pyplot as plt
 
 from matplotlib.artist import Artist
 from matplotlib.figure import Figure
+from plotly.graph_objs import Figure as PlotlyFigure
+from plotly.offline import plot as plotlyplot
 
-from pybloqs.html import append_to
+from pybloqs.html import append_to, parse
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
 from pybloqs.util import cfg_to_css_string
+
+from bokeh.resources import CDN
+from bokeh.embed import file_html
+from bokeh.plotting.figure import Figure as BokehFigure
 
 try:
     from cStringIO import StringIO
@@ -193,4 +199,50 @@ class PlotBlock(ImgBlock):
         return ImgBlock(self) if self._mime_type == "svg" else super(PlotBlock, self)._to_static()
 
 
+class PlotlyPlotBlock(BaseBlock):
+
+    def __init__(self, contents, **kwargs):
+        """
+        Writes out the content as raw text or HTML.
+
+        :param contents: Plotly graphics object figure.
+        :param kwargs: Optional styling arguments. The `style` keyword argument has special
+                       meaning in that it allows styling to be grouped as one argument.
+                       It is also useful in case a styling parameter name clashes with a standard
+                       block parameter.
+        """
+        super(PlotlyPlotBlock, self).__init__(**kwargs)
+
+        if not isinstance(contents, PlotlyFigure):
+            raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
+
+        self._contents = plotlyplot(contents, include_plotlyjs=True, output_type='div')
+
+    def _write_contents(self, container, *args, **kwargs):
+        container.append(parse(self._contents))
+
+class BokehPlotBlock(BaseBlock):
+
+    def __init__(self, contents, **kwargs):
+        """
+        Writes out the content as raw text or HTML.
+
+        :param contents: Bokeh plotting figure.
+        :param kwargs: Optional styling arguments. The `style` keyword argument has special
+                       meaning in that it allows styling to be grouped as one argument.
+                       It is also useful in case a styling parameter name clashes with a standard
+                       block parameter.
+        """
+        super(BokehPlotBlock, self).__init__(**kwargs)
+
+        if not isinstance(contents, BokehFigure):
+            raise ValueError("Expected bokeh.plotting.figure.Figure type but got %s", type(contents))
+
+        self._contents = file_html(contents, CDN, "test")
+
+    def _write_contents(self, container, *args, **kwargs):
+        container.append(parse(self._contents))
+
 add_block_types(Artist, PlotBlock)
+add_block_types(PlotlyFigure, PlotlyPlotBlock)
+add_block_types(BokehFigure, BokehPlotBlock)

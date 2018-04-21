@@ -7,7 +7,6 @@ import textwrap
 from pybloqs import BaseBlock
 from pybloqs.html import parse
 
-
 class Raw(BaseBlock):
 
     def __init__(self, contents, dedent=True, **kwargs):
