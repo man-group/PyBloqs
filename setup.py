@@ -191,6 +191,9 @@ setup(
         ],
         "plotly":[
             "plotly"
+        ],
+        "bokeh":[
+            "bokeh"
         ]
     },
     tests_require=[
