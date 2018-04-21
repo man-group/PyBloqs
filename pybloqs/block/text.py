@@ -4,9 +4,12 @@ Module for blocks with text-only content
 import markdown
 import textwrap
 
+
+from plotly.offline import plot
+from plotly.graph_objs import Figure as PlotlyFigure
+
 from pybloqs import BaseBlock
 from pybloqs.html import parse
-
 
 class Raw(BaseBlock):
 
@@ -29,6 +32,33 @@ class Raw(BaseBlock):
             contents = textwrap.dedent(contents)
 
         self._contents = self._process_raw_contents(contents)
+
+    def _process_raw_contents(self, contents):
+        return contents
+
+    def _write_contents(self, container, *args, **kwargs):
+        for child in list(parse(self._contents).children):
+            container.append(child)
+
+
+class HtmlPlotBlock(BaseBlock):
+
+    def __init__(self, contents, **kwargs):
+        """
+        Writes out the content as raw text or HTML.
+
+        :param contents: Raw text. Can contain arbitrary HTML.
+        :param kwargs: Optional styling arguments. The `style` keyword argument has special
+                       meaning in that it allows styling to be grouped as one argument.
+                       It is also useful in case a styling parameter name clashes with a standard
+                       block parameter.
+        """
+        super(HtmlPlotBlock, self).__init__(**kwargs)
+
+        if not isinstance(contents, PlotlyFigure):
+            raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
+
+        self._contents = plot(contents, include_plotlyjs=True, output_type='div')
 
     def _process_raw_contents(self, contents):
         return contents
