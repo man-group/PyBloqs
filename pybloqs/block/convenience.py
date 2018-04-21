@@ -3,7 +3,6 @@ import collections
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
 
-
 _block_types = dict()
 
 
