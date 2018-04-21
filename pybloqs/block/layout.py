@@ -7,6 +7,8 @@ from pybloqs.html import append_to
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import Block, add_block_types
 
+from future.builtins import range
+
 
 class CompositeBlockMixin(object):
     """
@@ -147,7 +149,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
 
             row_count = int(math.ceil(content_count / float(self._cols)))
 
-            for row_i in xrange(row_count):
+            for row_i in range(row_count):
                 row_el = append_to(container, "div")
                 row_el["class"] = ["pybloqs-grid-row"]
 
@@ -156,7 +158,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
 
                 written_row_item_count = row_i * self._cols
 
-                for col_i in xrange(self._cols):
+                for col_i in range(self._cols):
                     item_count = written_row_item_count + col_i
                     if item_count >= content_count:
                         break

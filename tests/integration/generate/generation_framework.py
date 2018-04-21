@@ -32,7 +32,7 @@ def assert_report_generated(func=None, fmt="html", **kwargs):
 
         assert os.path.getsize(tmp_file) > 1000, 'File {} should not be empty.'.format(tmp_file)
 
-        if fmt.lower() == 'pdf':
+        if fmt.lower() == 'pdf' and sys.platform != 'darwin':
             if not find_executable('pdfinfo'):
                 raise Exception('Could not find executable "pdfinfo". Will not check PDF file integrity')
             else:

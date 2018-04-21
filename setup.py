@@ -181,6 +181,7 @@ setup(
         "lxml",
         "pyyaml",
         "jinja2",
+        "future"
 
     ],
     extras_require={

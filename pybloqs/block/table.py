@@ -109,7 +109,7 @@ class HTMLJinjaTableBlock(BaseBlock):
         """Reformats all but the last header rows."""
         df_clean = self.df.loc[:, self.df.columns.get_level_values(0) != ORG_ROW_NAMES]
         if isinstance(df_clean.columns, pd.MultiIndex):
-            transpose_tuples = zip(*df_clean.columns.tolist())
+            transpose_tuples = list(zip(*df_clean.columns.tolist()))
             header_values = []
             for i, t in enumerate(transpose_tuples):
                 if i < len(transpose_tuples) - 1:
@@ -139,5 +139,6 @@ class HTMLJinjaTableBlock(BaseBlock):
         table = soup.find("table")
         container.append(table)
         return
+
 
 add_block_types(pd.DataFrame, HTMLJinjaTableBlock)

@@ -58,4 +58,4 @@ def test_save_pdf_dynamic_content():
 
 def test_meta_tags_in_head():
     output = Raw(u"test").render_html()
-    assert 'charset="utf8"' in output
+    assert b'charset="utf8"' in output
