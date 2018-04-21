@@ -1,9 +1,7 @@
 import collections
 
 from pybloqs.block.base import BaseBlock
-from pybloqs.block.text import Raw, HtmlPlotBlock
-
-from plotly.graph_objs import Figure as PlotlyFigure
+from pybloqs.block.text import Raw
 
 _block_types = dict()
 
@@ -60,8 +58,6 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
     if block_cls is None:
         if isinstance(contents, basestring):
             block_cls = Raw
-        elif isinstance(contents, PlotlyFigure):
-            block_cls = HtmlPlotBlock
         elif isinstance(contents, BaseBlock):
             # If there is no title, there is no point to wrap the existing block
             if title is None:
