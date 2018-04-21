@@ -1,3 +1,4 @@
+sphinx==1.6.7
 nbsphinx
 matplotlib
 ipython[notebook]
