@@ -22,6 +22,15 @@ The following section is available as a Jupyter notebook in `docs/source/table_f
   :maxdepth: 2
    
   table_formatting.ipynb
+  
+Interactive plots
+-----------------
+PyBloqs supports embedding of interactive plotting libraries such as Bokeh and Plotly
+
+.. toctree::
+  :maxdepth: 2
+  
+  interactive_plots.ipynb
 
 Indices and tables
 ==================
