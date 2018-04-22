@@ -1,78 +1,80 @@
-import itertools
-
-from pybloqs.html import js_elem, append_to, root, render
-from pybloqs.util import encode_string
-
 from pkg_resources import resource_filename
-
-
 from six import StringIO
+
+from pybloqs.html import js_elem, css_elem,  render
+from pybloqs.util import encode_string
+import os
+from io import open
 
 
 class Resource(object):
-    def __init__(self, name, extension):
+    def __init__(self, file_name=None, extension='', content_string=None, name=None):
         """
         An external script dependency definition.
 
         :param name: Canonical name of the script.
-        :param extension: Script file extension.
         """
-        self._name = name
-        self._extension = extension
-        self._hash = hash(name)
+        # Do XOR for checking if one of the two parameters is set
+        if (file_name is None) == ((content_string is None) or (name is None)):
+            raise ValueError('Please specify either resource file_name or script_string with name.')
+        if file_name is not None:
+            self.name = os.path.splitext(file_name)[0]
+            with open(self._local_path(file_name, extension), encoding='utf-8') as f:
+                self.content_string = f.read()
+        else:
+            self.name = name
+            self.content_string = content_string
 
-    @property
-    def _local_path(self):
-        """
-        Generate the local path to the script using pkg_resources and taking the minification
-        switch into account.
-        """
-        return resource_filename(__name__, self._name + self._extension)
+    @classmethod
+    def _local_path(cls, file_name, extension):
+        """Generate the local path to the script using pkg_resources."""
+        return resource_filename(__name__, file_name if file_name.endswith(extension) else file_name + '.' + extension)
 
     def write(self, parent):
         pass
 
     def __hash__(self):
-        return self._hash
+        return hash(self.name)
 
     def __eq__(self, other):
         if not isinstance(other, Resource):
             return False
-        return self._hash == other._hash
+        return self.name == other.name
 
 
 class JScript(Resource):
     """
     Definition for external JS script dependencies.
     """
-    # global flag to turn off script enconding/compression accross the board
+    # Global flag to turn off script encoding/compression everywhere
     global_encode = True
 
-    def __init__(self, name, encode=True):
+    def __init__(self, file_name=None, script_string=None, name=None, encode=True):
         """
-        An javascript dependency definition.
+        A JavaScript dependency definition. Ensures that multiple inclusion of the same function is handled safely.
 
-        :param name: Canonical name of the script
+        :param file_name: Name of resource file included in static directory.
+        :param script_string: JS code provided as unicode string.
+        :param name: Unique label used to identify duplicates. Only required with script_string.
         :param encode: Whether to compress and base64 encode the script.
         """
-        super(JScript, self).__init__(name, ".js")
-        self._encode = encode
-        self._sentinel_var_name = "_pybloqs_load_sentinel_%s" % name.replace("-", "_")
+        super(JScript, self).__init__(file_name, 'js', script_string, name)
+        self.encode = encode
 
     def write(self, parent=None):
         stream = StringIO()
 
-        # Write out init condition
-        stream.write("if(typeof(%s) == 'undefined'){" % self._sentinel_var_name)
+        # Wrapper to make accidental multiple inclusion if the same code (e.g. with different file names) safe to load.
+        sentinel_var_name = "_pybloqs_load_sentinel_{}".format(self.name.replace("-", "_"))
+        stream.write("if(typeof({}) == 'undefined'){{".format(sentinel_var_name))
 
-        with open(self._local_path, "rb") as f:
-            if self._encode:
-                self.write_compressed(stream, f.read())
-            else:
-                stream.write(f.read().decode('utf-8'))
+        if self.encode:
+            self.write_compressed(stream, self.content_string)
+        else:
+            stream.write(self.content_string)
 
-        stream.write("%s = true;" % self._sentinel_var_name)
-
+        # Second part of wrapper
+        stream.write("{} = true;".format(sentinel_var_name))
         stream.write("}")
 
         return js_elem(parent, stream.getvalue())
@@ -88,46 +90,29 @@ class JScript(Resource):
 
 
 class Css(Resource):
-    def __init__(self, name, tag_id=None):
-        super(Css, self).__init__(name, ".css")
-        self._tag_id = tag_id
+    def __init__(self, file_name=None, css_string=None, name=None):
+        """
+        A CSS dependency definition. Will prevent adding resource with same name/file_name twice.
+
+        :param file_name: Name of resource file included in static directory.
+        :param css_string: CSS provided as unicode string.
+        :param name: Unique label used to identify duplicates. Only required with script_string.
+        """
+        super(Css, self).__init__(file_name, 'css', css_string, name)
 
     def write(self, parent=None):
-        if parent is None:
-            el = root("style")
-        else:
-            el = append_to(parent, "style")
-
-        el["type"] = "text/css"
-
-        if self._tag_id is not None:
-            el["id"] = self._tag_id
-
-        with open(self._local_path, "r") as f:
-            el.string = f.read()
-
-        return el
+        return css_elem(parent, self.content_string)
 
 
 class DependencyTracker(object):
     def __init__(self, *args):
-        self._deps = list(args)
         self._deps_set = set(args)
 
     def add(self, *resources):
-        for resource in resources:
-            if resource not in self._deps_set:
-                self._deps.append(resource)
-                self._deps_set.add(resource)
-
-    def any(self, type_filter=None):
-        if type_filter is None:
-            return len(self._deps) > 0
-
-        return any(itertools.imap(lambda res: isinstance(res, type_filter), self._deps))
+        self._deps_set = self._deps_set.union(resources)
 
     def __iter__(self):
-        return iter(self._deps)
+        return iter(self._deps_set)
 
 
 # JS deflation script and the reporting core functionality is always registered

@@ -138,7 +138,6 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
     :param to: list of recipients
     :param subject: email subject
     :param attachments: a list of tuple(extension, filename)
-    :param footer_text: string to be used in place of the default footer text
     :param From: from, sender of the message
     :param Cc: cc recipient
     :param Bcc: bcc recipient

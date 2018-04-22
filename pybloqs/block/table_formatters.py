@@ -990,7 +990,6 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
 # Definition of default formatter
 #
 
-
 fmt_fontsize_12 = FmtFontsize(fontsize=12)
 fmt_fontsize_14 = FmtFontsize(fontsize=14)
 fmt_stripes_bg = FmtStripeBackground()

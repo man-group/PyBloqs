@@ -9,6 +9,7 @@ from six import iterkeys, iteritems
 if sys.version_info > (3,):
     long = int
 
+
 def dt_epoch_msecs(value):
     """
     Calculate miliseconds since epoch start for python datetimes.
@@ -30,7 +31,7 @@ def encode_string(string, level=9):
     :param level: Compression level
     :return: Compressed and encoded string
     """
-    return base64.b64encode(zlib.compress(string, level)[2:-4])
+    return base64.b64encode(zlib.compress(string.encode('utf8'), level)[2:-4])
 
 
 def camelcase(value):
@@ -72,6 +73,7 @@ class Cfg(dict):
     """
     Provides plumbing for inheritable block parameters.
     """
+
     def inherit(self, parent):
         """
         Inherit all parent settings that the current config does not define.

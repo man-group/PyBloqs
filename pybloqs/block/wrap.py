@@ -1,6 +1,3 @@
-import json
-
-from pybloqs.html import js_elem
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import Block
 
