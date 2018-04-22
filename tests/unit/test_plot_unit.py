@@ -13,7 +13,7 @@ def plot():
 def test_PlotBase_write_dict_simple(plot):
     chart_buf = StringIO()
     plot._write_dict(chart_buf, {"moof": 5, "poof": {"glop": 42}})
-    assert chart_buf.getvalue() == "{poof:{glop:42},moof:5}"
+    assert chart_buf.getvalue() == "{moof:5,poof:{glop:42}}"
 
 
 def test_PlotBase_write_value_nan(plot):

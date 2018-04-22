@@ -3,6 +3,7 @@ Module for blocks with text-only content
 """
 import markdown
 import textwrap
+import sys
 
 from pybloqs import BaseBlock
 from pybloqs.html import parse
@@ -21,7 +22,7 @@ class Raw(BaseBlock):
         """
         super(Raw, self).__init__(**kwargs)
 
-        if not isinstance(contents, basestring):
+        if not isinstance(contents, str):
             raise ValueError("Expected string content type but got %s", type(contents))
 
         if dedent:
@@ -58,4 +59,7 @@ class Markdown(Raw):
     encoding = "UTF-8"
 
     def _process_raw_contents(self, contents):
-        return markdown.markdown(contents.decode(self.encoding), output_format="html").encode(self.encoding)
+        if sys.version_info >= (3,0):
+            return markdown.markdown(contents, output_format="html")
+        else:
+            return markdown.markdown(contents.decode(self.encoding), output_format="html").encode(self.encoding)

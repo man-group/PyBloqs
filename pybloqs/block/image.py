@@ -17,10 +17,7 @@ from bokeh.resources import CDN
 from bokeh.embed import file_html
 from bokeh.plotting.figure import Figure as BokehFigure
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+from six import StringIO, BytesIO
 
 
 _MIME_TYPES = {
@@ -75,7 +72,7 @@ class ImgBlock(BaseBlock):
 
         if width is None and height is None:
             if mime_type.lower() == "png":
-                assert struct.unpack('ccc', data[1:4]) == ('P', 'N', 'G')
+                assert struct.unpack('ccc', data[1:4]) == (b'P', b'N', b'G')
                 x, y = struct.unpack(">ii", data[16:24])
             elif mime_type.lower() == "gif":
                 x, y = struct.unpack("<HH", data[6:10])
@@ -100,8 +97,9 @@ class ImgBlock(BaseBlock):
 
     def _write_contents(self, container, *args, **kwargs):
         src = StringIO()
-        src.write("data:image/{};base64,".format(self._mime_type))
-        src.write(self._img_data)
+        mime = "data:image/{};base64,".format(self._mime_type)
+        src.write(mime)
+        src.write(self._img_data.decode())
 
         img = append_to(container, "img", src=src.getvalue())
 
@@ -156,7 +154,7 @@ class PlotBlock(ImgBlock):
         else:
             raise ValueError("Unexpected plot object type %s", type(plot))
 
-        img_data = StringIO()
+        img_data = BytesIO()
 
         legends = []
 

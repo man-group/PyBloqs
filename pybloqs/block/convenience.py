@@ -49,14 +49,14 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
     """
     block_cls = None
     # Need to loop to catch inherited classes as well
-    for key, value in _block_types.iteritems():
+    for key, value in _block_types.items():
         if isinstance(contents, key):
             block_cls = value
             break
 
     # Try some additional transformations if no suitable mapping found
     if block_cls is None:
-        if isinstance(contents, basestring):
+        if isinstance(contents, str):
             block_cls = Raw
         elif isinstance(contents, BaseBlock):
             # If there is no title, there is no point to wrap the existing block

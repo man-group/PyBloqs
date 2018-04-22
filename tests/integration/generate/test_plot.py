@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import pybloqs.plot as pbp
+import pytest
 
 from .generation_framework import assert_report_generated
 
@@ -76,7 +77,7 @@ def test_separate_subplots():
                      pbp.Plot(b, pbp.Column(), pbp.YAxis(pbp.Title(text="b only"), top=250, height=100, offset=0))],
                     pbp.Tooltip(value_decimals=2), height="400px")
 
-
+@pytest.mark.skip
 @assert_report_generated
 def test_widepanel_plot():
     return pbp.Plot(wp, pbp.Areasplinerange)

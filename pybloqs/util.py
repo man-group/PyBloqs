@@ -3,8 +3,11 @@ import zlib
 import base64
 import calendar
 import itertools
+import sys
 from six import iterkeys, iteritems
-from io import BytesIO
+
+if sys.version_info > (3,):
+    long = int
 
 def dt_epoch_msecs(value):
     """
@@ -59,34 +62,6 @@ def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v:
     Underscores are replaced with dashes and values are converted to lower case.
     """
     return separator.join(["%s:%s" % (key_transform(key), value_transform(value)) for key, value in iteritems(cfg)])
-
-
-def str_base(num, base=36, numerals="0123456789abcdefghijklmnopqrstuvwxyz"):
-    """
-    Converts a decimal to the specified base using the provided numerals.
-
-    :param num: Decimal number.
-    :param base: Desired base.
-    :param numerals: Numerals to use in the rebased number.
-    :return: Number in `base`.
-    """
-    if base < 2 or base > len(numerals):
-        raise ValueError("`base` must be between 2 and %i")
-
-    if num == 0:
-        return '0'
-
-    buf = BytesIO()
-
-    if num < 0:
-        buf.write("-")
-        num = -num
-
-    while num:
-        buf.write(numerals[num % base])
-        num //= base
-
-    return buf.getvalue()
 
 
 def cfg_to_css_string(cfg):
