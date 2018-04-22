@@ -13,7 +13,7 @@ from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
 from pybloqs.util import cfg_to_css_string
 
-from bokeh.resources import CDN
+from bokeh.resources import INLINE
 from bokeh.embed import file_html
 from bokeh.plotting.figure import Figure as BokehFigure
 
@@ -236,7 +236,7 @@ class BokehPlotBlock(BaseBlock):
         if not isinstance(contents, BokehFigure):
             raise ValueError("Expected bokeh.plotting.figure.Figure type but got %s", type(contents))
 
-        self._contents = file_html(contents, CDN, "test")
+        self._contents = file_html(contents, INLINE, "test")
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
