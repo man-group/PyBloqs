@@ -10,8 +10,9 @@ user_config = {
     "smtp_kwargs": {
         "host": ""
     },
-    "pdf_converter": "wkhtmltopdf",
-    "image_converter": "wkhtmltopdf",
+    #"pdf_converter": "wkhtmltopdf",
+    "pdf_converter": "chrome_headless",
+    "image_converter": "wkhtmltoimage",
 }
 
 try:

@@ -6,7 +6,8 @@ import webbrowser
 from pybloqs.config import user_config
 from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
-from pybloqs.htmlconv import html_converter
+from pybloqs.htmlconv import get_converter, html_converter
+
 from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
 from pybloqs.util import Cfg, cfg_to_css_string, str_base
 from six.moves.urllib.parse import urljoin
@@ -80,7 +81,7 @@ class BaseBlock(object):
         self._anchor = anchor
         self._id = str(uuid.uuid4())
 
-    def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None, pdf_page_size="A4"):
+    def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None, page_css=None):
         """Returns html output of the block
         :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
         :return html-code of the block
@@ -88,11 +89,26 @@ class BaseBlock(object):
         # Render the contents
         html = root("html", doctype="html")
         head = append_to(html, "head")
-        head = append_to(head, "meta", charset='utf-8')
+        append_to(head, "meta", charset='utf-8')
+        if page_css is not None:
+            head_style = append_to(head, "style")
+            head_style.string = '@page {{ {} }}'.format(cfg_to_css_string(page_css))
         body = append_to(html, "body")
 
         # Make sure that the main style sheet is always included
         resource_deps = DependencyTracker(default_css_main)
+        # TODO: Write this to a table
+#         <body>
+#         <table>
+#            <thead><tr><td>Your header goes here</td></tr></thead>
+#            <tfoot><tr><td>Your footer goes here</td></tr></tfoot>
+#            <tbody>
+#              <tr><td>
+#              Page body in here -- as long as it needs to be
+#              </td></tr>
+#            </tbody>
+#         </table>
+#         </body>
         if header_block is not None:
             header_block._write_block(body, Cfg(), id_generator(), resource_deps=resource_deps,
                                       static_output=static_output)
@@ -170,46 +186,22 @@ class BaseBlock(object):
         fmt = fmt.lower()
 
         is_html = "htm" in fmt
-
         if is_html:
             content = self.render_html(static_output=False, header_block=header_block, footer_block=footer_block)
-            html_filename = filename
+            with open(filename, "w") as f:
+                f.write(content)
         else:
-            content = self.render_html(static_output=True, pdf_page_size=pdf_page_size)
-            name = str_base(abs(hash(self._id))) + ".html"
-            html_filename = os.path.join(tempdir, name)
+            converter = get_converter(fmt,
+                                      zoom=pdf_zoom,
+                                      page_orientation=orientation,
+                                      page_size=pdf_page_size,
+                                      fit_to_page=pdf_auto_shrink)
 
-        # File with HTML content is needed either directly or as input for conversion
-        with open(html_filename, "w") as f:
-            f.write(content)
-
-        if not is_html:
-
-            if header_block is not None:
-                header_file = str_base(hash(header_block._id)) + ".html"
-                header_filename = header_block.publish(os.path.join(tempdir, header_file))
-            else:
-                header_filename = None
-
-            if footer_block is not None:
-                footer_file = str_base(hash(footer_block._id)) + ".html"
-                footer_filename = footer_block.publish(os.path.join(tempdir, footer_file))
-            else:
-                footer_filename = None
-
-            converter = html_converter.get_converter(fmt,
-                                                     zoom=pdf_zoom,
-                                                     page_orientation=orientation,
-                                                     page_size=pdf_page_size,
-                                                     fit_to_page=pdf_auto_shrink)
-
-            converter.htmlconv(html_filename, filename,
-                               header_filename=header_filename, header_spacing=str(header_spacing),
-                               footer_filename=footer_filename, footer_spacing=str(footer_spacing),
-                               **kwargs)
-            return filename
-
-        return html_filename
+            converter.htmlconv(self, filename,
+                               header_block=header_block, header_spacing=str(header_spacing),
+                               footer_block=footer_block, footer_spacing=str(footer_spacing),
+                               )
+        return filename
 
     def publish(self, name, *args, **kwargs):
         """
