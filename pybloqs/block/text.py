@@ -8,6 +8,8 @@ import sys
 from pybloqs import BaseBlock
 from pybloqs.html import parse
 
+from six import string_types
+
 class Raw(BaseBlock):
 
     def __init__(self, contents, dedent=True, **kwargs):
@@ -22,7 +24,9 @@ class Raw(BaseBlock):
         """
         super(Raw, self).__init__(**kwargs)
 
-        if not isinstance(contents, str):
+        print(contents)
+
+        if not isinstance(contents, string_types):
             raise ValueError("Expected string content type but got %s", type(contents))
 
         if dedent:
