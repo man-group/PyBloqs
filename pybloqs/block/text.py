@@ -24,8 +24,6 @@ class Raw(BaseBlock):
         """
         super(Raw, self).__init__(**kwargs)
 
-        print(contents)
-
         if not isinstance(contents, string_types):
             raise ValueError("Expected string content type but got %s", type(contents))
 

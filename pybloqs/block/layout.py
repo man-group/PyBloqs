@@ -7,7 +7,7 @@ from pybloqs.html import append_to
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import Block, add_block_types
 
-from future.builtins import range
+from six.moves import range
 
 
 class CompositeBlockMixin(object):

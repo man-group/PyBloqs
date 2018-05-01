@@ -69,7 +69,7 @@ class JScript(Resource):
             if self._encode:
                 self.write_compressed(stream, f.read())
             else:
-                stream.write(f.read().decode())
+                stream.write(f.read().decode('utf-8'))
 
         stream.write("%s = true;" % self._sentinel_var_name)
 

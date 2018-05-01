@@ -72,7 +72,8 @@ class ImgBlock(BaseBlock):
 
         if width is None and height is None:
             if mime_type.lower() == "png":
-                assert struct.unpack('ccc', data[1:4]) == (b'P', b'N', b'G')
+                if struct.unpack('ccc', data[1:4]) != (b'P', b'N', b'G'):
+                    raise ValueError('Image type is not png and does not match mime type')
                 x, y = struct.unpack(">ii", data[16:24])
             elif mime_type.lower() == "gif":
                 x, y = struct.unpack("<HH", data[6:10])
@@ -145,7 +146,8 @@ class PlotBlock(ImgBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        assert isinstance(plot, Artist), "PlotBlock contents must be matplotlib Artists"
+        if not isinstance(plot, Artist):
+            raise ValueError('PlotBlock contents must be matplotlib Artist')
 
         if isinstance(plot, Figure):
             figure = plot
