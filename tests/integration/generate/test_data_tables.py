@@ -5,7 +5,7 @@ from pybloqs.block.data_tables import DataTablesHTMLJinjaTableBlock
 import pybloqs.block.table_formatters as blformat
 import pybloqs.block.colors as colors
 
-from .generation_framework import assert_report_generated
+from tests.integration.generate.generation_framework import assert_report_generated
 
 
 np.random.seed(123)

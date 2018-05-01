@@ -293,15 +293,14 @@ class Plot(BaseBlock):
         """
 
         def _decompose_l1(cfg):
-            return [cfg.override_many(data=value).\
-                    inherit_many(name=key)
+            return [cfg.override_many(data=value).inherit_many(name=key)
                     for key, value in data.items()]
 
         def _decompose_l2(cfg):
             component_series = []
 
-            for k1, v1 in data.items():
-                for k2, v2 in v1.items():
+            for k1, v1 in iteritems(data):
+                for k2, v2 in iteritems(v1):
                     component_series.append(cfg.override_many(data=v2).inherit_many(name="%s - %s" % (k1, k2)))
 
             return component_series
@@ -357,7 +356,9 @@ class Plot(BaseBlock):
             try:
                 if isinstance(data[0], Plot):
                     return data[0]._chart_cls
-                if (len(data[0]) > 1) and isinstance(data[0], (list, tuple)) and isinstance(data[0][0], (np.datetime64, datetime)):
+                if (len(data[0]) > 1) \
+                        and isinstance(data[0], (list, tuple)) \
+                        and isinstance(data[0][0], (np.datetime64, datetime)):
                     return "StockChart"
             except TypeError:
                 pass
@@ -410,7 +411,7 @@ class Plot(BaseBlock):
 
         self._write_plot_postprocess(chart_buf)
 
-        JScript.write_compressed(stream, chart_buf.getvalue().encode())
+        JScript.write_compressed(stream, chart_buf.getvalue().encode('utf-8'))
 
         stream.write("}},10);")
 
