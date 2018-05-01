@@ -11,7 +11,7 @@ from pybloqs.html import js_elem, append_to
 from pybloqs.util import camelcase, Cfg, dt_epoch_msecs, np_dt_epoch_msec
 from pybloqs.static import JScript, register_interactive
 from six import text_type, iteritems, StringIO
-from future.builtins import range
+from six.moves import range
 
 import sys
 if sys.version_info > (3,):
