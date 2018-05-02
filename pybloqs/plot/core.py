@@ -294,7 +294,7 @@ class Plot(BaseBlock):
 
         def _decompose_l1(cfg):
             return [cfg.override_many(data=value).inherit_many(name=key)
-                    for key, value in data.items()]
+                    for key, value in data.iteritems()]
 
         def _decompose_l2(cfg):
             component_series = []
@@ -522,6 +522,7 @@ def _make_chart_cfg(name, *def_args, **def_kwargs):
 
     return _builder
 
+
 # Main Chart configuration groups.
 Chart = _make_chart_cfg("chart")
 Colors = lambda colors: Cfg({"colors": colors})  # Colors is an array and not an option group
@@ -639,6 +640,7 @@ def _sniff_list_dim(data):
     _sniff_rec(data)
 
     return len(dim), dim
+
 
 # Plot options
 # Univariate

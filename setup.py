@@ -180,9 +180,7 @@ setup(
         "docutils",
         "lxml",
         "pyyaml",
-        "jinja2",
-        "future"
-
+        "jinja2"
     ],
     extras_require={
         "docs_and_notebook": [

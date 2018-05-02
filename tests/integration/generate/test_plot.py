@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 import pybloqs.plot as pbp
-import pytest
 
 from .generation_framework import assert_report_generated
 
@@ -12,7 +11,6 @@ df = pd.read_csv(os.path.join(script_dir, "test_plot_df1.csv"), index_col=0, par
 df1 = pd.read_csv(os.path.join(script_dir, "test_plot_df2.csv"), index_col=0, parse_dates=True)
 df2 = pd.read_csv(os.path.join(script_dir, "test_plot_df3.csv"), index_col=0, parse_dates=True)
 
-wp = pd.WidePanel({1: df, 2: df1, 3: df2}).ix[:, :30, :2]
 
 df_cr = (df + 1).cumprod()
 
@@ -76,8 +74,3 @@ def test_separate_subplots():
     return pbp.Plot([pbp.Plot(a, pbp.Line(), pbp.YAxis(pbp.Title(text="a only"), height=200)),
                      pbp.Plot(b, pbp.Column(), pbp.YAxis(pbp.Title(text="b only"), top=250, height=100, offset=0))],
                     pbp.Tooltip(value_decimals=2), height="400px")
-
-@pytest.mark.skip
-@assert_report_generated
-def test_widepanel_plot():
-    return pbp.Plot(wp, pbp.Areasplinerange)
