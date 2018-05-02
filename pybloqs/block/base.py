@@ -8,14 +8,9 @@ from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
 from pybloqs.htmlconv import htmlconv
 from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
-from pybloqs.util import Cfg, cfg_to_css_string, str_base
+from pybloqs.util import Cfg, cfg_to_css_string
 from six.moves.urllib.parse import urljoin
-
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+from six import BytesIO
 
 # Valid page sizes with widths in mm
 _page_width = {
@@ -55,6 +50,8 @@ _page_width = {
 default_css_main = Css(os.path.join("css", "pybloqs_default", "main"))
 register_interactive(default_css_main)
 
+ID_PRECISION = 10
+
 
 class BaseBlock(object):
     """
@@ -63,6 +60,7 @@ class BaseBlock(object):
     """
     container_tag = "div"
     resource_deps = []
+
 
     def __init__(self, title=None, title_level=3, title_wrap=False,
                  width=None, height=None, inherit_cfg=True,
@@ -78,7 +76,7 @@ class BaseBlock(object):
                              classes=["pybloqs"] + ([classes] if isinstance(classes, str) else list(classes)))
         # Anchor should not be inherited, so keep outside of Cfg
         self._anchor = anchor
-        self._id = str(uuid.uuid4())
+        self._id = uuid.uuid4().hex
 
     def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None, pdf_page_size="A4"):
         """Returns html output of the block
@@ -159,7 +157,7 @@ class BaseBlock(object):
                 if fmt != fmt_from_name:
                     filename += '.' + fmt
         else:
-            name = str_base(abs(hash(self._id))) + "." + fmt
+            name = self._id[:ID_PRECISION] + "." + fmt
             filename = os.path.join(tempdir, name)
 
         # Force extension to be lower case so format checks are easier later
@@ -172,11 +170,11 @@ class BaseBlock(object):
             html_filename = filename
         else:
             content = self.render_html(static_output=True, pdf_page_size=pdf_page_size)
-            name = str_base(abs(hash(self._id))) + ".html"
+            name = self._id[:ID_PRECISION] + ".html"
             html_filename = os.path.join(tempdir, name)
 
         # File with HTML content is needed either directly or as input for conversion
-        with open(html_filename, "w") as f:
+        with open(html_filename, "wb") as f:
             f.write(content)
 
         if not is_html:
@@ -196,13 +194,13 @@ class BaseBlock(object):
                     cmd.append("--disable-smart-shrinking")
 
                 if header_block is not None:
-                    header_file = str_base(hash(header_block._id)) + ".html"
+                    header_file = header_block._id[:ID_PRECISION] + ".html"
                     file_path = header_block.publish(os.path.join(tempdir, header_file))
                     cmd += ['--header-html', file_path]
                     cmd += ['--header-spacing', str(header_spacing)]
 
                 if footer_block is not None:
-                    footer_file = str_base(hash(footer_block._id)) + ".html"
+                    footer_file = footer_block._id[:ID_PRECISION] + ".html"
                     file_path = footer_block.publish(os.path.join(tempdir, footer_file))
                     cmd += ['--footer-html', file_path]
                     cmd += ['--footer-spacing', str(footer_spacing)]
@@ -249,7 +247,7 @@ class BaseBlock(object):
         :param fmt: The format of the saved block. Supports the same output as `Block.save`
         :return: Path to the block file.
         """
-        file_name = str_base(hash(self._id)) + "." + fmt
+        file_name = self._id[:ID_PRECISION] + "." + fmt
         file_path = self.publish(os.path.expanduser(os.path.join(user_config["tmp_html_dir"], file_name)),
                                  header_block=header_block, footer_block=footer_block)
 
@@ -459,7 +457,7 @@ class BaseBlock(object):
         self._write_block(container, Cfg(), id_generator())
 
         # Write children into the output
-        output = StringIO()
+        output = BytesIO()
 
         for child in container.children:
             output.write(render(child))

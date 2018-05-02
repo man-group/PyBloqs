@@ -5,10 +5,8 @@ from pybloqs.util import encode_string
 
 from pkg_resources import resource_filename
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
+
+from six import StringIO
 
 
 class Resource(object):
@@ -71,7 +69,7 @@ class JScript(Resource):
             if self._encode:
                 self.write_compressed(stream, f.read())
             else:
-                stream.write(f.read())
+                stream.write(f.read().decode('utf-8'))
 
         stream.write("%s = true;" % self._sentinel_var_name)
 
@@ -83,7 +81,7 @@ class JScript(Resource):
     def write_compressed(cls, stream, data):
         if cls.global_encode:
             stream.write('blocksEval(RawDeflate.inflate(atob("')
-            stream.write(encode_string(data))
+            stream.write(encode_string(data).decode())
             stream.write('")));')
         else:
             stream.write(data)
@@ -105,7 +103,7 @@ class Css(Resource):
         if self._tag_id is not None:
             el["id"] = self._tag_id
 
-        with open(self._local_path, "rb") as f:
+        with open(self._local_path, "r") as f:
             el.string = f.read()
 
         return el

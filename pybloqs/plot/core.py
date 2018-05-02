@@ -10,12 +10,9 @@ from pybloqs.block.image import ImgBlock
 from pybloqs.html import js_elem, append_to
 from pybloqs.util import camelcase, Cfg, dt_epoch_msecs, np_dt_epoch_msec
 from pybloqs.static import JScript, register_interactive
-from six import text_type, iteritems
+from six import text_type, iteritems, StringIO
+from six.moves import range
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import StringIO
 import sys
 if sys.version_info > (3,):
     long = int
@@ -223,7 +220,7 @@ class Plot(BaseBlock):
         data = [list(index) + [value] for index, value in list(np.ndenumerate(data))]
 
         if switch_zy:
-            for i in xrange(len(data)):
+            for i in range(len(data)):
                 tmp = data[i][-1]
                 data[i][-1] = data[i][-2]
                 data[i][-2] = tmp
@@ -252,7 +249,7 @@ class Plot(BaseBlock):
                 y_axes = chart_cfg.y_axis
 
                 # Set the default on all y axes
-                for i in xrange(len(y_axes)):
+                for i in range(len(y_axes)):
                     y_axes[i] = y_axes[i].inherit(base_cfg)
 
             return chart_cfg
@@ -296,7 +293,8 @@ class Plot(BaseBlock):
         """
 
         def _decompose_l1(cfg):
-            return [cfg.override_many(data=value).inherit_many(name=key) for key, value in iteritems(data)]
+            return [cfg.override_many(data=value).inherit_many(name=key)
+                    for key, value in data.iteritems()]
 
         def _decompose_l2(cfg):
             component_series = []
@@ -358,7 +356,9 @@ class Plot(BaseBlock):
             try:
                 if isinstance(data[0], Plot):
                     return data[0]._chart_cls
-                if (len(data[0]) > 1) and isinstance(data[0], (list, tuple)) and isinstance(data[0][0], (np.datetime64, datetime)):
+                if (len(data[0]) > 1) \
+                        and isinstance(data[0], (list, tuple)) \
+                        and isinstance(data[0][0], (np.datetime64, datetime)):
                     return "StockChart"
             except TypeError:
                 pass
@@ -367,7 +367,7 @@ class Plot(BaseBlock):
 
     def _write_contents(self, container, actual_cfg, id_gen, static_output=False, **kwargs):
         plot_container = append_to(container, "div")
-        plot_container["id"] = plot_container_id = id_gen.next()
+        plot_container["id"] = plot_container_id = next(id_gen)
 
         # Write the config to the plot target as well
         self._write_container_attrs(plot_container, actual_cfg)
@@ -378,7 +378,7 @@ class Plot(BaseBlock):
         """
         Write out the chart construction machinery.
         """
-        js_timer_var_name = "_ins_timer_" + id_gen.next()
+        js_timer_var_name = "_ins_timer_" + next(id_gen)
 
         # Plumbing to make sure script rendering waits until the container element is ready
         stream = StringIO()
@@ -400,7 +400,7 @@ class Plot(BaseBlock):
                       "if(container){clearInterval(%s);")
                      % (js_timer_var_name, container_id, js_timer_var_name))
 
-        # Write out the chart script into a separate buffer beffore running it through
+        # Write out the chart script into a separate buffer before running it through
         # the encoding/compression
         chart_buf = StringIO()
         chart_buf.write("var cfg=")
@@ -411,7 +411,7 @@ class Plot(BaseBlock):
 
         self._write_plot_postprocess(chart_buf)
 
-        JScript.write_compressed(stream, chart_buf.getvalue())
+        JScript.write_compressed(stream, chart_buf.getvalue().encode('utf-8'))
 
         stream.write("}},10);")
 
@@ -454,7 +454,7 @@ class Plot(BaseBlock):
 
             # Merge DFrame into a single list of lists
             merged = []
-            for i in xrange(len(labels)):
+            for i in range(len(labels)):
                 label = labels[i]
                 ndval = values[i]
 
@@ -521,6 +521,7 @@ def _make_chart_cfg(name, *def_args, **def_kwargs):
         return Cfg({name: Cfg(kwargs).inherit_many(*def_args, **def_kwargs)})
 
     return _builder
+
 
 # Main Chart configuration groups.
 Chart = _make_chart_cfg("chart")
@@ -639,6 +640,7 @@ def _sniff_list_dim(data):
     _sniff_rec(data)
 
     return len(dim), dim
+
 
 # Plot options
 # Univariate

@@ -1,11 +1,13 @@
-import os
-import sys
-import logging
-import subprocess
-
-from functools import wraps, partial
 from distutils.spawn import find_executable
+from functools import wraps, partial
+import logging
+import os
+import subprocess
+import sys
+
 import matplotlib
+
+
 matplotlib.use('Agg')
 
 
@@ -33,12 +35,15 @@ def assert_report_generated(func=None, fmt="html", **kwargs):
         assert os.path.getsize(tmp_file) > 1000, 'File {} should not be empty.'.format(tmp_file)
 
         if fmt.lower() == 'pdf':
-            if not find_executable('pdfinfo'):
-                raise Exception('Could not find executable "pdfinfo". Will not check PDF file integrity')
+            if sys.platform == 'darwin':
+                logging.warning('Skipping call to pdfinfo as it is not available on this platform.')
             else:
-                cmd = ["pdfinfo", tmp_file]
-                proc = subprocess.Popen(cmd)
-                _ = proc.communicate()
+                if not find_executable('pdfinfo'):
+                    raise Exception('Could not find executable "pdfinfo". Will not check PDF file integrity')
+                else:
+                    cmd = ["pdfinfo", tmp_file]
+                    proc = subprocess.Popen(cmd)
+                    _ = proc.communicate()
 
         # Cleanup
         os.remove(tmp_file)

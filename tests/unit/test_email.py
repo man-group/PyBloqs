@@ -4,6 +4,8 @@ import yaml
 from email.message import Message
 
 import pybloqs
+import pytest
+import sys
 
 
 user_config = \
@@ -54,6 +56,7 @@ def test_send():
     assert ex_calls == m_SMTP.mock_calls
 
 
+@pytest.mark.skipif(sys.version_info > (3,0), reason="Python 3 strings are always unicode")
 def test_send_html_report_utf8():
     with patch('pybloqs.email.smtplib.SMTP') as mock_smtp_constructor, \
             patch('pybloqs.email.user_config', user_config):
@@ -76,6 +79,7 @@ def test_send_html_report_utf8():
     assert 'Content-Type: text/html; charset="utf-8"' in msg
 
 
+@pytest.mark.skipif(sys.version_info > (3,0), reason="Python 3 strings are always unicode")
 def test_send_html_report_ascii():
     with patch('pybloqs.email.smtplib.SMTP') as mock_smtp_constructor, \
             patch('pybloqs.email.user_config', user_config):
