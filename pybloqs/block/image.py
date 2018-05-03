@@ -1,5 +1,6 @@
 import base64
 import struct
+from contextlib import contextmanager
 
 import matplotlib.pyplot as plt
 
@@ -27,11 +28,43 @@ _PLOT_MIME_TYPE = _MIME_TYPES[_PLOT_FORMAT]
 _PLOT_DPI = 100
 
 
+@contextmanager
+def plot_format(plot_format=None, dpi=None):
+    """
+    Temporarily set the plot formatting settings
+
+    :param plot_format: The plot format (e.g 'png')
+    :type plot_format:  str
+    :param dpi:         The DPI of the plots
+    :type dpi:          int
+    """
+    old = get_plot_format()
+    set_plot_format(plot_format, dpi)
+    yield
+    set_plot_format(*old)
+
+
+def get_plot_format():
+    """
+    Get the current plot format parameters
+
+    :return: tuple of format and dpi
+    """
+    return _PLOT_FORMAT, _PLOT_DPI
+
+
 def set_plot_format(plot_format=None, plot_dpi=None):
+    """
+    Overwrite the current plot format settings
+
+    :param plot_format: The plot format (e.g. 'png')
+    :type  plot_format: str
+    :param plot_dpi:    The DPI of the plots
+    :type  plot_dpi:    int
+    """
     global _PLOT_FORMAT
     global _PLOT_MIME_TYPE
     global _PLOT_DPI
-
     if plot_format is not None:
         _PLOT_FORMAT = plot_format
         _PLOT_MIME_TYPE = _MIME_TYPES[plot_format]

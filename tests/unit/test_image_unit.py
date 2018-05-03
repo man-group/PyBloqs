@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from pybloqs.block.image import PlotBlock
+import pybloqs.block.image as i
 
 
 def test_create_PlotBlock():
@@ -21,3 +22,12 @@ def test_create_PlotBlock_with_bbox_inches_none():
     b = PlotBlock(f, bbox_inches=None)
     assert len(b._img_data) > 0
     assert b._mime_type == 'png'
+
+
+def test_plot_format_ctx_manager():
+    old_fmt, old_dpi = i._PLOT_FORMAT, i._PLOT_DPI
+    with i.plot_format('svg', 1000):
+        assert i._PLOT_FORMAT == 'svg'
+        assert i._PLOT_DPI == 1000
+    assert i._PLOT_FORMAT == old_fmt
+    assert i._PLOT_DPI == old_dpi
