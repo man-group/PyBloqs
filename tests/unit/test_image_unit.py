@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
+import pybloqs.block.image as i
 from pybloqs.block.image import PlotBlock, PlotlyPlotBlock
 
 
@@ -32,3 +33,12 @@ def test_create_Plotly_with_invalid_data():
 def test_create_Bokeh_with_invalid_data():
     with pytest.raises(ValueError):
         PlotlyPlotBlock(pd.Series([1, 2, 3]).plot())
+
+
+def test_plot_format_ctx_manager():
+    old_fmt, old_dpi = i._PLOT_FORMAT, i._PLOT_DPI
+    with i.plot_format('svg', 1000):
+        assert i._PLOT_FORMAT == 'svg'
+        assert i._PLOT_DPI == 1000
+    assert i._PLOT_FORMAT == old_fmt
+    assert i._PLOT_DPI == old_dpi
