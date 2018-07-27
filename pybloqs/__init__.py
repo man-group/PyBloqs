@@ -9,10 +9,7 @@ from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.wrap import Box, Paragraph
 from pybloqs import plot as bxpl
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from six import BytesIO as StringIO
+from six import StringIO
 
 
 def interactive(verbose=True):

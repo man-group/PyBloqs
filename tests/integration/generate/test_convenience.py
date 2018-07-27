@@ -6,7 +6,6 @@ from .generation_framework import assert_report_generated
 
 series = pd.Series([1, 2, 3])
 df = pd.DataFrame({"a": series, "b": series})
-panel = pd.WidePanel({1: df, 2: df})
 
 
 @assert_report_generated
@@ -40,10 +39,5 @@ def test_dframe():
 
 
 @assert_report_generated
-def test_widepanel():
-    return Block(panel, title="WidePanel Block")
-
-
-@assert_report_generated
 def test_list():
-    return Block(["Simple string content", Block("Block content"), series.plot(), test_widepanel()], cols=2)
+    return Block(["Simple string content", Block("Block content"), series.plot()], cols=2)
