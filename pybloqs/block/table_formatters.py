@@ -226,7 +226,7 @@ class FmtDates(FmtToString):
 
     def _modify_cell_content(self, data):
         """Change cell value from number to string formatted by fmt_string"""
-        if isinstance(data.cell, pd.tslib.Timestamp) or isinstance(data.cell, datetime.datetime):
+        if isinstance(data.cell, pd.Timestamp) or isinstance(data.cell, datetime.datetime):
             return super(FmtDates, self)._modify_cell_content(data)
         else:
             return data.cell
@@ -678,7 +678,6 @@ class FmtExpandMultiIndex(TableFormatter):
 
     def _modify_dataframe(self, df):
         """Create single index dataframe inserting grouping rows for higher levels."""
-
         if self.total_columns == []:
             columns = df.columns
         else:
@@ -694,7 +693,7 @@ class FmtExpandMultiIndex(TableFormatter):
                 if index_tuple[:level_i + 1] != previous_tuple[:level_i + 1]:
                     if level_i == n_ix_levels - 1:
                         # If we are on lowest level, add entire row to flat_df
-                        data_rows = df.iloc[[level_k], :]
+                        data_rows = df.iloc[[level_k], :].copy()
                     else:
                         # If we are on higher level, add row filled with operator on lower level data
                         if self.operator is OP_NONE:
@@ -984,6 +983,7 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
 #
 # Definition of default formatter
 #
+
 
 fmt_fontsize_12 = FmtFontsize(fontsize=12)
 fmt_fontsize_14 = FmtFontsize(fontsize=14)
