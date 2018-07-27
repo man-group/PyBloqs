@@ -27,7 +27,7 @@
         {% endfor %}
 	</thead>
 	<tbody>
-        {% for row_name, row in df[df.columns[df.columns.get_level_values(0) != '__MULTIINDEX_ORG_ROW_NAMES__'].tolist()].reset_index().T.iteritems() %}
+        {% for row_name, row in df.loc[slice(None), df.columns.get_level_values(0) != '__MULTIINDEX_ORG_ROW_NAMES__'].reset_index().T.iteritems() %}
         <tr {{create_row_level_css(row_name, row)}}>
             <td {{create_cell_level_css(row.iloc[0], row.iloc[0], "__JINJA_INDEX__")}}>
                 {{modify_cell_content(row.iloc[0], row.iloc[0], "__JINJA_INDEX__")}}

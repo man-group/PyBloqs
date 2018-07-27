@@ -59,8 +59,8 @@ def test_column_multi_index_df_to_jinja_table():
 
 def test_column_multi_index_df_to_jinja_table_narrow_multiindex():
     # Create column multi-index table
-    df = pd.DataFrame(np.arange(4, dtype=float).reshape(
-        1, 4), index=['aaaaaaaaaaaaaaaaaaa'], columns=['aa', 'bb', 'cc', 'aa'])
+    df = pd.DataFrame(np.arange(4, dtype=float).reshape(1, 4), index=['aaaaaaaaaaaaaaaaaaa'],
+                      columns=['aa', 'bb', 'cc', 'aa'])
     df['grouping'] = 'g'
     df = df.reset_index()
     df = df.groupby(['grouping', 'index']).sum().unstack()
