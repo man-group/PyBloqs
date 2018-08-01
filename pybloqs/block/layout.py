@@ -12,6 +12,7 @@ class CompositeBlockMixin(object):
     """
     Mixin to support composite blocks. Must have a `_contents` attribute!
     """
+
     def _visit(self, visitor):
         """
         Applies a visitor to child items of this container. In case
@@ -50,20 +51,9 @@ class CompositeBlockMixin(object):
     @staticmethod
     def _blockify_contents(contents, kwargs, parent_title_level):
         """
-        Blockify the contents (e.g. by unstacking WidePanels)
+        Blockify the contents
         """
-        if isinstance(contents, pd.WidePanel):
-            # Pop title and title_level out of the sub-block kwargs to avoid duplicate parameters.
-            sub_kwargs = kwargs.copy()
-            sub_kwargs.pop("title", None)
-            sub_kwargs.pop("title_level", None)
-            contents = [Block(df, title=str(title), title_level=parent_title_level + 1, **sub_kwargs)
-                        for title, df in contents.iteritems()]
-        else:
-            # Blockify the contents
-            contents = [Block(content) for content in contents]
-
-        return contents
+        return [Block(content) for content in contents]
 
 
 class Flow(CompositeBlockMixin, BaseBlock):
@@ -193,4 +183,4 @@ class HStack(Grid):
         self._cols = len(self._contents)
 
 
-add_block_types((list, tuple, set, pd.WidePanel), Grid)
+add_block_types((list, tuple, set), Grid)

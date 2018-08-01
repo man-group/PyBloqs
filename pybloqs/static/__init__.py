@@ -132,7 +132,7 @@ class DependencyTracker(object):
         return iter(self._deps)
 
 
-#JS deflation script and the reporting core functionality is always registered
+# JS deflation script and the reporting core functionality is always registered
 script_block_core = JScript("block-core", encode=False)
 script_inflate = JScript("jsinflate", encode=False)
 

@@ -113,7 +113,7 @@ class Plot(BaseBlock):
         """
         Create a chart or composite chart from the supplied data.
 
-        :param data: List, tuple, pandas.Series/DataFrame/WidePanel to use as chart data.
+        :param data: List, tuple, pandas.Series/DataFrame to use as chart data.
                      In case `data` is a list of Plot objects, a composite chart will be constructed.
         :param chart_cls: The chart class to use. Available values are "Chart" or "StockChart".
                           StockCharts have extra features like a navigator pane and special handling
@@ -325,12 +325,6 @@ class Plot(BaseBlock):
                 series = _decompose_l1(plot_cfg)
             else:
                 series = _wrap(plot_cfg, None)
-        elif isinstance(data, pd.WidePanel):
-            plot_cfg = plot_cfg or Arearange()
-            if plot_cfg.type in _univariate_plots:
-                series = _decompose_l2(plot_cfg)
-            else:
-                series = _decompose_l1(plot_cfg)
         else:
             plot_cfg = plot_cfg or Line()
             series = _wrap(plot_cfg, getattr(data, "name", None))

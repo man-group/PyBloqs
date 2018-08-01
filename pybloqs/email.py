@@ -2,21 +2,24 @@
 Common email related functions used by various reports.
 """
 from __future__ import absolute_import
-import base64
-import tempfile
-import getpass
-import html5lib
-import logging
-import os
-import smtplib
 
+import base64
 from email import encoders
 from email.message import Message
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import getpass
+import logging
+import os
+import smtplib
+import tempfile
+
 from html5lib import treebuilders
+import html5lib
+import six
+
 from pybloqs.config import user_config
 
 
@@ -113,7 +116,7 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
         idx += 1
 
     html = dom.toxml()
-    if isinstance(html, unicode) and convert_to_ascii:
+    if isinstance(html, six.text_type) and convert_to_ascii:
         html = html.encode("us-ascii", "ignore")
         message.attach(MIMEText(html, "html", "us-ascii"))
     else:

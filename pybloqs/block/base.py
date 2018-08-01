@@ -296,7 +296,8 @@ class BaseBlock(object):
         # The email body needs to be static without any dynamic elements.
         email_html = self.render_html(header_block=header_block, footer_block=footer_block)
 
-        send_html_report(email_html, recipients, subject=title, attachments=attachments, From=from_address, Cc=cc, Bcc=bcc, convert_to_ascii=convert_to_ascii)
+        send_html_report(email_html, recipients, subject=title, attachments=attachments,
+                         From=from_address, Cc=cc, Bcc=bcc, convert_to_ascii=convert_to_ascii)
 
     def to_static(self):
         return self._visit(lambda block: block._to_static())
@@ -444,7 +445,7 @@ class BaseBlock(object):
 
         :return: Data to be displayed
         """
-        return self.data
+        return self.data.decode()
 
     @property
     def data(self):
