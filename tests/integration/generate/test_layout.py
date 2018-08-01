@@ -8,7 +8,6 @@ from .generation_framework import assert_report_generated
 colors = ["Red", "Green", "Blue", "Magenta", "Orange", "Yellow", "Teal"]
 
 frame = pd.DataFrame({"a": [1.11111111, 2.22222222, 3.33333333], "b": ["foo", "baz", "bar"]}, index=[1, 2, 3])
-panel = pd.WidePanel({"a": frame, "b": frame})
 
 
 def _construct_style_inheritance(cls, **kwargs):
@@ -35,11 +34,6 @@ def test_flow_inherit_styles():
 
 
 @assert_report_generated
-def test_flow_widepanel():
-    return Flow(panel)
-
-
-@assert_report_generated
 def test_flow_nested_combined_layouts():
     return _construct_nested_layout(Flow)
 
@@ -52,11 +46,6 @@ def test_hstack():
 @assert_report_generated
 def test_hstack_inherit_styles():
     return _construct_style_inheritance(HStack)
-
-
-@assert_report_generated
-def test_hstack_widepanel():
-    return HStack(panel)
 
 
 @assert_report_generated
@@ -75,11 +64,6 @@ def test_vstack_inherit_styles():
 
 
 @assert_report_generated
-def test_vstack_widepanel():
-    return VStack(panel)
-
-
-@assert_report_generated
 def test_vstack_nested_combined_layouts():
     return _construct_nested_layout(VStack)
 
@@ -92,11 +76,6 @@ def test_grid():
 @assert_report_generated
 def test_grid_inherit_styles():
     return _construct_style_inheritance(Grid, cols=3)
-
-
-@assert_report_generated
-def test_grid_widepanel():
-    return Grid(panel, cols=2)
 
 
 @assert_report_generated

@@ -12,6 +12,7 @@ import pandas as pd
 _jinja_env = Environment(loader=PackageLoader('pybloqs', 'jinja'))
 _jinja_env.globals.update(len=len)
 _jinja_env.globals.update(enumerate=enumerate)
+_jinja_env.globals.update(slice=slice)
 _table_tmpl = _jinja_env.get_template('table.html')
 
 
@@ -85,7 +86,7 @@ class HTMLJinjaTableBlock(BaseBlock):
     def create_table_level_css(self):
         self.row_index = -self.n_header_rows - 1
         return self._aggregate_css_formatters('create_table_level_css')
-    
+
     def create_table_level_css_class(self):
         return self._aggregate_css_formatters('create_table_level_css_class', prefix='class')
 
@@ -104,7 +105,7 @@ class HTMLJinjaTableBlock(BaseBlock):
             row_name = self.df[ORG_ROW_NAMES].iloc[self.row_index]
         data = self.FormatterData(cell, row_name, column_name, self.df)
         return self._aggregate_css_formatters('create_cell_level_css', fmt_args=[data])
-    
+
     def _get_header_iterable(self):
         """Reformats all but the last header rows."""
         df_clean = self.df.loc[:, self.df.columns.get_level_values(0) != ORG_ROW_NAMES]
@@ -129,7 +130,7 @@ class HTMLJinjaTableBlock(BaseBlock):
                  'insert_additional_html': self.insert_additional_html,
                  'create_thead_level_css': self.create_thead_level_css,
                  'create_table_level_css': self.create_table_level_css,
-                 'create_table_level_css_class' : self.create_table_level_css_class,
+                 'create_table_level_css_class': self.create_table_level_css_class,
                  'create_row_level_css': self.create_row_level_css,
                  'create_cell_level_css': self.create_cell_level_css,
                  'modify_cell_content': self.modify_cell_content}

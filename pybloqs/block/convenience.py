@@ -26,9 +26,6 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
     - Lists, tuples and sets are written out into a grid layout, with a single column
       by default. Individual elements of the grid are parsed recursively.
     - DataFrames are written out as an interactive HTML table.
-    - WidePanels are written out as a series of DataFrames along the Items axis.
-      Each item in the panel will have the item name as a title, with the title
-      level one below the current block title level.
     - Strings are written out in a raw format, preserving any HTML content in them.
     - Nested blocks are simply wrapped, unless there is more than one in which case
       the same logic applies as for lists, tuples and sets.
