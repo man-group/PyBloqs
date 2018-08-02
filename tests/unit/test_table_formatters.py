@@ -626,13 +626,18 @@ def test_FmtExpandMultiIndex_modify_dataframe():
 
 def test_FmtExpandMultiIndex_cell_css():
     mi_df = make_multiindex_table()
-    fmt = pbtf.FmtExpandMultiIndex(bold=True, hline_color=colors.LIGHT_GREY, indent_px=123)
+    fmt = pbtf.FmtExpandMultiIndex(bold=True, hline_color=colors.LIGHT_GREY, indent_px=123,
+                                   level_background_colors=[colors.WHITE, colors.BLACK],
+                                   level_text_colors=[colors.BLACK, colors.WHITE])
     df = fmt._modify_dataframe(mi_df)
     # Because this formatter is quite stateful, index column must be called first
     data = FormatterData(0., 'a', pbtf.INDEX_COL_NAME, df)
     res = fmt._create_cell_level_css(data)
     # Test that level0 row gets index indented
     assert 'padding-left:0px' in res
+    # Test that level0 row gets text color and background-color
+    assert "background-color:rgb(255,255,255)" in res
+    assert "color:rgb(0,0,0)" in res
     # Test that level0 row gets all highlighting
     data = FormatterData(0., 'a', 'column1', df)
     res = fmt._create_cell_level_css(data)
@@ -648,6 +653,9 @@ def test_FmtExpandMultiIndex_cell_css():
     res = fmt._create_cell_level_css(data)
     assert 'padding-left:123px' in res
     assert pbtf.CSS_BOLD not in res
+    # Test that level1 row gets text color and background-color
+    assert "background-color:rgb(0,0,0)" in res
+    assert "color:rgb(255,255,255)" in res
 
     # Check that bold-highlighting is not used if not desired
     fmt = pbtf.FmtExpandMultiIndex(bold=False)

@@ -660,7 +660,7 @@ class FmtExpandMultiIndex(TableFormatter):
     """Expand multi-indexed table into single index table, grouping by index level with optional sum/mean/etc."""
 
     def __init__(self, total_columns=None, operator=OP_SUM, bold=True, indent_px=20, hline_color=colors.DARK_BLUE,
-                 level_background_colors=None):
+                 level_background_colors=None, level_text_colors=None):
         # Operate on all columns: Set self.columns to None
         super(FmtExpandMultiIndex, self).__init__(None, None)
 
@@ -674,6 +674,7 @@ class FmtExpandMultiIndex(TableFormatter):
         self.hline_color = colors.css_color(hline_color)
         self.index_counter = -1
         self.level_background_colors = level_background_colors
+        self.level_text_colors = level_text_colors
         return
 
     def _modify_dataframe(self, df):
@@ -740,6 +741,11 @@ class FmtExpandMultiIndex(TableFormatter):
             level_background_color = self.level_background_colors[self.index_level[self.index_counter]]
             if level_background_color is not None:
                 css_substrings.append(CSS_BACKGROUND_COLOR + colors.css_color(level_background_color))
+
+        if self.level_text_colors is not None:
+            level_text_color = self.level_text_colors[self.index_level[self.index_counter]]
+            if level_text_color is not None:
+                css_substrings.append(CSS_COLOR + colors.css_color(level_text_color))
 
         if len(css_substrings) != 0:
             return "; ".join(css_substrings)
