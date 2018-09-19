@@ -63,4 +63,11 @@ Changelog
   * Bugfix: FmtHighlightText - explicitly set non-bold for column header
   * Feature: Add page break example to documentation
   * Bugfix: Pass `apply_to_header_and_index` to base class on all formatters
-  
+
+### 1.1.9 (2018-09-19)
+
+  * Bugfix: Indexing error in table.html with non-unique indices
+  * Bugfix: Removed Pandas warning in tests
+  * Remove WidePanel, update ipynb
+  * Feature: Add support for specifying different text colors for MultiIndex levels
+  * Feature: Add a context manager for temporarily setting plot format/DPI
