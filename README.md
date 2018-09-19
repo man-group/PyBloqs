@@ -171,6 +171,8 @@ Contributors:
  * [Doug Bruce](https://github.com/douglasbruce88)
  * [Jonathan Nye](https://github.com/jonnynye)
  * [Matthew Dodds](https://github.com/doddsiedodds)
+ * [Han Wei Teo](https://github.com/HanTeo)
+ * [Manjunath Goudreddy](https://github.com/manjugoudreddy)
  * ... and many others ...
 
 Contributions welcome!
