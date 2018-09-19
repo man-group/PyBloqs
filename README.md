@@ -158,7 +158,7 @@ PyBloqs has been under active development at [Man AHL](http://www.ahl.com/) sinc
 
 Original concept and implementation: [Tom Farnbauer](https://github.com/SleepingPills)
 
-Contributors from AHL Tech team:
+Contributors:
 
  * [Dominik Christ](https://github.com/DominikMChrist)
  * [Barry Fitzgerald](https://github.com/pablojim)
@@ -169,6 +169,8 @@ Contributors from AHL Tech team:
  * [Jason Matthews](https://github.com/jjbmatthews)
  * [Rhodri Richards](https://github.com/rhodrich)
  * [Doug Bruce](https://github.com/douglasbruce88)
+ * [Jonathan Nye](https://github.com/jonnynye)
+ * [Matthew Dodds](https://github.com/doddsiedodds)
  * ... and many others ...
 
 Contributions welcome!
