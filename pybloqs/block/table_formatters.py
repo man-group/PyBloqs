@@ -987,7 +987,7 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
         return super(FmtColumnMultiIndexRows, self)._create_cell_level_css(data)
 
 #
-# Definition of default formatter
+# Definition of default formatters
 #
 
 fmt_fontsize_12 = FmtFontsize(fontsize=12)

@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
 import pybloqs.block.image as i
-from mock import patch
 
 
 def test_create_PlotBlock():

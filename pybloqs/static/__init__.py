@@ -51,7 +51,7 @@ class JScript(Resource):
 
     def __init__(self, file_name=None, script_string=None, name=None, encode=True):
         """
-        A JavaScript dependency definition. Ensures that multiple inclusion of the same function is handled safely.
+        A JavaScript dependency definition. Ensures that multiple inclusions of the same function are handled safely.
 
         :param file_name: Name of resource file included in static directory.
         :param script_string: JS code provided as unicode string.

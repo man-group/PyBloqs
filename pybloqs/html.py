@@ -23,7 +23,7 @@ def root(tag_name="html", doctype=None, **kwargs):
     Creates a new soup with the given root element.
 
     :param tag_name: Root element tag name.
-    :param dpoctype: Optional doctype tag to add.
+    :param doctype: Optional doctype tag to add.
     :return: Soup.
     """
     soup = parse("")
@@ -52,7 +52,7 @@ def append_to(parent, tag, **kwargs):
 
     :param parent: Parent to append to.
     :param tag: Tag to create.
-    :param kwargs: Tag kwargs.yy
+    :param kwargs: Tag kwargs.
     :return: New element.
     """
     if hasattr(parent, "soup"):

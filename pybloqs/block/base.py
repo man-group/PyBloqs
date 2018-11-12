@@ -138,7 +138,6 @@ class BaseBlock(object):
         :param pdf_zoom: The zooming to apply when rendering the page to PDF.
         :param pdf_page_size: The page size to use when rendering the page to PDF.
         :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size.
-        :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
         :return: html filename
         """
         # Ensure that exactly one of filename or fmt is provided
