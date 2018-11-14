@@ -24,6 +24,7 @@ def root(tag_name="html", doctype=None, **kwargs):
 
     :param tag_name: Root element tag name.
     :param doctype: Optional doctype tag to add.
+    :param kwargs: Optional parameters passed down to soup.new_tag()
     :return: Soup.
     """
     soup = parse("")

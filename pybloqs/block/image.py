@@ -13,6 +13,21 @@ from pybloqs.html import append_to, parse
 from pybloqs.static import JScript, Css
 from pybloqs.util import cfg_to_css_string
 
+try:
+    from plotly.graph_objs import Figure as PlotlyFigure
+    import plotly.offline as po
+    _PLOTLY_AVAILABLE = True
+except ImportError:
+    _PLOTLY_AVAILABLE = False
+
+try:
+    from bokeh.resources import CSSResources, JSResources
+    from bokeh.plotting.figure import Figure as BokehFigure
+    from bokeh.embed.standalone import components
+    _BOKEH_AVAILABLE = True
+except ImportError:
+    _BOKEH_AVAILABLE = False
+
 
 _MIME_TYPES = {
     "png": "png",
@@ -237,10 +252,6 @@ class PlotlyPlotBlock(BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        # Imports are local so we do not need to install Plotly when it is not used
-        from plotly.graph_objs import Figure as PlotlyFigure
-        import plotly.offline as po
-
         self.resource_deps = [JScript(script_string=po.offline.get_plotlyjs(), name='plotly')]
 
         super(PlotlyPlotBlock, self).__init__(**kwargs)
@@ -266,11 +277,6 @@ class BokehPlotBlock(BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        # Imports are local so we do not need to install Bokeh when it is not used
-        from bokeh.resources import CSSResources, JSResources
-        from bokeh.plotting.figure import Figure as BokehFigure
-        from bokeh.embed.standalone import components
-
         self.resource_deps = [JScript(script_string=s, name='bokeh_js') for s in JSResources().js_raw]
         self.resource_deps += [Css(css_string=s, name='bokeh_css') for s in CSSResources().css_raw]
 
@@ -287,15 +293,9 @@ class BokehPlotBlock(BaseBlock):
 
 
 add_block_types(Artist, PlotBlock)
-# If Plotly or Bokeh are not installed, do not fail, just skip registration
-try:
-    from plotly.graph_objs import Figure as PlotlyFigure
+# If Plotly or Bokeh are not installed skip registration
+if _PLOTLY_AVAILABLE:
     add_block_types(PlotlyFigure, PlotlyPlotBlock)
-except ImportError:
-    pass
 
-try:
-    from bokeh.plotting.figure import Figure as BokehFigure
+if _BOKEH_AVAILABLE:
     add_block_types(BokehFigure, BokehPlotBlock)
-except ImportError:
-    pass

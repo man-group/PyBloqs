@@ -1,10 +1,11 @@
+from io import open
+import os
+
 from pkg_resources import resource_filename
 from six import StringIO
 
 from pybloqs.html import js_elem, css_elem,  render
 from pybloqs.util import encode_string
-import os
-from io import open
 
 
 class Resource(object):
@@ -12,18 +13,21 @@ class Resource(object):
         """
         An external script dependency definition.
 
-        :param name: Canonical name of the script.
+        :param file_name: Name of resource file included in static directory.
+        :param extension: File extension of resource. Used to complement file_name if necessary. 
+        :param content_string: String with code or style, etc. provided as unicode string.
+        :param name: Unique label used to identify duplicates. Only required with script_string.
         """
-        # Do XOR for checking if one of the two parameters is set
+        # Do XOR for checking if either file_name or content_string and name are set
         if (file_name is None) == ((content_string is None) or (name is None)):
-            raise ValueError('Please specify either resource file_name or script_string with name.')
-        if file_name is not None:
+            raise ValueError('Please specify either resource file_name or content_string with name.')
+        if file_name is None:
+            self.name = name
+            self.content_string = content_string
+        else:
             self.name = os.path.splitext(file_name)[0]
             with open(self._local_path(file_name, extension), encoding='utf-8') as f:
                 self.content_string = f.read()
-        else:
-            self.name = name
-            self.content_string = content_string
 
     @classmethod
     def _local_path(cls, file_name, extension):

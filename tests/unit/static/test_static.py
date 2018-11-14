@@ -15,10 +15,10 @@ import pybloqs.static as ps
                          )
 def test_resource_with_file_name(file_name, extension, expected):
     with patch('pybloqs.static.open', mock_open(read_data='Some content')) as mo:
-        if extension is not None:
-            res = ps.Resource(file_name, extension)
-        else:
+        if extension is None:
             res = ps.Resource(file_name)
+        else:
+            res = ps.Resource(file_name, extension)
     # Check that file name used in open function is as expected
     assert os.path.basename(mo.call_args[0][0]) == expected
     assert res.name == 'test_file'

@@ -461,7 +461,7 @@ class BaseBlock(object):
         output = BytesIO()
 
         for child in container.children:
-            output.write(render(child).encode())
+            output.write(render(child).encode('utf-8'))
 
         return output.getvalue()
 
