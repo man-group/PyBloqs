@@ -77,7 +77,8 @@ def construct_element(container=None, content=None, tag=None, element_type=None)
 
     :param container: Container to add the element to.
     :param content: String representation of content (e.g. JS or CSS)
-    :param type: E.g. "text/javascript" or "text/css
+    :param tag: Tag name, e.g. "script" or "style"
+    :param element_type: E.g. "text/javascript" or "text/css"
     :return: New element.
     """
     if container is None:
