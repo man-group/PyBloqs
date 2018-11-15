@@ -45,13 +45,13 @@ def test_show_block_with_env_var():
 
 
 @pytest.mark.parametrize("filename, fmt, exp_name, exp_fmt, exp_output",
-                         [pytest.mark.xfail((None, None, None, None, None), raises=ValueError),
+                         [pytest.param(None, None, None, None, None, marks=pytest.mark.xfail(raises=ValueError)),
                           (None, 'html', None, 'html', '<HTML>'),
                              (None, 'pdf', None, 'pdf', None),
                              ('test.html', None, 'test.html', 'html', '<HTML>'),
                              ('test.html', 'html', 'test.html', 'html', '<HTML>'),
                              ('test', 'html', 'test.html', 'html', '<HTML>'),
-                             pytest.mark.xfail(('test', None, None, None, None), raises=ValueError),
+                             pytest.param('test', None, None, None, None, marks=pytest.mark.xfail(raises=ValueError)),
                              ('test.pdf', 'pdf', 'test.pdf', 'pdf', None),
                              ('test.pdf', 'html', 'test.pdf.html', 'html', '<HTML>'),
                           ])
