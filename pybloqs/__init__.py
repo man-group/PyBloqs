@@ -7,30 +7,7 @@ from pybloqs.block.convenience import Block
 from pybloqs.block.image import ImgBlock, PlotBlock, set_plot_format
 from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.wrap import Box, Paragraph
-from pybloqs import plot as bxpl
-
-from six import StringIO
-
-
-def interactive(verbose=True):
-    """
-    Enables interactive usage of block layout content.
-    """
-    from IPython.core.display import display_html
-    from pybloqs.static import write_interactive
-    from pybloqs.html import set_id_generator, id_generator_uuid
-
-    set_id_generator(id_generator_uuid)
-
-    stream = StringIO()
-
-    write_interactive(stream)
-
-    if verbose:
-        stream.write("<div>Interactive mode initialized successfully</div>")
-
-    # Send the scripts to the frontend
-    return display_html(stream.getvalue(), raw=True)
+from pybloqs import plot as pp
 
 
 __all__ = [
@@ -46,6 +23,7 @@ __all__ = [
     "VStack",
     "ImgBlock",
     "PlotBlock",
+    "HTMLJinjaTableBlock",
     "Box",
     "Paragraph",
     "Pre",
@@ -54,6 +32,5 @@ __all__ = [
     "Cfg",
 
     # Interactive Plots
-    "interactive",
-    "bxpl",
+    "pp",
 ]

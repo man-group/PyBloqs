@@ -1,7 +1,10 @@
+from io import open
 import os
 import tempfile
 import uuid
 import webbrowser
+
+from six import BytesIO
 
 from pybloqs.config import user_config
 from pybloqs.email import send_html_report
@@ -10,7 +13,7 @@ from pybloqs.htmlconv import htmlconv
 from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
 from pybloqs.util import Cfg, cfg_to_css_string
 from six.moves.urllib.parse import urljoin
-from six import BytesIO
+
 
 # Valid page sizes with widths in mm
 _page_width = {
@@ -77,7 +80,7 @@ class BaseBlock(object):
         self._anchor = anchor
         self._id = uuid.uuid4().hex
 
-    def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None, pdf_page_size="A4"):
+    def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None):
         """Returns html output of the block
         :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
         :return html-code of the block
@@ -116,7 +119,7 @@ class BaseBlock(object):
         return content
 
     def save(self, filename=None, fmt=None, toc=False, pdf_zoom=1, pdf_page_size="A4", pdf_auto_shrink=True,
-             pretty=True, orientation='Portrait', header_block=None, header_spacing=5, footer_block=None,
+             orientation='Portrait', header_block=None, header_spacing=5, footer_block=None,
              footer_spacing=5, java_script_delay=200, **kwargs):
         """
         Render and save the block. Depending on whether the filename or the format is
@@ -135,7 +138,6 @@ class BaseBlock(object):
         :param pdf_zoom: The zooming to apply when rendering the page to PDF.
         :param pdf_page_size: The page size to use when rendering the page to PDF.
         :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size.
-        :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
         :return: html filename
         """
         # Ensure that exactly one of filename or fmt is provided
@@ -168,12 +170,12 @@ class BaseBlock(object):
             content = self.render_html(static_output=False, header_block=header_block, footer_block=footer_block)
             html_filename = filename
         else:
-            content = self.render_html(static_output=True, pdf_page_size=pdf_page_size)
+            content = self.render_html(static_output=True)
             name = self._id[:ID_PRECISION] + ".html"
             html_filename = os.path.join(tempdir, name)
 
         # File with HTML content is needed either directly or as input for conversion
-        with open(html_filename, "wb") as f:
+        with open(html_filename, 'w', encoding='utf8') as f:
             f.write(content)
 
         if not is_html:
@@ -262,7 +264,7 @@ class BaseBlock(object):
         return path
 
     def email(self, title="", recipients=(user_config["user_email_address"],),
-              footer_text=None, header_block=None, footer_block=None,
+              header_block=None, footer_block=None,
               from_address=None, cc=None, bcc=None, attachments=None,
               convert_to_ascii=True, **kwargs):
         """
@@ -279,19 +281,18 @@ class BaseBlock(object):
                     - JPG
         :param body_block: The block to use as the email body. The default behavior is
                           to use the current block.
-        :param footer_text: string to be used in place of the default footer text
         :param from_address: sender of the message. Defaults to user name.
             Can be overwritten in .pybloqs.cfg with yaml format: 'user_email_address: a@b.com'
         :param cc: cc recipient
         :param bcc: bcc recipient
         :param convert_to_ascii: bool to control convertion of html email to ascii or to leave in current format
-        :param kwargs: Optional arguments to pass to `Block.save()`
+        :param kwargs: Optional arguments to pass to `Block.render_html()`
         """
         if from_address is None:
             from_address = user_config["user_email_address"]
 
         # The email body needs to be static without any dynamic elements.
-        email_html = self.render_html(header_block=header_block, footer_block=footer_block)
+        email_html = self.render_html(header_block=header_block, footer_block=footer_block, **kwargs)
 
         send_html_report(email_html, recipients, subject=title, attachments=attachments,
                          From=from_address, Cc=cc, Bcc=bcc, convert_to_ascii=convert_to_ascii)
@@ -460,7 +461,7 @@ class BaseBlock(object):
         output = BytesIO()
 
         for child in container.children:
-            output.write(render(child))
+            output.write(render(child).encode('utf-8'))
 
         return output.getvalue()
 

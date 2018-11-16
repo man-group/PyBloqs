@@ -1,5 +1,6 @@
 import bs4
 import uuid
+from functools import partial
 
 # Use the default python parser as this is lenient and does not
 # wrap content in extra tags
@@ -17,18 +18,19 @@ def parse(string):
     return bs4.BeautifulSoup(string, DEFAULT_PARSER)
 
 
-def root(tag_name="html", doctype=None):
+def root(tag_name="html", doctype=None, **kwargs):
     """
     Creates a new soup with the given root element.
 
     :param tag_name: Root element tag name.
     :param doctype: Optional doctype tag to add.
+    :param kwargs: Optional parameters passed down to soup.new_tag()
     :return: Soup.
     """
     soup = parse("")
     if doctype is not None:
         soup.append(bs4.Doctype(doctype))
-    tag = soup.new_tag(tag_name)
+    tag = soup.new_tag(tag_name, **kwargs)
     tag.soup = soup
     soup.append(tag)
     return tag
@@ -42,7 +44,7 @@ def render(item, pretty=True, encoding="utf8"):
     :param pretty: Toggles pretty formatting of the resulting string.
     :return: Rendered content.
     """
-    return item.prettify(encoding=encoding) if pretty else str(item)
+    return item.prettify(encoding=encoding).decode('utf8') if pretty else str(item)
 
 
 def append_to(parent, tag, **kwargs):
@@ -51,7 +53,6 @@ def append_to(parent, tag, **kwargs):
 
     :param parent: Parent to append to.
     :param tag: Tag to create.
-    :param args: Tag args.
     :param kwargs: Tag kwargs.
     :return: New element.
     """
@@ -70,21 +71,27 @@ def append_to(parent, tag, **kwargs):
     return new_tag
 
 
-def js_elem(container=None, script=None):
+def construct_element(container=None, content=None, tag=None, element_type=None):
     """
-    Constructs a Javascript element and appends it to the container.
+    Constructs an element and appends it to the container.
 
     :param container: Container to add the element to.
-    :param script: Javascript code.
+    :param content: String representation of content (e.g. JS or CSS)
+    :param tag: Tag name, e.g. "script" or "style"
+    :param element_type: E.g. "text/javascript" or "text/css"
     :return: New element.
     """
     if container is None:
-        el = root("script")
+        el = root(tag, type=element_type)
     else:
-        el = append_to(container, "script", type="text/javascript")
-    if script is not None:
-        el.string = script
+        el = append_to(container, tag, type=element_type)
+    if content is not None:
+        el.string = content
     return el
+
+
+js_elem = partial(construct_element, tag='script', element_type='text/javascript')
+css_elem = partial(construct_element, tag='style', element_type='text/css')
 
 
 def set_id_generator(generator):
@@ -118,5 +125,6 @@ def id_generator_sequential():
 
 def id_generator():
     return _id_generator()
+
 
 _id_generator = id_generator_sequential

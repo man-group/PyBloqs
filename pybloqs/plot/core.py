@@ -405,7 +405,7 @@ class Plot(BaseBlock):
 
         self._write_plot_postprocess(chart_buf)
 
-        JScript.write_compressed(stream, chart_buf.getvalue().encode('utf-8'))
+        JScript.write_compressed(stream, chart_buf.getvalue())
 
         stream.write("}},10);")
 

@@ -51,6 +51,7 @@ def test_plotlyplot():
 
     return PlotlyPlotBlock(fig)
 
+
 @assert_report_generated
 def test_bokehplot():
     fruits = ['Apples', 'Pears', 'Nectarines', 'Plums', 'Grapes', 'Strawberries']
@@ -67,8 +68,6 @@ def test_bokehplot():
     source = ColumnDataSource(data=dict(x=x, counts=counts))
 
     fig = figure(x_range=FactorRange(*x), plot_height=350, title="Fruit Counts by Year",
-               toolbar_location=None, tools="")
-
+                 toolbar_location=None, tools="")
+    fig.vbar(x='x', top='counts', width=0.9, source=source)
     return BokehPlotBlock(fig)
-
-
