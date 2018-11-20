@@ -19,7 +19,6 @@ defaults: &defaults
         - v1-dep-
     - run: wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
     - run: tar Jxvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-    - run: sudo apt-get install npm
     - run: sudo apt-get install poppler-utils
     - run: sudo apt-get install pandoc
     - run: npm install
@@ -72,12 +71,12 @@ jobs:
   build_2_7:
     working_directory: ~/manahl/PyBloqs_2_7
     docker:
-    - image: circleci/python:2.7-jessie
+    - image: circleci/python:2.7-stretch-node-browsers
     <<: *defaults
   build_3:
     working_directory: ~/manahl/PyBloqs_3
     docker:
-    - image: circleci/python:3.6-jessie
+    - image: circleci/python:3.6-stretch-node-browsers
     <<: *defaults
 workflows:
   version: 2
