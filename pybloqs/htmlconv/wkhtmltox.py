@@ -1,7 +1,7 @@
+from io import open
 import os
 import tempfile
 
-from io import open
 from pybloqs.config import ID_PRECISION
 from pybloqs.htmlconv.html_converter import HTMLConverter, A4, PORTRAIT
 
@@ -15,11 +15,18 @@ class WkhtmltopdfConverter(HTMLConverter):
                  footer_block=None, footer_spacing=None,  pdf_zoom=1, pdf_page_size=A4, orientation=PORTRAIT,
                  pdf_auto_shrink=True, **kwargs):
         """
-        Use the wkhtmltohtml tool to convert the supplied html content to a PDF file.
+        Use the wkhtmltohtml tool to convert the supplied HTML content to a PDF file.
 
-        :param input_file: File name for converter input.
+        :param block: The block to render
         :param output_file: File name for converter output.
-        :param args: Optional. List of extra command line args to pass to the converter tool.
+        :param header_block: A header block to add
+        :param header_spacing: The spacing for the header as number in mm.
+        :param footer_block: A footer block to add
+        :param footer_spacing: The spacing for the footer as number in mm.
+        :param pdf_zoom: The zooming to apply when rendering the page.
+        :param pdf_page_size: The page size to use when rendering the page to PDF.
+        :param orientation: Either html_converter.PORTRAIT or html_converter.LANDSCAPE
+        :param kwargs: Additional parameters. Passed to wkhtmltopdf.
         """
         cmd = []
         cmd.append(self.get_executable('wkhtmltopdf'))
@@ -64,13 +71,14 @@ class WkhtmltopdfConverter(HTMLConverter):
 
 class WkhtmltoimageConverter(HTMLConverter):
 
-    def htmlconv(self, block, output_file, header_filename=None, footer_filename=None, pdf_zoom=1, **kwargs):
+    def htmlconv(self, block, output_file, pdf_zoom=1, **kwargs):
         """
-        Use the wkhtmltoimage tool to convert the supplied html content to a image file.
+        Use the wkhtmltoimage tool to convert the supplied HTML content to an image file.
 
-        :param input_file: File name for converter input.
+        :param block: The block to render
         :param output_file: File name for converter output.
-        :param args: Optional. List of extra command line args to pass to the converter tool.
+        :param pdf_zoom: The zooming to apply when rendering the page.
+        :param kwargs: Additional parameters. Passed to wkhtmltoimage.
         """
 
         content = block.render_html(static_output=True)
@@ -101,12 +109,6 @@ class WkhtmltoimageConverter(HTMLConverter):
         del extra_params['pdf_page_size']
         del extra_params['orientation']
         [cmd.extend([k, v]) for k, v in extra_params.items()]
-
-        if header_filename is not None:
-            raise NotImplementedError('Headers not supported by wkhtmltoimage.')
-
-        if footer_filename is not None:
-            raise NotImplementedError('Footers not supported by wkhtmltoimage.')
 
         cmd.extend([html_filename, output_file])
 

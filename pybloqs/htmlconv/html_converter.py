@@ -4,8 +4,6 @@ import os
 import subprocess
 import sys
 
-import attr
-
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +12,6 @@ LANDSCAPE = 'Landscape'
 A4 = 'A4'
 
 
-@attr.s
 class HTMLConverter(object):
     """
     Definition of interface for HTML to X converters

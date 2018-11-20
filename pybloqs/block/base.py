@@ -9,7 +9,7 @@ from six import BytesIO
 from pybloqs.config import user_config, ID_PRECISION
 from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
-from pybloqs.htmlconv import get_converter, html_converter
+import pybloqs.htmlconv as htmlconv
 
 from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
 from pybloqs.util import Cfg, cfg_to_css_string
@@ -109,8 +109,8 @@ class BaseBlock(object):
         content = render(html.parent, pretty=pretty)
         return content
 
-    def save(self, filename=None, fmt=None, pdf_zoom=1, pdf_page_size=html_converter.A4, pdf_auto_shrink=True,
-             orientation=html_converter.PORTRAIT, header_block=None, header_spacing=5, footer_block=None,
+    def save(self, filename=None, fmt=None, pdf_zoom=1, pdf_page_size=htmlconv.html_converter.A4, pdf_auto_shrink=True,
+             orientation=htmlconv.html_converter.PORTRAIT, header_block=None, header_spacing=5, footer_block=None,
              footer_spacing=5, **kwargs):
         """
         Render and save the block. Depending on whether the filename or the format is
@@ -129,9 +129,9 @@ class BaseBlock(object):
         :param pdf_auto_shrink: Toggles auto-shrinking content to fit the desired page size (wkhtmltopdf only)
         :param orientation: Either html_converter.PORTRAIT or html_converter.LANDSCAPE
         :param header_block: Block to be used as header (and repeated on every page). Only used for PDF output.
-        :param header_spacing: Size of header block. Numbers are in mm. HTML sizes (e.g. '5cm') work in chrome_headless only.
+        :param header_spacing: Size of header block. Numbers are in mm. HTML sizes (e.g. '5cm') in chrome_headless only.
         :param footer_block: Block to be used as footer (and repeated on every page). Only used for PDF output.
-        :param footer_spacing: Size of header block. Numbers are in mm. HTML sizes (e.g. '5cm') work in chrome_headless only.
+        :param footer_spacing: Size of header block. Numbers are in mm. HTML sizes (e.g. '5cm') in chrome_headless only.
         :return: html filename
         """
         # Ensure that exactly one of filename or fmt is provided
@@ -165,7 +165,7 @@ class BaseBlock(object):
             with open(filename, "w") as f:
                 f.write(content)
         else:
-            converter = get_converter(fmt)
+            converter = htmlconv.get_converter(fmt)
             converter.htmlconv(self, filename,
                                header_block=header_block, header_spacing=header_spacing,
                                footer_block=footer_block, footer_spacing=footer_spacing,

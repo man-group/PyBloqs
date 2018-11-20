@@ -5,13 +5,13 @@ import uuid
 from mock import patch
 import pytest
 
+import numpy as np
 import pybloqs as p
 from pybloqs.htmlconv.html_converter import LANDSCAPE
-import numpy as np
-from six import BytesIO
+
+
 # set up logging output to help with external function calls
 logging.basicConfig(level=logging.INFO)
-
 
 A4_LONG_PTS = 842
 A4_SHORT_PTS = 595

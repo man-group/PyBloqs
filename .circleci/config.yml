@@ -22,6 +22,7 @@ defaults: &defaults
     - run: sudo apt-get install npm
     - run: sudo apt-get install poppler-utils
     - run: sudo apt-get install pandoc
+    - run: npm install
     - run: npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
     - run:
        name: Create and activate virtualenv

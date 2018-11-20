@@ -30,7 +30,10 @@ class ChromeHeadlessConverter(HTMLConverter):
         :param header_spacing: The spacing for the header, either HTML lenght unit or number (interpreted as mm).
         :param footer_block: A footer block to add
         :param footer_spacing: The spacing for the footer, either HTML lenght unit or number (interpreted as mm).
-        :param kwargs: Optional. Named args used in page-specific css.
+        :param pdf_zoom: The zooming to apply when rendering the page.
+        :param pdf_page_size: The page size to use when rendering the page to PDF.
+        :param orientation: Either html_converter.PORTRAIT or html_converter.LANDSCAPE
+        :param kwargs: Additional parameters. Not currently used in chrome_headless backend.
         """
         zoom = pdf_zoom * 0.75  # Produces roughly same zoom as wkhtmltopdf
 

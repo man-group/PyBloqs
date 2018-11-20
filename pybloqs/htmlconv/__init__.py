@@ -13,7 +13,7 @@ IMAGE_CONVERTERS = {
 
 
 def get_converter(file_type, **kwargs):
-    """Parse the config and return the current backend for converting HTML to other formats."""
+    """Parse the config and return the right backend for converting HTML to other formats."""
     if file_type.lower() == 'pdf':
         converter_name = user_config['pdf_converter']
         return PDF_CONVERTERS[converter_name](**kwargs)

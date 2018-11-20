@@ -69,6 +69,16 @@ python setup.py load_wkhtmltopdf --wkhtmltopdf=/path/to/binary
 npm install
 ```
 in the main PyBloqs directory.
+
+- Bokeh (optional). To install Bokeh dependency, you can use:
+```
+pip install pybloqs[bokeh]
+```
+- Plotly (optional). To install Plotly dependency, you can use:
+```
+pip install pybloqs[plotly]
+```
+
  
 - HighCharts (optional; proprietary license, see https://shop.highsoft.com/highcharts-t2):
 
