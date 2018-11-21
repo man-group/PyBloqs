@@ -71,3 +71,13 @@ Changelog
   * Remove WidePanel, update ipynb
   * Feature: Add support for specifying different text colors for MultiIndex levels
   * Feature: Add a context manager for temporarily setting plot format/DPI
+
+### 1.2.0 (2018-11-21)
+
+  * Feature: Python 3 support
+  * Feature: Support for Bokeh plots 
+  * Feature: Support for Plotly plots
+  * Feature: Allow use of different HTML conversion backends
+  * Feature: Added Chrome-headless backend for HTML->PDF conversion  
+  * Updated CircleCI configuration to version 2
+   

@@ -164,7 +164,7 @@ class PyTest(TestCommand):
 
 setup(
     name="pybloqs",
-    version="1.1.9",
+    version="1.2.0",
     author="Man AHL Technology",
     author_email="ManAHLTech@ahl.com",
     description="Data Visualization and Report Building",
@@ -208,7 +208,7 @@ setup(
         "Programming Language :: Python",
         "Topic :: Scientific/Engineering",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 2 :: Only"
+        "Programming Language :: Python :: 3.6",
     ],
     cmdclass={
         "install": PyBloqsInstall,
