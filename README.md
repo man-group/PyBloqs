@@ -59,12 +59,28 @@ wkhtmltopdf is not bundled with PyBloqs. You need to install it from your distri
 ```  
 
 
-When installing in development mode you can load highcharts explicitly:
+When installing in development mode you can load wkhtmltopdf explicitly:
 ```
 python setup.py load_wkhtmltopdf --wkhtmltopdf=/path/to/binary
 ```
 
-- HighCharts (optional; proprietery license, see https://shop.highsoft.com/highcharts-t2):
+- Node.js with comander and puppeteer (optional; for PDF output with 'chrome_headless' backend). Please make sure these are available globally. In development mode, you can run 
+```
+npm install
+```
+in the main PyBloqs directory.
+
+- Bokeh (optional). To install Bokeh dependency, you can use:
+```
+pip install pybloqs[bokeh]
+```
+- Plotly (optional). To install Plotly dependency, you can use:
+```
+pip install pybloqs[plotly]
+```
+
+ 
+- HighCharts (optional; proprietary license, see https://shop.highsoft.com/highcharts-t2):
 
 Highcharts is not bundled with PyBloqs. To create blocks with Highcharts plots, you need to download Highcharts 
 separately (e.g. with `npm install highcharts`, `npm install highcharts-heatmap` etc.), and provide the path to your 

@@ -1,3 +1,4 @@
+
 #!/bin/env python
 from distutils.dir_util import mkpath
 from distutils.file_util import copy_file
@@ -180,7 +181,7 @@ setup(
         "docutils",
         "lxml",
         "pyyaml",
-        "jinja2"
+        "jinja2",
     ],
     extras_require={
         "docs_and_notebook": [
@@ -188,10 +189,10 @@ setup(
             "nbsphinx",
             "ipython[notebook]",
         ],
-        "plotly":[
+        "plotly": [
             "plotly"
         ],
-        "bokeh":[
+        "bokeh": [
             "bokeh"
         ]
     },
