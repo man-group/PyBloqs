@@ -1,13 +1,15 @@
+from io import open
 import logging
+import os
 import subprocess
 import uuid
 
-from mock import patch
+from mock import patch, Mock
 import pytest
 
 import numpy as np
 import pybloqs as p
-from pybloqs.htmlconv.html_converter import LANDSCAPE
+from pybloqs.htmlconv.html_converter import LANDSCAPE, HTMLConverter
 
 
 # set up logging output to help with external function calls
@@ -32,6 +34,21 @@ def run_pdftotext(file_name):
     stdout, _ = proc.communicate()
     output = stdout.decode().splitlines()
     return output
+
+
+def test_write_html_to_tempfile():
+    block = Mock()
+    block._id = 'test_id'
+    content = 'dummy'
+
+    file_name = HTMLConverter.write_html_to_tempfile(block, content)
+    assert os.path.split(file_name)[-1].startswith('test_id')
+    assert file_name.endswith('html')
+    with open(file_name, 'r') as f:
+        assert f.read() == content
+
+    # Cleanup
+    os.remove(file_name)
 
 
 @pytest.mark.parametrize('converter_name', ['chrome_headless', 'wkhtmltopdf'])

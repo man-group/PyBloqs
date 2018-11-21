@@ -31,6 +31,15 @@ PyBloqs supports embedding of interactive plotting libraries such as Bokeh and P
   :maxdepth: 2
   
   interactive_plots.ipynb
+  
+Configuration
+-------------
+Local configuration of features like email sending and PDF backend.
+
+.. toctree::
+  :maxdepth: 2
+  
+  configuration.ipynb
 
 Indices and tables
 ==================

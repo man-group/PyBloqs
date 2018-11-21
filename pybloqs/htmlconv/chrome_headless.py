@@ -35,8 +35,6 @@ class ChromeHeadlessConverter(HTMLConverter):
         :param orientation: Either html_converter.PORTRAIT or html_converter.LANDSCAPE
         :param kwargs: Additional parameters. Not currently used in chrome_headless backend.
         """
-        zoom = pdf_zoom * 0.75  # Produces roughly same zoom as wkhtmltopdf
-
         # For compatibility with wkhtmltopdf handle spacing that is passed as number to be in mm.
         if header_spacing is not None and header_block is not None:
             if isinstance(header_spacing, Number):
@@ -52,17 +50,13 @@ class ChromeHeadlessConverter(HTMLConverter):
                                     header_block=header_block,
                                     footer_block=footer_block)
 
-        name = block._id[:ID_PRECISION] + ".html"
-        tempdir = tempfile.gettempdir()
-        html_filename = os.path.join(tempdir, name)
-        with open(html_filename, 'w') as f:
-            f.write(content)
-            return self.run_command([
-                self.get_executable('node'),
-                _NODE_SCRIPT_LOC,
-                '--zoom', str(zoom),
-                '--landscape', 'false' if orientation == PORTRAIT else 'true',
-                '--format', pdf_page_size,
-                "file://{}".format(f.name),
-                output_file
-            ])
+        html_filename = HTMLConverter.write_html_to_tempfile(block, content)
+        return self.run_command([
+            self.get_executable('node'),
+            _NODE_SCRIPT_LOC,
+            '--zoom', str(pdf_zoom),
+            '--landscape', 'false' if orientation == PORTRAIT else 'true',
+            '--format', pdf_page_size,
+            "file://{}".format(html_filename),
+            output_file
+        ])

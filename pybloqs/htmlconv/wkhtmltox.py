@@ -45,21 +45,17 @@ class WkhtmltopdfConverter(HTMLConverter):
 
         # Render without header and footer as those are handles explicitly below
         content = block.render_html(static_output=True)
-        name = block._id[:ID_PRECISION] + ".html"
-        tempdir = tempfile.gettempdir()
-        html_filename = os.path.join(tempdir, name)
-        with open(html_filename, "w") as f:
-            f.write(content)
+        html_filename = HTMLConverter.write_html_to_tempfile(block, content)
 
         if header_block is not None:
-            header_file = header_block._id[:ID_PRECISION] + ".html"
-            header_filename = header_block.publish(os.path.join(tempdir, header_file))
+            header_content = header_block.render_html(static_output=True)
+            header_filename = HTMLConverter.write_html_to_tempfile(header_block, header_content)
             cmd += ['--header-html', header_filename]
             cmd += ['--header-spacing', str(header_spacing)]
 
         if footer_block is not None:
-            footer_file = footer_block._id[:ID_PRECISION] + ".html"
-            footer_filename = footer_block.publish(os.path.join(tempdir, footer_file))
+            footer_content = footer_block.render_html(static_output=True)
+            footer_filename = HTMLConverter.write_html_to_tempfile(footer_block, footer_content)
             cmd += ['--footer-html', footer_filename]
             cmd += ['--footer-spacing', str(footer_spacing)]
 
@@ -80,13 +76,8 @@ class WkhtmltoimageConverter(HTMLConverter):
         :param pdf_zoom: The zooming to apply when rendering the page.
         :param kwargs: Additional parameters. Passed to wkhtmltoimage.
         """
-
         content = block.render_html(static_output=True)
-        name = block._id[:ID_PRECISION] + ".html"
-        tempdir = tempfile.gettempdir()
-        html_filename = os.path.join(tempdir, name)
-        with open(html_filename, "w") as f:
-            f.write(content)
+        html_filename = HTMLConverter.write_html_to_tempfile(block, content)
 
         cmd = []
         cmd.append(self.get_executable('wkhtmltoimage'))
@@ -99,16 +90,10 @@ class WkhtmltoimageConverter(HTMLConverter):
         cmd += ["--no-stop-slow-scripts", "--debug-javascript"]
         cmd += ["--javascript-delay", str(kwargs.get('javascript_delay', 200))]
 
-        # Remove default parameters that are not relevant for image output and pass the rest to wkhtmltoimage
-        extra_params = kwargs.copy()
-        del extra_params['header_block']
-        del extra_params['header_spacing']
-        del extra_params['footer_block']
-        del extra_params['footer_spacing']
-        del extra_params['pdf_auto_shrink']
-        del extra_params['pdf_page_size']
-        del extra_params['orientation']
-        [cmd.extend([k, v]) for k, v in extra_params.items()]
+        # Ignore default parameters that are not relevant for image output and pass the rest to wkhtmltoimage
+        kwargs_ignore_list = ['header_block', 'header_spacing', 'footer_block', 'footer_spacing', 'pdf_auto_shrink',
+                              'pdf_page_size', 'orientation']
+        [cmd.extend([k, v]) for k, v in kwargs.items() if k not in kwargs_ignore_list]
 
         cmd.extend([html_filename, output_file])
 

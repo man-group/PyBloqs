@@ -3,7 +3,8 @@ import logging
 import os
 import subprocess
 import sys
-
+import tempfile
+from pybloqs.config import ID_PRECISION
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,15 @@ class HTMLConverter(object):
         else:
             logger.info('Returned:\n stdout: {}\n stderr:{}'.format(output, errors))
         return output, errors
+
+    @staticmethod
+    def write_html_to_tempfile(block, content):
+        name = block._id[:ID_PRECISION] + ".html"
+        tempdir = tempfile.gettempdir()
+        html_filename = os.path.join(tempdir, name)
+        with open(html_filename, "w") as f:
+            f.write(content)
+        return html_filename
 
     @abstractmethod
     def htmlconv(self, input_file, output_file, header_filename=None, header_spacing=None,
