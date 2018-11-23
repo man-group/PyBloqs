@@ -81,3 +81,8 @@ Changelog
   * Feature: Added Chrome-headless backend for HTML->PDF conversion  
   * Updated CircleCI configuration to version 2
    
+### 1.2.1 (2018-11-23)
+
+  * Bugfix: Removed pybloqs.plot import from top-level __init__.py
+  * Bugfix: puppeteer.js now included in egg/wheel packaging
+
