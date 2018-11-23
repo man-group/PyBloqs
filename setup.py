@@ -220,5 +220,6 @@ setup(
     package_data={"pybloqs.static": ["*.js",
                                      "css/*.css",
                                      "css/pybloqs_default/main.css"],
-                  "pybloqs.jinja": ["table.html"]}
+                  "pybloqs.jinja": ["table.html"],
+                  "pybloqs.htmlconv": ["*.js"]}
 )

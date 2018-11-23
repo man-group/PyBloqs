@@ -7,7 +7,6 @@ from pybloqs.block.convenience import Block
 from pybloqs.block.image import ImgBlock, PlotBlock, set_plot_format
 from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.wrap import Box, Paragraph
-from pybloqs import plot as pp
 
 
 __all__ = [
@@ -30,7 +29,4 @@ __all__ = [
     "Span",
     "Markdown",
     "Cfg",
-
-    # Interactive Plots
-    "pp",
 ]
