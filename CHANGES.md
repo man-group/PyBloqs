@@ -86,3 +86,7 @@ Changelog
   * Bugfix: Removed pybloqs.plot import from top-level __init__.py
   * Bugfix: puppeteer.js now included in egg/wheel packaging
 
+### 1.2.2 (2018-11-27)
+
+  * Bugfix: Added missing formatter arg for wkhtmltox failure logging
+
