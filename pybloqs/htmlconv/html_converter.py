@@ -38,7 +38,7 @@ class HTMLConverter(object):
         output, errors = proc.communicate()
 
         if proc.returncode != 0:
-            raise ValueError("{} returned:\n stdout:{}\n stderr:{}" % (cmd, output, errors))
+            raise ValueError("{} returned:\n stdout:{}\n stderr:{}".format(cmd, output, errors))
         else:
             logger.info('Returned:\n stdout: {}\n stderr:{}'.format(output, errors))
         return output, errors
