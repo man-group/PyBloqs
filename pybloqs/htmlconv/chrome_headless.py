@@ -1,13 +1,11 @@
-from io import open
 from numbers import Number
-import os
-import tempfile
 
-from pybloqs.config import ID_PRECISION
+from pkg_resources import resource_filename
+
 from pybloqs.htmlconv.html_converter import HTMLConverter, PORTRAIT, A4
 
 
-_NODE_SCRIPT_LOC = os.path.dirname(os.path.realpath(__file__)) + "/puppeteer.js"
+_NODE_SCRIPT_LOC = resource_filename(__name__, "puppeteer.js")
 
 
 class ChromeHeadlessConverter(HTMLConverter):
