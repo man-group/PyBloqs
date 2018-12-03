@@ -106,7 +106,7 @@ class BaseBlock(object):
             res.write(head)
 
         # Render the whole document (the parent of the html tag)
-        content = render(html.parent, pretty=pretty)
+        content = render(html.parent, pretty=pretty).encode('utf-8')
         return content
 
     def save(self, filename=None, fmt=None, pdf_zoom=1, pdf_page_size=htmlconv.html_converter.A4, pdf_auto_shrink=True,
