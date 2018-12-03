@@ -109,3 +109,12 @@ def test_image_output():
     with open(svg_file, 'rb') as f:
         raw_data = f.read()
     assert b'<svg' in raw_data
+
+
+def test_py2_unicode_output():
+    import pybloqs as p
+    block = p.Block(u'\u221a')
+    pdf_file = block.save(fmt='pdf')
+    with open(pdf_file, 'rb') as f:
+        raw_data = f.read()
+    assert '0xE2 0x88 0x9A' in raw_data

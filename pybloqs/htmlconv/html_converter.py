@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from io import open
 import logging
 import os
 import subprocess
@@ -48,7 +49,7 @@ class HTMLConverter(object):
         name = block._id[:ID_PRECISION] + ".html"
         tempdir = tempfile.gettempdir()
         html_filename = os.path.join(tempdir, name)
-        with open(html_filename, "w") as f:
+        with open(html_filename, "w", encoding='utf-8') as f:
             f.write(content)
         return html_filename
 
