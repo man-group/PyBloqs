@@ -90,3 +90,6 @@ Changelog
 
   * Bugfix: Added missing formatter arg for wkhtmltox failure logging
 
+### 1.2.3 (2018-12-03)
+
+  * Bugfix: Ensured python2 strings were being correctly encoded
