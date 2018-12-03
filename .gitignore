@@ -30,5 +30,6 @@ docs/source/pybloqs.plot.rst
 docs/source/pybloqs.rst
 docs/source/pybloqs.static.rst
 .vscode
+.idea
 .pytest_cache
 node_modules
