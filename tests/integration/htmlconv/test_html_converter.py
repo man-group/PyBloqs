@@ -112,7 +112,6 @@ def test_image_output():
 
 
 def test_py2_unicode_output():
-    import pybloqs as p
     block = p.Block(u'\u221a')
     try:
         block.save(fmt='pdf')
