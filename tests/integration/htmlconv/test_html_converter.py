@@ -5,6 +5,7 @@ import subprocess
 import uuid
 
 from mock import patch, Mock
+from six import text_type
 import pytest
 
 import numpy as np
@@ -41,7 +42,7 @@ def test_write_html_to_tempfile():
     block._id = 'test_id'
     content = 'dummy'
 
-    file_name = HTMLConverter.write_html_to_tempfile(block, content)
+    file_name = HTMLConverter.write_html_to_tempfile(block, text_type(content))
     assert os.path.split(file_name)[-1].startswith('test_id')
     assert file_name.endswith('html')
     with open(file_name, 'r') as f:
@@ -109,3 +110,11 @@ def test_image_output():
     with open(svg_file, 'rb') as f:
         raw_data = f.read()
     assert b'<svg' in raw_data
+
+
+def test_py2_unicode_output():
+    block = p.Block(u'\u221a')
+    try:
+        block.save(fmt='pdf')
+    except Exception:
+        pytest.fail("Block containing unicode symbol failed to save")

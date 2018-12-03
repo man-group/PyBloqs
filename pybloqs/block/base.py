@@ -162,7 +162,7 @@ class BaseBlock(object):
 
         if is_html:
             content = self.render_html(static_output=False, header_block=header_block, footer_block=footer_block)
-            with open(filename, "w") as f:
+            with open(filename, "w", encoding='utf-8') as f:
                 f.write(content)
         else:
             converter = htmlconv.get_converter(fmt)
