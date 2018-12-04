@@ -55,12 +55,12 @@ class HTMLConverter(object):
 
     @staticmethod
     def remove_temporary_files(temp_files):
-        try:
-            if user_config.get('remove_temp_files', True):
-                for f in temp_files:
+        if user_config.get('remove_temp_files', True):
+            for f in temp_files:
+                try:
                     os.remove(f)
-        except (IOError, OSError):
-            logger.exception('Failed to remove a temporary file.')
+                except (IOError, OSError):
+                    logger.exception('Failed to remove a temporary file: {}.'.format(f))
 
     @abstractmethod
     def htmlconv(self, input_file, output_file, header_filename=None, header_spacing=None,
