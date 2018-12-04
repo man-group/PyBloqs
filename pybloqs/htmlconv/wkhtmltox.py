@@ -1,8 +1,5 @@
-from io import open
 import os
-import tempfile
 
-from pybloqs.config import ID_PRECISION
 from pybloqs.htmlconv.html_converter import HTMLConverter, A4, PORTRAIT
 
 
@@ -47,21 +44,26 @@ class WkhtmltopdfConverter(HTMLConverter):
         content = block.render_html(static_output=True)
         html_filename = HTMLConverter.write_html_to_tempfile(block, content)
 
+        temp_files = [html_filename]
+
         if header_block is not None:
             header_content = header_block.render_html(static_output=True)
             header_filename = HTMLConverter.write_html_to_tempfile(header_block, header_content)
             cmd += ['--header-html', header_filename]
             cmd += ['--header-spacing', str(header_spacing)]
+            temp_files.append(header_filename)
 
         if footer_block is not None:
             footer_content = footer_block.render_html(static_output=True)
             footer_filename = HTMLConverter.write_html_to_tempfile(footer_block, footer_content)
             cmd += ['--footer-html', footer_filename]
             cmd += ['--footer-spacing', str(footer_spacing)]
+            temp_files.append(footer_filename)
 
         cmd.extend([html_filename, output_file])
 
         output, errors = self.run_command(cmd)
+        HTMLConverter.remove_temporary_files(temp_files)
         return output, errors
 
 
@@ -98,4 +100,5 @@ class WkhtmltoimageConverter(HTMLConverter):
         cmd.extend([html_filename, output_file])
 
         output, errors = self.run_command(cmd)
+        HTMLConverter.remove_temporary_files([html_filename])
         return output, errors

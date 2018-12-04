@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 import tempfile
-from pybloqs.config import ID_PRECISION
+from pybloqs.config import ID_PRECISION, user_config
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,15 @@ class HTMLConverter(object):
         with open(html_filename, "w", encoding='utf-8') as f:
             f.write(content)
         return html_filename
+
+    @staticmethod
+    def remove_temporary_files(temp_files):
+        if user_config.get('remove_temp_files', True):
+            for f in temp_files:
+                try:
+                    os.remove(f)
+                except (IOError, OSError):
+                    logger.exception('Failed to remove a temporary file: {}.'.format(f))
 
     @abstractmethod
     def htmlconv(self, input_file, output_file, header_filename=None, header_spacing=None,

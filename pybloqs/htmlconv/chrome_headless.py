@@ -49,7 +49,7 @@ class ChromeHeadlessConverter(HTMLConverter):
                                     footer_block=footer_block)
 
         html_filename = HTMLConverter.write_html_to_tempfile(block, content)
-        return self.run_command([
+        output, errors = self.run_command([
             self.get_executable('node'),
             _NODE_SCRIPT_LOC,
             '--zoom', str(pdf_zoom),
@@ -58,3 +58,5 @@ class ChromeHeadlessConverter(HTMLConverter):
             "file://{}".format(html_filename),
             output_file
         ])
+        HTMLConverter.remove_temporary_files([html_filename])
+        return output, errors

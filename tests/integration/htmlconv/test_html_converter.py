@@ -118,3 +118,31 @@ def test_py2_unicode_output():
         block.save(fmt='pdf')
     except Exception:
         pytest.fail("Block containing unicode symbol failed to save")
+
+
+@pytest.mark.parametrize('converter_name', ['chrome_headless', 'wkhtmltopdf'])
+def test_cleanup(tmpdir, converter_name):
+    with patch('pybloqs.htmlconv.user_config', {'pdf_converter': 'wkhtmltopdf', 'image_converter': 'wkhtmltoimage'}):
+        internal_dir = tmpdir.mkdir("internal")
+        with patch('tempfile.gettempdir') as gettempdir:
+            gettempdir.return_value = internal_dir.strpath
+
+            with patch('pybloqs.htmlconv.html_converter.user_config', {'remove_temp_files': True}):
+                p.Block('Pdf 1').save(tmpdir.join('output_1.pdf').strpath)
+                assert len(tmpdir.listdir()) == 2
+                assert len(internal_dir.listdir()) == 0
+
+                p.Block('Png 1').save(tmpdir.join('output_1.png').strpath)
+                assert len(tmpdir.listdir()) == 3
+                assert len(internal_dir.listdir()) == 0
+
+            with patch('pybloqs.htmlconv.html_converter.user_config', {'remove_temp_files': False}):
+                p.Block('Pdf 2').save(tmpdir.join('output_2.pdf').strpath)
+                assert len(tmpdir.listdir()) == 4
+                assert len(internal_dir.listdir()) == 1
+
+                p.Block('Png 2').save(tmpdir.join('output_2.png').strpath)
+                assert len(tmpdir.listdir()) == 5
+                assert len(internal_dir.listdir()) == 2
+
+    tmpdir.remove()

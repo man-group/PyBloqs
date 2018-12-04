@@ -7,6 +7,7 @@ user_config = {
     "user_email_address": getpass.getuser(),
     "public_dir": "/tmp",
     "tmp_html_dir": "/tmp",
+    "remove_temp_files": True,
     "smtp_kwargs": {
         "host": ""
     },
