@@ -100,10 +100,10 @@ def test_dependency_tracker_add_resources_with_deduplication():
 
 
 def test_dependency_tracker_insertion_order():
-    dep = ps.DependencyTracker('A', 'B')
-    dep.add('C')
+    dep = ps.DependencyTracker('A', 'C')
     dep.add('D')
-    assert list(dep) == ['A', 'B', 'C', 'D']
+    dep.add('B')
+    assert list(dep) == ['A', 'C', 'D', 'B']
 
 
 def test_register_interactive_write_interactive():
