@@ -93,10 +93,17 @@ def test_dependency_tracker_retrieve_resources():
     assert set(dep) == {'res1', 'res2'}
 
 
-def test_dependency_tracker_add_resources_wit_deduplication():
-    dep = ps.DependencyTracker()
+def test_dependency_tracker_add_resources_with_deduplication():
+    dep = ps.DependencyTracker('res1')
     dep.add('res1', 'res2', 'res1')
-    assert set(dep) == {'res1', 'res2'}
+    assert sorted(dep) == ['res1', 'res2']
+
+
+def test_dependency_tracker_insertion_order():
+    dep = ps.DependencyTracker('A', 'C')
+    dep.add('D')
+    dep.add('B')
+    assert list(dep) == ['A', 'C', 'D', 'B']
 
 
 def test_register_interactive_write_interactive():

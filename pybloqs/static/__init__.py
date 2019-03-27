@@ -110,13 +110,13 @@ class Css(Resource):
 
 class DependencyTracker(object):
     def __init__(self, *args):
-        self._deps_set = set(args)
+        self._deps = list(args)
 
     def add(self, *resources):
-        self._deps_set = self._deps_set.union(resources)
+        self._deps += [r for r in resources if r not in self._deps]
 
     def __iter__(self):
-        return iter(self._deps_set)
+        return iter(self._deps)
 
 
 # JS deflation script and the reporting core functionality is always registered
