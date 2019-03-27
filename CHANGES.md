@@ -93,3 +93,7 @@ Changelog
 ### 1.2.3 (2018-12-03)
 
   * Bugfix: Ensured python2 strings were being correctly encoded
+
+### 1.2.4 (2019-03-27)
+
+  * Bugfix: Maintain static import ordering
