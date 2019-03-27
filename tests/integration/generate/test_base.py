@@ -13,7 +13,7 @@ def _create_dynamic_content():
     d = pd.date_range("2012-01-01", periods=10)
     s = pd.Series(range(len(d)), d)
 
-    return pbp.Plot(s, width="100%", height="100%")
+    return pbp.Plot(s, width="100px", height="100%")
 
 
 @assert_report_generated
