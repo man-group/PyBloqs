@@ -97,3 +97,7 @@ Changelog
 ### 1.2.4 (2019-03-27)
 
   * Bugfix: Maintain static import ordering
+
+### 1.2.5 (2019-06-25)
+
+  * Bugfix: Totals Row formatter no longer inserts NaN for non-numeric columns.
