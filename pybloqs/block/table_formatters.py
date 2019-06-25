@@ -571,9 +571,10 @@ class FmtAppendTotalsRow(TableFormatter):
         else:
             columns = self.total_columns
         if self.operator is not OP_NONE:
-            last_row = self.operator(df[df.applymap(np.isreal)])
+            df_calculated = df[columns]
+            last_row = self.operator(df_calculated[df_calculated.applymap(np.isreal)])
             last_row = last_row.fillna(0.)
-            last_row[~last_row.index.isin(columns)] = ''
+            last_row = last_row.append(pd.Series('', index=df.columns.difference(last_row.index)))
         else:
             last_row = pd.Series('', index=df.columns)
         last_row.name = self.row_name

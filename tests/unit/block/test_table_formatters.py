@@ -515,6 +515,14 @@ def test_FmtAppendTotalsRow_modify_dataframe():
     assert expected.equals(res.ix[-1])
 
 
+def test_FmtAppendTotalsRow_mixed_datatypes():
+    df = pd.util.testing.makeMixedDataFrame()
+    fmt = pbtf.FmtAppendTotalsRow(total_columns=['A'])
+    res = fmt._modify_dataframe(df)
+    last_row_expected = pd.Series({'A': 10., 'B': '', 'C': '', 'D': ''}, name="Total")
+    pd.util.testing.assert_series_equal(res.iloc[-1], last_row_expected)
+
+
 def test_FmtAppendTotalsRow_cell_css():
     row_name = TEST_STRING
     fmt = pbtf.FmtAppendTotalsRow(row_name=row_name)
