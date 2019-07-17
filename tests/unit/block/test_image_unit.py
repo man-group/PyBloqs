@@ -1,7 +1,14 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.graph_objs as go
 import pytest
+
 import pybloqs.block.image as i
+
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
 
 
 def test_create_PlotBlock():
@@ -28,6 +35,13 @@ def test_create_PlotBlock_with_bbox_inches_none():
 def test_create_Plotly_with_invalid_data():
     with pytest.raises(ValueError):
         i.PlotlyPlotBlock(pd.Series([1, 2, 3]).plot())
+
+
+def test_pass_on_plotly_kwargs():
+    fig = go.Figure()
+    with patch('plotly.offline.plot') as pl:
+        i.PlotlyPlotBlock(fig, plotly_kwargs={'a': 'B'})
+    assert pl.call_args[1]['a'] == 'B'
 
 
 def test_create_Bokeh_with_invalid_data():
