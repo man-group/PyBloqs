@@ -198,7 +198,7 @@ setup(
     },
     tests_require=[
         "mock",
-        "pytest",
+        "pytest==4.6.4",
         "pytest-cov",
     ],
     classifiers=[

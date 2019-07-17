@@ -4,7 +4,7 @@ import pkgutil
 
 def pytest_generate_tests(metafunc):
     import pybloqs as thispkg
-    if 'module' in metafunc.funcargnames:
+    if 'module' in metafunc.fixturenames:
         modules = []
         for _, name, _ in pkgutil.walk_packages(path=thispkg.__path__, prefix=thispkg.__name__ + '.'):
             if 'scripts' not in name:
