@@ -101,3 +101,7 @@ Changelog
 ### 1.2.5 (2019-06-25)
 
   * Bugfix: Totals Row formatter no longer inserts NaN for non-numeric columns.
+
+### 1.2.6 (2019-07-17)
+
+  * Feature: Passing kwargs to plotly plot function. 
