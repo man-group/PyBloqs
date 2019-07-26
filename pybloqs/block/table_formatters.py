@@ -58,8 +58,12 @@ class TableFormatter(object):
             self.rows = rows
             self.columns = columns
             self.apply_to_header_and_index = apply_to_header_and_index
-            self.apply_to_header = apply_to_header
-            self.apply_to_index = apply_to_index
+            if not self.apply_to_header_and_index:
+                self.apply_to_header = apply_to_header
+                self.apply_to_index = apply_to_index
+            else:
+                self.apply_to_header = False
+                self.apply_to_index = False
             return
 
     def _get_row_and_column_index(self, row_name, column_name, df):
@@ -85,11 +89,12 @@ class TableFormatter(object):
             is_outside_selection = (self.columns is not None and column_name not in self.columns or
                                     self.rows is not None and row_name not in self.rows)
             is_selected_cell = not is_outside_selection
-            if not self.apply_to_header_and_index and not self.apply_to_header and not self.apply_to_index:
-                if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
-                    is_selected_cell = False
-                if column_name == INDEX_COL_NAME and (self.columns is None or INDEX_COL_NAME not in self.columns):
-                    is_selected_cell = False
+            if not self.apply_to_header_and_index and not self.apply_to_header:
+                    if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
+                        is_selected_cell = False
+            if not self.apply_to_header_and_index and not self.apply_to_index:
+                    if column_name == INDEX_COL_NAME and (self.columns is None or INDEX_COL_NAME not in self.columns):
+                        is_selected_cell = False
             return is_selected_cell
 
     def _insert_additional_html(self):
@@ -380,8 +385,8 @@ class FmtBold(TableFormatter):
 class FmtAlignCellContents(TableFormatter):
     """Align cell contents. Possible alignment values: left, center, right."""
 
-    def __init__(self, alignment='center', rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index)
+    def __init__(self, alignment='center', rows=None, columns=None, apply_to_header_and_index=True, apply_to_header=False, apply_to_index=False):
+        super(FmtAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index, apply_to_header, apply_to_index)
         self.alignment = alignment
         return
 
