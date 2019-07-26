@@ -356,8 +356,8 @@ class FmtHighlightText(TableFormatter):
 class FmtHighlightBackground(TableFormatter):
     """Set background color of selected cells"""
 
-    def __init__(self, color=colors.RED, rows=None, columns=None, apply_to_header_and_index=False):
-        super(FmtHighlightBackground, self).__init__(rows, columns, apply_to_header_and_index)
+    def __init__(self, color=colors.RED, rows=None, columns=None, apply_to_header_and_index=False, apply_to_header=False, apply_to_index=False):
+        super(FmtHighlightBackground, self).__init__(rows, columns, apply_to_header_and_index, apply_to_header, apply_to_index)
         self.color = color
         return
 
