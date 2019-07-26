@@ -393,8 +393,8 @@ class FmtHeader(TableFormatter):
     """Set various header formatting. Fixes table width."""
 
     def __init__(self, fixed_width='100%', index_width=None, column_width=None, rotate_deg=0,
-                 top_padding=None, no_wrap=True, columns=None):
-        super(FmtHeader, self).__init__(None, None)
+                 top_padding=None, no_wrap=True, columns=None, color=None):
+        super(FmtHeader, self).__init__(None, None)  # , apply_to_header=True
         self.fixed_width = fixed_width
         self.index_width = index_width
         self.column_width = column_width
@@ -402,6 +402,7 @@ class FmtHeader(TableFormatter):
         self.top_padding = top_padding
         self.no_wrap = no_wrap
         self.columns = columns
+        self.color = color
         return
 
     def _create_table_level_css(self):
@@ -429,6 +430,8 @@ class FmtHeader(TableFormatter):
                 css_substrings.append(CSS_WIDTH + self.index_width)
             elif self.column_width is not None:
                 css_substrings.append('width:' + self.column_width)
+            if self.color is not None:
+                css_substrings.append(CSS_BACKGROUND_COLOR + colors.css_color(self.color))
             return "; ".join(css_substrings)
         else:
             return None
