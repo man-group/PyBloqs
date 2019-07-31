@@ -399,7 +399,7 @@ class FmtHeader(TableFormatter):
 
     def __init__(self, fixed_width='100%', index_width=None, column_width=None, rotate_deg=0,
                  top_padding=None, no_wrap=True, columns=None, color=None):
-        super(FmtHeader, self).__init__(None, None)  # , apply_to_header=True
+        super(FmtHeader, self).__init__(None, None)
         self.fixed_width = fixed_width
         self.index_width = index_width
         self.column_width = column_width
