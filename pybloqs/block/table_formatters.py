@@ -339,8 +339,8 @@ class FmtHighlightText(TableFormatter):
     """Change font formatting to highlight text in cell."""
 
     def __init__(self, bold=True, italic=True, font_color=colors.BLUE, rows=None, columns=None,
-                 apply_to_header_and_index=False):
-        super(FmtHighlightText, self).__init__(rows, columns, apply_to_header_and_index)
+                 apply_to_header_and_index=False, apply_to_header=False, apply_to_index=False):
+        super(FmtHighlightText, self).__init__(rows, columns, apply_to_header_and_index, apply_to_header, apply_to_index)
         self.bold = bold
         self.italic = italic
         self.font_color = font_color
