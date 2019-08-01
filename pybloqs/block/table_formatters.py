@@ -84,7 +84,7 @@ class TableFormatter(object):
                 return True
             elif (row_name == HEADER_ROW_NAME) and self.apply_to_header:
                 return True
-            elif (column_name == INDEX_COL_NAME) and self.apply_to_index:
+            elif (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and self.apply_to_index:
                 return True
             is_outside_selection = (self.columns is not None and column_name not in self.columns or
                                     self.rows is not None and row_name not in self.rows)
@@ -93,7 +93,7 @@ class TableFormatter(object):
                     if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
                         is_selected_cell = False
             if not self.apply_to_header_and_index and not self.apply_to_index:
-                    if column_name == INDEX_COL_NAME and (self.columns is None or INDEX_COL_NAME not in self.columns):
+                    if (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and (self.columns is None or INDEX_COL_NAME not in self.columns):
                         is_selected_cell = False
             return is_selected_cell
 
