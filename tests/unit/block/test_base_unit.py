@@ -34,7 +34,7 @@ def test_show_block_with_env_var():
 
     mock_url = "http://imgur.com/gallery/YLvFFS5/"
 
-    with patch.dict(config.user_config, {"tmp_html_dir": mock_url}, clear=True) as _, \
+    with patch.dict(config.user_config, {"tmp_html_dir": mock_url, "id_precision": 10}, clear=True) as _, \
             patch("webbrowser.open_new_tab") as tab, \
             patch.object(b, "publish") as pub:
         pub.return_value = "dummy"
