@@ -105,3 +105,9 @@ Changelog
 ### 1.2.6 (2019-07-17)
 
   * Feature: Passing kwargs to plotly plot function. 
+
+### 1.2.7 (2019-08-06)
+
+  * Bugfix: Use require.js for Plotly and Highcharts inside Jupyter
+  * Moved id_precision to user_config
+  * Use tmp_html_dir everywhere
