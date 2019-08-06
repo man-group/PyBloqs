@@ -33,3 +33,4 @@ docs/source/pybloqs.static.rst
 .idea
 .pytest_cache
 node_modules
+*.swp

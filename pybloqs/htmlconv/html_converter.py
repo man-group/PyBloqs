@@ -4,8 +4,7 @@ import logging
 import os
 import subprocess
 import sys
-import tempfile
-from pybloqs.config import ID_PRECISION, user_config
+from pybloqs.config import user_config
 
 logger = logging.getLogger(__name__)
 
@@ -46,8 +45,8 @@ class HTMLConverter(object):
 
     @staticmethod
     def write_html_to_tempfile(block, content):
-        name = block._id[:ID_PRECISION] + ".html"
-        tempdir = tempfile.gettempdir()
+        name = block._id[:user_config["id_precision"]] + ".html"
+        tempdir = user_config["tmp_html_dir"]
         html_filename = os.path.join(tempdir, name)
         with open(html_filename, "w", encoding='utf-8') as f:
             f.write(content)
