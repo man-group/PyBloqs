@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2020 Man Group
+For a list of authors, see README.md; for the license, see file LICENSE in project root directory.
+"""
 import pandas as pd
 from pybloqs.block.base import HRule
 from pybloqs.block.text import Raw

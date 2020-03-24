@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2020 Man Group
+For a list of authors, see README.md; for the license, see file LICENSE in project root directory.
+"""
 from numpy import nan
 from pandas import Series, Index
 from pybloqs.plot import Plot

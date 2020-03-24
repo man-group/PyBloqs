@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2020 Man Group
+For a list of authors, see README.md; for the license, see file LICENSE in project root directory.
+"""
 # This Python file uses the following encoding: utf-8
 from mock import patch, MagicMock, sentinel, call, ANY
 import yaml

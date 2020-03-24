@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2020 Man Group
+For a list of authors, see README.md; for the license, see file LICENSE in project root directory.
+"""
 from pybloqs.block.text import Raw, Pre, Span, Markdown
 from .generation_framework import assert_report_generated
 

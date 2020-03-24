@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2020 Man Group
+For a list of authors, see README.md; for the license, see file LICENSE in project root directory.
+"""
 from pybloqs.plot import (
     Plot, Options3d, Chart, Legend, XAxis, YAxis, Expr, ColorAxis, Tooltip, Heatmap as HeatmapPlot, Scatter,
     Title)

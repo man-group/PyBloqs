@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2020 Man Group
+For a list of authors, see README.md; for the license, see file LICENSE in project root directory.
+"""
 from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.table_formatters import (fmt_fontsize_12,
                                             fmt_decimals_2,
