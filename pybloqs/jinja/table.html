@@ -1,32 +1,33 @@
 {{insert_additional_html()}}
 <table id="blox_table_id" border="0" cellpadding="1" cellspacing="0" {{create_table_level_css()}} {{create_table_level_css_class()}}>
-	<thead {{create_thead_level_css()}}>
-       {% for header_index, header_row in enumerate(header_iterable)  %}
-           <tr {{create_row_level_css(__JINJA_HEADER__, header_row)}}>
-                {% if header_index == len(header_iterable) -1 %}
-	                <th {{create_cell_level_css(cell, "__JINJA_HEADER__", "__JINJA_INDEX__")}}>
+    <colgroup>
+        <col {{create_column_level_css("__JINJA_INDEX__")}}/>
+        {% for col_name in df.columns %}
+            <col {{create_column_level_css(col_name)}}/>
+        {% endfor %}
+    </colgroup>
+    <thead {{create_thead_level_css()}}>
+        {% for header_index, header_row in enumerate(header_iterable)  %}
+            <tr {{create_row_level_css(__JINJA_HEADER__, header_row)}}>
+                {% if header_index == len(header_iterable) - 1 %}
+                    <th {{create_cell_level_css(df.index.name, "__JINJA_HEADER__", "__JINJA_INDEX__")}}>
                         {% if df.index.name is not none%}
-    	                    {{modify_cell_content(df.index.name,  "__JINJA_HEADER__", "__JINJA_INDEX__")}}
+                            {{modify_cell_content(df.index.name,  "__JINJA_HEADER__", "__JINJA_INDEX__")}}
                         {% endif%}
                     </th>
-               {% else %}
-                    <th {{create_cell_level_css(cell, "__JINJA_HEADER__", "__JINJA_INDEX__")}}></th>
-               {% endif %}
-               {% for column_idx, item in enumerate(header_row) %}
-	                {% if header_index == len(header_iterable) -1 %}
-	                    <th {{create_cell_level_css(cell, "__JINJA_HEADER__",df.columns.tolist()[column_idx])}}>
-	                        {{modify_cell_content(item,  "__JINJA_HEADER__", df.columns.tolist()[column_idx])}}
-	                    </th>
-	                {% else %}
-                         <th colspan={{len(item)}} {{create_cell_level_css(cell, "__JINJA_HEADER__",df.columns.tolist()[column_idx])}}>
-                             {{modify_cell_content(item[0],  "__JINJA_HEADER__", df.columns.tolist()[column_idx])}}
-                         </th>
-                    {% endif %}
-               {% endfor %}
-	       </tr>
+                {% else %}
+                    <th {{create_cell_level_css(none, "__JINJA_HEADER__", "__JINJA_INDEX__")}}></th>
+                {% endif %}
+                {% for column_idx, (item, columns, colspan, rowspan) in enumerate(header_row) %}
+                    <th {{create_cell_level_css(item, "__JINJA_HEADER__", columns[0])}}
+                        colspan="{{colspan}}" rowspan="{{rowspan}}">
+                        {{modify_cell_content(item, "__JINJA_HEADER__", columns[0])}}
+                    </th>
+                {% endfor %}
+            </tr>
         {% endfor %}
-	</thead>
-	<tbody>
+    </thead>
+    <tbody>
         {% for row_name, row in df.loc[slice(None), df.columns.get_level_values(0) != '__MULTIINDEX_ORG_ROW_NAMES__'].reset_index().T.iteritems() %}
         <tr {{create_row_level_css(row_name, row)}}>
             <td {{create_cell_level_css(row.iloc[0], row.iloc[0], "__JINJA_INDEX__")}}>
