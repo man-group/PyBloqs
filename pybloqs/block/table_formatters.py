@@ -51,6 +51,9 @@ class TableFormatter(object):
 
     _create_cell_level_css()
         Provides CSS styles to all <th> and <td> HTML tags.
+
+    _create_column_level_css()
+        Provides CSS styles to all <col> HTML tags.
     """
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
@@ -110,6 +113,10 @@ class TableFormatter(object):
         """Formatting on CSS level, e.g. colors, borders, etc. on table row level"""
         raise NotImplementedError('format_row_css')
 
+    def _create_column_level_css(self, data):
+        """Formatting on CSS level, e.g. widths """
+        raise NotImplementedError('format_column_css')
+
     def _create_cell_level_css(self, data):
         """Formatting on CSS level, e.g. colors, borders, etc. """
         raise NotImplementedError('format_cell_css')
@@ -144,6 +151,10 @@ class TableFormatter(object):
     def create_row_level_css(self, data):
         """Formatting on CSS level, e.g. colors, borders, etc. """
         return self._create_row_level_css(data)
+
+    def create_column_level_css(self, data):
+        """Formatting on CSS level, e.g. widths """
+        return self._create_column_level_css(data)
 
     def create_cell_level_css(self, data):
         """Formatting on CSS level, e.g. colors, borders, etc. """
@@ -407,6 +418,15 @@ class FmtHeader(TableFormatter):
             css_substrings.append(CSS_WIDTH + self.fixed_width)
             css_substrings.append('table-layout:fixed;')
         return "; ".join(css_substrings)
+
+    def _create_column_level_css(self, data):
+        if self.columns is None or data.column_name in self.columns:
+            css_substrings = []
+            if data.column_name == INDEX_COL_NAME and self.index_width is not None:
+                css_substrings.append(CSS_WIDTH + self.index_width)
+            elif self.column_width is not None:
+                css_substrings.append(CSS_WIDTH + self.column_width)
+            return "; ".join(css_substrings)
 
     def _create_cell_level_css(self, data):
         """Set a lot of css tags to rotate the text in the table header."""

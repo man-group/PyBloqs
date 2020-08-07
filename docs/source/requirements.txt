@@ -1,5 +1,5 @@
 sphinx==1.6.7
-nbsphinx
+nbsphinx==0.4.3
 matplotlib
 ipython[notebook]
 pyyaml

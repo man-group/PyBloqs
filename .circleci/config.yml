@@ -17,7 +17,7 @@ defaults: &defaults
         - v1-dep-master-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
         - v1-dep-
-    - run: wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+    - run: wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
     - run: tar Jxvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
     - run: sudo apt-get install poppler-utils
     - run: sudo apt-get install pandoc
