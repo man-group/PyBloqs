@@ -102,11 +102,7 @@ class HTMLJinjaTableBlock(BaseBlock):
         data = pd.Series(row, name=row_name)
         return self._aggregate_css_formatters('create_row_level_css', fmt_args=[data])
 
-    def create_column_level_css(self, column_name):
-        if column_name == INDEX_COL_NAME:
-            series = self.df.index
-        else:
-            series = self.df[column_name]
+    def create_column_level_css(self, column_name, series):
         data = self.FormatterData(None, None, column_name, series)
         return self._aggregate_css_formatters('create_column_level_css', fmt_args=[data])
 

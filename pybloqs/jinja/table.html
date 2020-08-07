@@ -1,9 +1,9 @@
 {{insert_additional_html()}}
 <table id="blox_table_id" border="0" cellpadding="1" cellspacing="0" {{create_table_level_css()}} {{create_table_level_css_class()}}>
     <colgroup>
-        <col {{create_column_level_css("__JINJA_INDEX__")}}/>
-        {% for col_name in df.columns %}
-            <col {{create_column_level_css(col_name)}}/>
+        <col {{create_column_level_css("__JINJA_INDEX__", df.index)}}/>
+        {% for i, col_name in enumerate(df.columns) %}
+            <col {{create_column_level_css(col_name, df.iloc[slice(None), i])}}/>
         {% endfor %}
     </colgroup>
     <thead {{create_thead_level_css()}}>

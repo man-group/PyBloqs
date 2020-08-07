@@ -492,27 +492,27 @@ def test_FmtAppendTotalsRow_modify_dataframe():
     fmt = pbtf.FmtAppendTotalsRow()
     res = fmt._modify_dataframe(df)
     expected = pd.Series([9., 12., 15.], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(operator=pbtf.OP_MEAN)
     res = fmt._modify_dataframe(df)
     expected = pd.Series([3., 4., 5.], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(operator=pbtf.OP_NONE)
     res = fmt._modify_dataframe(df)
     expected = pd.Series(['', '', ''], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(row_name=TEST_STRING)
     res = fmt._modify_dataframe(df)
     expected = pd.Series([9., 12., 15.], name=TEST_STRING, index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(total_columns=['bb'])
     res = fmt._modify_dataframe(df)
     expected = pd.Series(['', '', 15.], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
 
 def test_FmtAppendTotalsRow_mixed_datatypes():
@@ -616,20 +616,20 @@ def test_FmtExpandMultiIndex_modify_dataframe():
     assert res.shape == (6, 4)
     assert res.index.tolist() == ['a', 'aa', 'ab', 'b', 'ba', 'bb']
     assert res.index.name == ''
-    assert res.ix['a'].tolist() == [3., 5., 7., ('a',)]
+    assert res.loc['a'].tolist() == [3., 5., 7., ('a',)]
     assert fmt.index_level == [0, 1, 1, 0, 1, 1]
 
     fmt = pbtf.FmtExpandMultiIndex(operator=pbtf.OP_MEAN)
     res = fmt._modify_dataframe(mi_df)
-    assert res.ix['a'].tolist() == [1.5, 2.5, 3.5, ('a',)]
+    assert res.loc['a'].tolist() == [1.5, 2.5, 3.5, ('a',)]
 
     fmt = pbtf.FmtExpandMultiIndex(operator=pbtf.OP_NONE)
     res = fmt._modify_dataframe(mi_df)
-    assert res.ix['a'].tolist() == ['', '', '', ('a',)]
+    assert res.loc['a'].tolist() == ['', '', '', ('a',)]
 
     fmt = pbtf.FmtExpandMultiIndex(operator=pbtf.OP_SUM, total_columns=['column1'])
     res = fmt._modify_dataframe(mi_df)
-    assert res.ix['a'].tolist() == ['', 5., '', ('a',)]
+    assert res.loc['a'].tolist() == ['', 5., '', ('a',)]
 
 
 def test_FmtExpandMultiIndex_cell_css():
