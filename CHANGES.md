@@ -111,3 +111,10 @@ Changelog
   * Bugfix: Use require.js for Plotly and Highcharts inside Jupyter
   * Moved id_precision to user_config
   * Use tmp_html_dir everywhere
+
+### 1.2.8 (2020-08-25)
+
+  * Bugfix: Use colgroup tag for FmtHeader width specification
+  * Bugfix: Do not merge MultiIndex cells if parent cells not merged
+  * Bugfix: Pass actual header cell contents to formatter methods
+  * Feature: Add ability to vertically merge MultiIndex labels
