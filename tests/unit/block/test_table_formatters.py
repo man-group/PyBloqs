@@ -347,6 +347,16 @@ def test_FmtAlignCellContents():
     assert res == 'text-align:right'
 
 
+def test_FmtAlignVerticalCellContents():
+    fmt = pbtf.FmtAlignVerticalCellContents()
+    res = fmt._create_cell_level_css(None)
+    assert res == 'vertical-align:middle'
+
+    fmt = pbtf.FmtAlignVerticalCellContents(alignment='top')
+    res = fmt._create_cell_level_css(None)
+    assert res == 'vertical-align:top'
+
+
 def test_FmtHeader_cell_css_all_columns():
     fmt = pbtf.FmtHeader(index_width='10cm')
     data = FormatterData(0., pbtf.HEADER_ROW_NAME, 'aa', df)
