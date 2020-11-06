@@ -394,6 +394,18 @@ class FmtAlignCellContents(TableFormatter):
         return 'text-align:' + self.alignment
 
 
+class FmtAlignVerticalCellContents(TableFormatter):
+    """Veritcal align cell contents. Possible alignment values include: top, middle, bottom."""
+
+    def __init__(self, alignment='middle', rows=None, columns=None, apply_to_header_and_index=True):
+        super(FmtAlignVerticalCellContents, self).__init__(rows, columns, apply_to_header_and_index)
+        self.alignment = alignment
+        return
+
+    def _create_cell_level_css(self, data):
+        return 'vertical-align:' + self.alignment
+
+
 class FmtHeader(TableFormatter):
     """Set various header formatting. Fixes table width."""
 
