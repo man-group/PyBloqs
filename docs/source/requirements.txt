@@ -1,3 +1,4 @@
+nbconvert==5.6.1
 sphinx==1.6.7
 nbsphinx==0.4.3
 matplotlib
