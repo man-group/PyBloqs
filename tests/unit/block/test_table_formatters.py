@@ -347,6 +347,16 @@ def test_FmtAlignCellContents():
     assert res == 'text-align:right'
 
 
+def test_FmtAlignVerticalCellContents():
+    fmt = pbtf.FmtVerticalAlignCellContents()
+    res = fmt._create_cell_level_css(None)
+    assert res == 'vertical-align:baseline'
+
+    fmt = pbtf.FmtVerticalAlignCellContents(alignment='top')
+    res = fmt._create_cell_level_css(None)
+    assert res == 'vertical-align:top'
+
+
 def test_FmtHeader_cell_css_all_columns():
     fmt = pbtf.FmtHeader(index_width='10cm')
     data = FormatterData(0., pbtf.HEADER_ROW_NAME, 'aa', df)
@@ -384,16 +394,19 @@ def test_FmtStripeBackground():
     fmt = pbtf.FmtStripeBackground(first_color=colors.BLACK, second_color=colors.RED, header_color=colors.GREEN)
     # Check header color is applied
     data = FormatterData(0., pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME, df)
+    res = fmt._create_row_level_css(pd.Series(name=pbtf.HEADER_ROW_NAME))
     res = fmt._create_cell_level_css(data)
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.GREEN))
 
     # Check that first line is filled with first_color
     data = FormatterData(0., 'a', 'aa', df)
+    res = fmt._create_row_level_css(pd.Series())
     res = fmt._create_cell_level_css(data)
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.BLACK))
 
     # Check that second line is filled with second color
     data = FormatterData(0., 'b', pbtf.INDEX_COL_NAME, df)
+    res = fmt._create_row_level_css(pd.Series())
     res = fmt._create_cell_level_css(data)
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.RED))
 

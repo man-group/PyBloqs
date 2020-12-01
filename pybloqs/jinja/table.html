@@ -9,15 +9,17 @@
     <thead {{create_thead_level_css()}}>
         {% for header_index, header_row in enumerate(header_iterable)  %}
             <tr {{create_row_level_css(__JINJA_HEADER__, header_row)}}>
-                {% if header_index == len(header_iterable) - 1 %}
-                    <th {{create_cell_level_css(df.index.name, "__JINJA_HEADER__", "__JINJA_INDEX__")}}>
-                        {% if df.index.name is not none%}
-                            {{modify_cell_content(df.index.name,  "__JINJA_HEADER__", "__JINJA_INDEX__")}}
-                        {% endif%}
-                    </th>
-                {% else %}
-                    <th {{create_cell_level_css(none, "__JINJA_HEADER__", "__JINJA_INDEX__")}}></th>
-                {% endif %}
+                {% for col_index, col_name in enumerate(df.index.names) %}
+                    {% if header_index == len(header_iterable) - 1 %}
+                        <th {{create_cell_level_css(col_name, "__JINJA_HEADER__", "__JINJA_INDEX__")}}>
+                            {% if df.index.name is not none%}
+                                {{modify_cell_content(col_name,  "__JINJA_HEADER__", "__JINJA_INDEX__")}}
+                            {% endif%}
+                        </th>
+                    {% else %}
+                        <th {{create_cell_level_css(none, "__JINJA_HEADER__", "__JINJA_INDEX__")}}></th>
+                    {% endif %}
+                {% endfor %}
                 {% for column_idx, (item, columns, colspan, rowspan) in enumerate(header_row) %}
                     <th {{create_cell_level_css(item, "__JINJA_HEADER__", columns[0])}}
                         colspan="{{colspan}}" rowspan="{{rowspan}}">
@@ -28,14 +30,17 @@
         {% endfor %}
     </thead>
     <tbody>
-        {% for row_name, row in df.loc[slice(None), df.columns.get_level_values(0) != '__MULTIINDEX_ORG_ROW_NAMES__'].reset_index().T.iteritems() %}
+        {% for row_index, (row_name, row) in zip(index_iterable, df.iterrows()) %}
         <tr {{create_row_level_css(row_name, row)}}>
-            <td {{create_cell_level_css(row.iloc[0], row.iloc[0], "__JINJA_INDEX__")}}>
-                {{modify_cell_content(row.iloc[0], row.iloc[0], "__JINJA_INDEX__")}}
-            </td>
-            {% for col_name, cell in row[1:].iteritems() %}
-                <td {{create_cell_level_css(cell, row.iloc[0], col_name)}}>
-                    {{modify_cell_content(cell, row.iloc[0], col_name)}}
+            {% for (item, row_names, rowspan, colspan) in row_index %}
+                <td {{create_cell_level_css(item, row_names, "__JINJA_INDEX__")}}
+                 rowspan="{{rowspan}}" colspan="{{colspan}}">
+                    {{modify_cell_content(item, row_names, "__JINJA_INDEX__")}}
+                </td>
+            {% endfor %}
+            {% for col_name, cell in row.iteritems() %}
+                <td {{create_cell_level_css(cell, row_name, col_name)}}>
+                    {{modify_cell_content(cell, row_name, col_name)}}
                 </td>
             {% endfor %}
         </tr>

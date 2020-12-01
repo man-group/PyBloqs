@@ -394,6 +394,18 @@ class FmtAlignCellContents(TableFormatter):
         return 'text-align:' + self.alignment
 
 
+class FmtVerticalAlignCellContents(TableFormatter):
+    """Align cell contents. Possible alignment values: top, middle, bottom."""
+
+    def __init__(self, alignment='baseline', rows=None, columns=None, apply_to_header_and_index=True):
+        super(FmtVerticalAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index)
+        self.alignment = alignment
+        return
+
+    def _create_cell_level_css(self, data):
+        return 'vertical-align:' + self.alignment
+
+
 class FmtHeader(TableFormatter):
     """Set various header formatting. Fixes table width."""
 
@@ -449,7 +461,7 @@ class FmtHeader(TableFormatter):
 
 
 class FmtStripeBackground(TableFormatter):
-    """Set altenating cell backgroup colors."""
+    """Set alternating cell background colors."""
 
     def __init__(self, first_color=colors.LIGHT_GREY, second_color=colors.WHITE, header_color=colors.WHITE,
                  rows=None, columns=None, apply_to_header_and_index=True):
@@ -457,19 +469,21 @@ class FmtStripeBackground(TableFormatter):
         self.first_color = colors.css_color(first_color)
         self.second_color = colors.css_color(second_color)
         self.header_color = colors.css_color(header_color)
-        self.current_color = self.first_color
+        self.current_color = self.second_color
         return
 
+    def _create_row_level_css(self, data):
+        if data.name == HEADER_ROW_NAME:
+            return
+        if self.current_color == self.first_color:
+            self.current_color = self.second_color
+        else:
+            self.current_color = self.first_color
+
     def _create_cell_level_css(self, data):
+        color = self.current_color
         if data.row_name == HEADER_ROW_NAME:
             color = self.header_color
-        else:
-            if data.column_name == INDEX_COL_NAME:
-                if self.current_color == self.first_color:
-                    self.current_color = self.second_color
-                else:
-                    self.current_color = self.first_color
-            color = self.current_color
         return CSS_BACKGROUND_COLOR + color
 
 
@@ -1018,9 +1032,12 @@ fmt_table_center = FmtAlignTable(alignment='center')
 fmt_decimals_2 = FmtDecimals(n=2)
 fmt_align_cells = FmtAlignCellContents(alignment='right', apply_to_header_and_index=False)
 fmt_align_header_index = FmtAlignCellContents(alignment='left', apply_to_header_and_index=True, rows=[], columns=[])
+fmt_vertical_align_header_index = FmtVerticalAlignCellContents(
+    alignment='baseline', apply_to_header_and_index=True, rows=[], columns=[]
+)
 fmt_header_index_bold = FmtBold(rows=[], columns=[])
 fmt_page_break = FmtPageBreak(no_break=True, repeat_header=True)
 
 DEFAULT_FORMATTERS = [fmt_fontsize_14, fmt_stripes_bg, fmt_table_center, fmt_align_cells, fmt_align_header_index,
-                      fmt_header_index_bold, fmt_page_break]
+                      fmt_vertical_align_header_index, fmt_header_index_bold, fmt_page_break]
 DEFAULT_DECIMALS_FORMATTER = [fmt_decimals_2]
