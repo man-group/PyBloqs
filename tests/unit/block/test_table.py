@@ -136,25 +136,49 @@ def test__get_header_iterable_multiindex():
     result = t._get_header_iterable()
     expected = [
         [
-            abt.HTMLJinjaTableBlock.HeaderCell('aa', [('aa', 'a'), ('aa', 'b'), ('aa', 'c')], 3, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('bb', [('bb', 'a'), ('bb', 'b'), ('bb', 'c')], 3, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('cc', [('cc', 'a'), ('cc', 'b'), ('cc', 'c')], 3, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('aa', [('aa', 'a'), ('aa', 'b'), ('aa', 'c')], 3, 1),
+            abt.IndexCell('aa', [('aa', 'a'), ('aa', 'b'), ('aa', 'c')], 3, 1),
+            abt.IndexCell('bb', [('bb', 'a'), ('bb', 'b'), ('bb', 'c')], 3, 1),
+            abt.IndexCell('cc', [('cc', 'a'), ('cc', 'b'), ('cc', 'c')], 3, 1),
+            abt.IndexCell('aa', [('aa', 'a'), ('aa', 'b'), ('aa', 'c')], 3, 1),
         ],
         [
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('aa', 'a')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('b', [('aa', 'b')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('c', [('aa', 'c')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('bb', 'a')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('b', [('bb', 'b')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('c', [('bb', 'c')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('cc', 'a')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('b', [('cc', 'b')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('c', [('cc', 'c')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('aa', 'a')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('b', [('aa', 'b')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('c', [('aa', 'c')], 1, 1),
+            abt.IndexCell('a', [('aa', 'a')], 1, 1),
+            abt.IndexCell('b', [('aa', 'b')], 1, 1),
+            abt.IndexCell('c', [('aa', 'c')], 1, 1),
+            abt.IndexCell('a', [('bb', 'a')], 1, 1),
+            abt.IndexCell('b', [('bb', 'b')], 1, 1),
+            abt.IndexCell('c', [('bb', 'c')], 1, 1),
+            abt.IndexCell('a', [('cc', 'a')], 1, 1),
+            abt.IndexCell('b', [('cc', 'b')], 1, 1),
+            abt.IndexCell('c', [('cc', 'c')], 1, 1),
+            abt.IndexCell('a', [('aa', 'a')], 1, 1),
+            abt.IndexCell('b', [('aa', 'b')], 1, 1),
+            abt.IndexCell('c', [('aa', 'c')], 1, 1),
         ]
+    ]
+    assert result == expected
+
+
+def test__get_index_iterable_multiindex():
+    df = pd.DataFrame(np.arange(12, dtype=float).reshape(3, 4), index=['a', 'b', 'c'], columns=['aa', 'bb', 'cc', 'aa'])
+    df['grouping'] = 'g'
+    df = df.reset_index()
+    df = df.groupby(['grouping', 'index']).sum().unstack()
+    t = abt.HTMLJinjaTableBlock(df.T)
+    result = t._get_index_iterable()
+    expected = [
+        [abt.IndexCell('aa', [('aa', 'a'), ('aa', 'b'), ('aa', 'c')], 3, 1), abt.IndexCell('a', [('aa', 'a')], 1, 1),],
+        [abt.IndexCell('b', [('aa', 'b')], 1, 1)],
+        [abt.IndexCell('c', [('aa', 'c')], 1, 1)],
+        [abt.IndexCell('bb', [('bb', 'a'), ('bb', 'b'), ('bb', 'c')], 3, 1), abt.IndexCell('a', [('bb', 'a')], 1, 1),],
+        [abt.IndexCell('b', [('bb', 'b')], 1, 1)],
+        [abt.IndexCell('c', [('bb', 'c')], 1, 1)],
+        [abt.IndexCell('cc', [('cc', 'a'), ('cc', 'b'), ('cc', 'c')], 3, 1), abt.IndexCell('a', [('cc', 'a')], 1, 1),],
+        [abt.IndexCell('b', [('cc', 'b')], 1, 1)],
+        [abt.IndexCell('c', [('cc', 'c')], 1, 1)],
+        [abt.IndexCell('aa', [('aa', 'a'), ('aa', 'b'), ('aa', 'c')], 3, 1), abt.IndexCell('a', [('aa', 'a')], 1, 1),],
+        [abt.IndexCell('b', [('aa', 'b')], 1, 1)],
+        [abt.IndexCell('c', [('aa', 'c')], 1, 1)],
     ]
     assert result == expected
 
@@ -165,16 +189,31 @@ def test__get_header_iterable_plain_index():
     t = abt.HTMLJinjaTableBlock(p)
     result = t._get_header_iterable()
     expected = [[
-        abt.HTMLJinjaTableBlock.HeaderCell('a', ['a'], 1, 1),
-        abt.HTMLJinjaTableBlock.HeaderCell('b', ['b'], 1, 1),
-        abt.HTMLJinjaTableBlock.HeaderCell('c', ['c'], 1, 1),
-        abt.HTMLJinjaTableBlock.HeaderCell('d', ['d'], 1, 1),
-        abt.HTMLJinjaTableBlock.HeaderCell('e', ['e'], 1, 1),
+        abt.IndexCell('a', ['a'], 1, 1),
+        abt.IndexCell('b', ['b'], 1, 1),
+        abt.IndexCell('c', ['c'], 1, 1),
+        abt.IndexCell('d', ['d'], 1, 1),
+        abt.IndexCell('e', ['e'], 1, 1),
     ]]
     assert result == expected
 
 
-def test__vertical_merge():
+def test__get_index_iterable_plain_index():
+    index = ['a', 'b', 'c', 'd', 'e']
+    p = pd.DataFrame(np.ones((5, 4)), index=index)
+    t = abt.HTMLJinjaTableBlock(p)
+    result = t._get_index_iterable()
+    expected = [
+        [abt.IndexCell('a', ['a'], 1, 1)],
+        [abt.IndexCell('b', ['b'], 1, 1)],
+        [abt.IndexCell('c', ['c'], 1, 1)],
+        [abt.IndexCell('d', ['d'], 1, 1)],
+        [abt.IndexCell('e', ['e'], 1, 1)],
+    ]
+    assert result == expected
+
+
+def test__header_depth_merge():
     """
     should coalesce vertically if merge_vertical is passed, except for the
     bottom cell. for example, the following multiindex:
@@ -184,30 +223,30 @@ def test__vertical_merge():
     t = abt.HTMLJinjaTableBlock(p, merge_vertical=True)
     result = t._get_header_iterable()
     expected = [
-        [abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 2)],
+        [abt.IndexCell('a', [('a', 'a', 'a')], 1, 2)],
         [],
-        [abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 1)],
+        [abt.IndexCell('a', [('a', 'a', 'a')], 1, 1)],
     ]
     assert result == expected
 
 
-def test__vertical_and_horizontal_merge():
+def test__header_depth_and_span_merge():
     columns = pd.MultiIndex.from_tuples([('a', 'a', 'a'), ('a', 'a', 'a')])
     p = pd.DataFrame([], columns=columns)
     t = abt.HTMLJinjaTableBlock(p, merge_vertical=True)
     result = t._get_header_iterable()
     expected = [
-        [abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a'), ('a', 'a', 'a')], 2, 2)],
+        [abt.IndexCell('a', [('a', 'a', 'a'), ('a', 'a', 'a')], 2, 2)],
         [],
         [
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 1),
+            abt.IndexCell('a', [('a', 'a', 'a')], 1, 1),
+            abt.IndexCell('a', [('a', 'a', 'a')], 1, 1),
         ],
     ]
     assert result == expected
 
 
-def test__no_vertical_merge():
+def test__no_depth_merge():
     """
     should coalesce vertically if merge_vertical is passed, except for the
     bottom cell. for example, the following multiindex:
@@ -217,9 +256,9 @@ def test__no_vertical_merge():
     t = abt.HTMLJinjaTableBlock(p)
     result = t._get_header_iterable()
     expected = [
-        [abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 1)],
-        [abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 1)],
-        [abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'a', 'a')], 1, 1)],
+        [abt.IndexCell('a', [('a', 'a', 'a')], 1, 1)],
+        [abt.IndexCell('a', [('a', 'a', 'a')], 1, 1)],
+        [abt.IndexCell('a', [('a', 'a', 'a')], 1, 1)],
     ]
     assert result == expected
 
@@ -234,16 +273,16 @@ def test__no_merge_if_parents_differ():
     result = t._get_header_iterable()
     expected = [
         [
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('a', 'b', 'c')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('c', [('c', 'b', 'a')], 1, 1),
+            abt.IndexCell('a', [('a', 'b', 'c')], 1, 1),
+            abt.IndexCell('c', [('c', 'b', 'a')], 1, 1),
         ],
         [
-            abt.HTMLJinjaTableBlock.HeaderCell('b', [('a', 'b', 'c')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('b', [('c', 'b', 'a')], 1, 1),
+            abt.IndexCell('b', [('a', 'b', 'c')], 1, 1),
+            abt.IndexCell('b', [('c', 'b', 'a')], 1, 1),
         ],
         [
-            abt.HTMLJinjaTableBlock.HeaderCell('c', [('a', 'b', 'c')], 1, 1),
-            abt.HTMLJinjaTableBlock.HeaderCell('a', [('c', 'b', 'a')], 1, 1),
+            abt.IndexCell('c', [('a', 'b', 'c')], 1, 1),
+            abt.IndexCell('a', [('c', 'b', 'a')], 1, 1),
         ],
     ]
     assert result == expected

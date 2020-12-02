@@ -13,12 +13,15 @@ _jinja_env = Environment(loader=PackageLoader('pybloqs', 'jinja'))
 _jinja_env.globals.update(len=len)
 _jinja_env.globals.update(enumerate=enumerate)
 _jinja_env.globals.update(slice=slice)
+_jinja_env.globals.update(zip=zip)
 _table_tmpl = _jinja_env.get_template('table.html')
+
+
+IndexCell = namedtuple('IndexCell', ['value', 'names', 'span', 'depth'])
 
 
 class HTMLJinjaTableBlock(BaseBlock):
     FormatterData = namedtuple('FormatterData', ['cell', 'row_name', 'column_name', 'df'])
-    HeaderCell = namedtuple('HeaderCell', ['cell', 'column_names', 'colspan', 'rowspan'])
 
     def __init__(
             self, df, formatters=None, use_default_formatters=True, merge_vertical=False, **kwargs
@@ -113,59 +116,17 @@ class HTMLJinjaTableBlock(BaseBlock):
         return self._aggregate_css_formatters('create_cell_level_css', fmt_args=[data])
 
     def _get_header_iterable(self):
-        """Reformats all but the last header rows.
-
-        Returns a list (rows) of lists (columns) of named tuples (cells) containing:
-        * cell: str -- contents of the header cell
-        * columns: list[object] -- list of columns covered by this cell (typically
-          a single value but may be more if a multiindex label has been merged)
-        * colspan: int -- width, in columns, of the cell.
-        * rowspan: int -- height, in rows, of the cell.
-        """
         df_clean = self.df.loc[:, self.df.columns.get_level_values(0) != ORG_ROW_NAMES]
+        return columns_to_iterable(df_clean.columns, merge_depth=self.merge_vertical)
 
-        if isinstance(df_clean.columns, pd.MultiIndex):
-            transpose_tuples = list(zip(*df_clean.columns.tolist()))[:-1]
-            header_values = [[] for _ in transpose_tuples]
-
-            def traverse_headers(row, col_start, col_end):
-                if row >= len(transpose_tuples):
-                    return
-
-                groups = itertools.groupby(transpose_tuples[row][col_start:col_end])
-                col = col_start
-                for label, group in groups:
-                    group = tuple(group)
-                    colspan = len(group)
-                    rowspan = 1
-
-                    if self.merge_vertical:
-                        for child_row in range(row + 1, len(transpose_tuples)):
-                            if transpose_tuples[child_row][col:col+colspan] != group:
-                                break
-                            rowspan += 1
-
-                    header_values[row].append(self.HeaderCell(
-                        group[0],
-                        multiindex_to_tuples(df_clean.columns[col:col + colspan]),
-                        colspan,
-                        rowspan
-                    ))
-                    traverse_headers(row + rowspan, col, col + colspan)
-                    col += colspan
-
-            traverse_headers(0, 0, len(df_clean.columns))
-
-            # For the last column keep all elements in single list, e.g. ['a', 'b', 'c', 'a', 'b', 'c']
-            header_values.append([self.HeaderCell(col[-1], [col], 1, 1) for col in df_clean.columns])
-            return header_values
-        else:
-            return [[self.HeaderCell(col, [col], 1, 1) for col in df_clean.columns]]
+    def _get_index_iterable(self):
+        return index_to_iterable(self.df.index)
 
     def _write_contents(self, container, actual_cfg, *args, **kwargs):
         # table boilerplate
         model = {'df': self.df,
                  'header_iterable': self._get_header_iterable(),
+                 'index_iterable': self._get_index_iterable(),
                  'insert_additional_html': self.insert_additional_html,
                  'create_thead_level_css': self.create_thead_level_css,
                  'create_table_level_css': self.create_table_level_css,
@@ -184,6 +145,106 @@ class HTMLJinjaTableBlock(BaseBlock):
 
 def multiindex_to_tuples(index):
     return [tuple(col) for col in index]
+
+
+def index_to_iterable(index, merge_depth=False):
+    """
+    Return the given index as a list of lists of (potentially merged) cells
+    suitable for rendering as HTML, in span-major order. i.e. suited for
+    rendering a table index.
+
+    Each cell is an IndexCell namedtuple representing one <td> tag with:
+    * `value`: the content of that cell
+    * `names`: a list of index values over the span of this cell
+    * `span`: the number of index values covered by this cell (rowspan if index, colspan if header)
+    * `depth`: the number of MultiIndex levels covered by this cell (colspan if index, rowspan if header)
+    """
+    sentinel = object()
+    if isinstance(index, pd.MultiIndex):
+        num_levels = len(index.names)
+
+        # convert index to tuples and reverse the order to help the merging
+        # logic below.
+        values = index.tolist()
+        values = list(reversed(values))
+
+        values.append((sentinel,) * num_levels)
+        carryover = [0] * num_levels
+
+        result = []
+        for rownum, (row, prev_row) in enumerate(zip(values, values[1:])):
+            # find first cell which does not match the cell before it in the
+            # index. only until num_levels-1 because the deepest cell should
+            # never be merged.
+            for depth in range(0, num_levels - 1):
+                if row[depth] == prev_row[depth]:
+                    # keep track of 'carryover': the number of cells that were
+                    # omitted. this will be added to the span of the merged
+                    # cell.
+                    carryover[depth] += 1
+                else:
+                    break
+            else:
+                depth = num_levels - 1
+
+            # generate entries for the remaining cells.
+            cells = []
+            for depth in range(depth, num_levels):
+                cells.append(IndexCell(
+                    row[depth],
+                    list(reversed(values[rownum - carryover[depth]:rownum + 1])),
+                    carryover[depth] + 1,
+                    1
+                ))
+                carryover[depth] = 0
+
+            # merge cells depth-wise (i.e. vertically if header, horizontally
+            # if index) if required.
+            if merge_depth:
+                merged_cells = []
+                merge_count = 0
+                for cell, next_cell in zip(cells[:-1], cells[1:-1] + [IndexCell(sentinel, [], 0, 0)]):
+                    merge_count += 1
+                    if cell.value == next_cell.value and cell.span == next_cell.span:
+                        continue
+                    merged_cells.append(IndexCell(cell.value, cell.names, cell.span, merge_count))
+                    merge_count = 0
+                cells = merged_cells + [cells[-1]]
+
+            result.append(cells)
+
+        return list(reversed(result))
+    else:
+        return [[IndexCell(value, [value], 1, 1)] for value in index.tolist()]
+
+
+def columns_to_iterable(column_index, merge_depth=False):
+    """
+    Return the given index as a list of lists of (potentially merged) cells
+    suitable for rendering as HTML, in depth-major order. i.e. suited for
+    rendering a table header.
+    """
+    rows = index_to_iterable(column_index, merge_depth=merge_depth)
+    result = [[] for _ in range(len(column_index.names))]
+
+    # transpose the index iterable from span-major to depth-major order.
+    skips = [0] * len(column_index.names)
+    for distance, row in enumerate(rows):
+
+        # if a previous cell at this depth had a span that overlaps, then don't
+        # emit a cell at this depth.
+        depth = 0
+        while skips[depth]:
+            skips[depth] -= 1
+            depth += 1
+
+        for cell in row:
+            result[depth].append(cell)
+            for skip_index in range(depth, depth + cell.depth):
+                skips[skip_index] = cell.span - 1
+            depth += cell.depth
+
+    return result
 
 
 add_block_types(pd.DataFrame, HTMLJinjaTableBlock)
