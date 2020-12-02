@@ -118,3 +118,9 @@ Changelog
   * Bugfix: Do not merge MultiIndex cells if parent cells not merged
   * Bugfix: Pass actual header cell contents to formatter methods
   * Feature: Add ability to vertically merge MultiIndex labels
+
+### 1.2.9 (2020-12-02)
+
+  * Bugfix: Fix header positions when index is a MultiIndex
+  * Bugfix: Fix MultiIndex styling
+  * Feature: Add formatter for vertical-align
