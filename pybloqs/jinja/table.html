@@ -30,7 +30,10 @@
         {% endfor %}
     </thead>
     <tbody>
-        {% for row_index, (row_name, row) in zip(index_iterable, df.iterrows()) %}
+        {% for row_index, (row_name, row) in zip(
+            index_iterable,
+            df.loc[slice(None), df.columns.get_level_values(0) != '__MULTIINDEX_ORG_ROW_NAMES__'].iterrows(),
+        ) %}
         <tr {{create_row_level_css(row_name, row)}}>
             {% for (item, row_names, rowspan, colspan) in row_index %}
                 <td {{create_cell_level_css(item, row_names[0], "__JINJA_INDEX__")}}
