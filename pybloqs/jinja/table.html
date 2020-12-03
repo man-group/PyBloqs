@@ -33,9 +33,9 @@
         {% for row_index, (row_name, row) in zip(index_iterable, df.iterrows()) %}
         <tr {{create_row_level_css(row_name, row)}}>
             {% for (item, row_names, rowspan, colspan) in row_index %}
-                <td {{create_cell_level_css(item, row_names, "__JINJA_INDEX__")}}
+                <td {{create_cell_level_css(item, row_names[0], "__JINJA_INDEX__")}}
                  rowspan="{{rowspan}}" colspan="{{colspan}}">
-                    {{modify_cell_content(item, row_names, "__JINJA_INDEX__")}}
+                    {{modify_cell_content(item, row_names[0], "__JINJA_INDEX__")}}
                 </td>
             {% endfor %}
             {% for col_name, cell in row.iteritems() %}
