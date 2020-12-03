@@ -128,3 +128,7 @@ Changelog
 ### 1.2.10 (2020-12-03)
 
   * Bugfix: Pass only single row name into formatter from jinja table template
+
+### 1.2.11 (2020-12-03)
+
+  * Bugfix: Stop MultiIndex flattening columns from being rendered
