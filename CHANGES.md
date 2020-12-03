@@ -124,3 +124,7 @@ Changelog
   * Bugfix: Fix header positions when index is a MultiIndex
   * Bugfix: Fix MultiIndex styling
   * Feature: Add formatter for vertical-align
+
+### 1.2.10 (2020-12-03)
+
+  * Bugfix: Pass only single row name into formatter from jinja table template

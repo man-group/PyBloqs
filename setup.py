@@ -164,7 +164,7 @@ class PyTest(TestCommand):
 
 setup(
     name="pybloqs",
-    version="1.2.9",
+    version="1.2.10",
     author="Man AHL Technology",
     author_email="ManAHLTech@ahl.com",
     description="Data Visualization and Report Building",
