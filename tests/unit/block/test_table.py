@@ -127,6 +127,23 @@ def test__aggregate_css_formatters_concatenation():
     assert res == 'style="aaaaa;bbbbb"'
 
 
+def test__jinja_calls_formatters_correctly():
+    df = pd.DataFrame(columns=['a', 'b', 'c'], index=['x', 'y', 'z'])
+
+    formatter = abtf.TableFormatter()
+    formatter.create_cell_level_css = MagicMock(side_effect=NotImplementedError)
+    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+
+    container = MagicMock()
+    actual_cfg = MagicMock()
+    table._write_contents(container, actual_cfg)
+
+    row_names = {args[0][0][1] for args in formatter.create_cell_level_css.call_args_list}
+    col_names = {args[0][0][2] for args in formatter.create_cell_level_css.call_args_list}
+    assert row_names == set(df.index) | {abtf.HEADER_ROW_NAME}
+    assert col_names == set(df.columns) | {abtf.INDEX_COL_NAME}
+
+
 def test__get_header_iterable_multiindex():
     df = pd.DataFrame(np.arange(12, dtype=float).reshape(3, 4), index=['a', 'b', 'c'], columns=['aa', 'bb', 'cc', 'aa'])
     df['grouping'] = 'g'
