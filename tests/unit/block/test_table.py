@@ -144,6 +144,21 @@ def test__jinja_calls_formatters_correctly():
     assert col_names == set(df.columns) | {abtf.INDEX_COL_NAME}
 
 
+def test__jinja_hides_multiindex_flattening():
+    df = pd.DataFrame(
+        columns=['a', 'b', 'c'],
+        index=pd.MultiIndex.from_tuples([('x', 'x'), ('y', 'y'), ('z', 'z')])
+    )
+
+    table = abt.HTMLJinjaTableBlock(df, formatters=[abtf.FmtExpandMultiIndex()], use_default_formatters=False)
+
+    container = MagicMock()
+    actual_cfg = MagicMock()
+    table._write_contents(container, actual_cfg)
+
+    assert "('x', 'x')" not in str(container.append.call_args_list[0][0][0])
+
+
 def test__get_header_iterable_multiindex():
     df = pd.DataFrame(np.arange(12, dtype=float).reshape(3, 4), index=['a', 'b', 'c'], columns=['aa', 'bb', 'cc', 'aa'])
     df['grouping'] = 'g'
