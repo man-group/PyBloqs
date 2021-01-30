@@ -128,8 +128,3 @@ _registered_resources = DependencyTracker(script_block_core, script_inflate)
 
 def register_interactive(*scripts):
     _registered_resources.add(*scripts)
-
-
-def write_interactive(stream):
-    for script in _registered_resources:
-        stream.write(render(script.write(), pretty=False))

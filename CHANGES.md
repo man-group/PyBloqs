@@ -105,3 +105,30 @@ Changelog
 ### 1.2.6 (2019-07-17)
 
   * Feature: Passing kwargs to plotly plot function. 
+
+### 1.2.7 (2019-08-06)
+
+  * Bugfix: Use require.js for Plotly and Highcharts inside Jupyter
+  * Moved id_precision to user_config
+  * Use tmp_html_dir everywhere
+
+### 1.2.8 (2020-08-25)
+
+  * Bugfix: Use colgroup tag for FmtHeader width specification
+  * Bugfix: Do not merge MultiIndex cells if parent cells not merged
+  * Bugfix: Pass actual header cell contents to formatter methods
+  * Feature: Add ability to vertically merge MultiIndex labels
+
+### 1.2.9 (2020-12-02)
+
+  * Bugfix: Fix header positions when index is a MultiIndex
+  * Bugfix: Fix MultiIndex styling
+  * Feature: Add formatter for vertical-align
+
+### 1.2.10 (2020-12-03)
+
+  * Bugfix: Pass only single row name into formatter from jinja table template
+
+### 1.2.11 (2020-12-03)
+
+  * Bugfix: Stop MultiIndex flattening columns from being rendered

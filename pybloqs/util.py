@@ -3,10 +3,9 @@ import zlib
 import base64
 import calendar
 import itertools
-import sys
-from six import iterkeys, iteritems
+from six import iterkeys, iteritems, PY3
 
-if sys.version_info > (3,):
+if PY3:
     long = int
 
 

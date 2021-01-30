@@ -400,6 +400,16 @@ def test_FmtAlignCellContents():
     assert res == 'text-align:right'
 
 
+def test_FmtAlignVerticalCellContents():
+    fmt = pbtf.FmtVerticalAlignCellContents()
+    res = fmt._create_cell_level_css(None)
+    assert res == 'vertical-align:baseline'
+
+    fmt = pbtf.FmtVerticalAlignCellContents(alignment='top')
+    res = fmt._create_cell_level_css(None)
+    assert res == 'vertical-align:top'
+
+
 def test_FmtHeader_cell_css_all_columns():
     fmt = pbtf.FmtHeader(index_width='10cm')
     data = FormatterData(0., pbtf.HEADER_ROW_NAME, 'aa', df)
@@ -437,16 +447,19 @@ def test_FmtStripeBackground():
     fmt = pbtf.FmtStripeBackground(first_color=colors.BLACK, second_color=colors.RED, header_color=colors.GREEN)
     # Check header color is applied
     data = FormatterData(0., pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME, df)
+    res = fmt._create_row_level_css(pd.Series(name=pbtf.HEADER_ROW_NAME))
     res = fmt._create_cell_level_css(data)
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.GREEN))
 
     # Check that first line is filled with first_color
     data = FormatterData(0., 'a', 'aa', df)
+    res = fmt._create_row_level_css(pd.Series())
     res = fmt._create_cell_level_css(data)
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.BLACK))
 
     # Check that second line is filled with second color
     data = FormatterData(0., 'b', pbtf.INDEX_COL_NAME, df)
+    res = fmt._create_row_level_css(pd.Series())
     res = fmt._create_cell_level_css(data)
     assert res == (pbtf.CSS_BACKGROUND_COLOR + colors.css_color(colors.RED))
 
@@ -545,27 +558,27 @@ def test_FmtAppendTotalsRow_modify_dataframe():
     fmt = pbtf.FmtAppendTotalsRow()
     res = fmt._modify_dataframe(df)
     expected = pd.Series([9., 12., 15.], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(operator=pbtf.OP_MEAN)
     res = fmt._modify_dataframe(df)
     expected = pd.Series([3., 4., 5.], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(operator=pbtf.OP_NONE)
     res = fmt._modify_dataframe(df)
     expected = pd.Series(['', '', ''], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(row_name=TEST_STRING)
     res = fmt._modify_dataframe(df)
     expected = pd.Series([9., 12., 15.], name=TEST_STRING, index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(total_columns=['bb'])
     res = fmt._modify_dataframe(df)
     expected = pd.Series(['', '', 15.], name='Total', index=[pbtf.INDEX_COL_NAME, 'aa', 'bb'])
-    assert expected.equals(res.ix[-1])
+    assert expected.equals(res.iloc[-1])
 
 
 def test_FmtAppendTotalsRow_mixed_datatypes():
@@ -669,20 +682,20 @@ def test_FmtExpandMultiIndex_modify_dataframe():
     assert res.shape == (6, 4)
     assert res.index.tolist() == ['a', 'aa', 'ab', 'b', 'ba', 'bb']
     assert res.index.name == ''
-    assert res.ix['a'].tolist() == [3., 5., 7., ('a',)]
+    assert res.loc['a'].tolist() == [3., 5., 7., ('a',)]
     assert fmt.index_level == [0, 1, 1, 0, 1, 1]
 
     fmt = pbtf.FmtExpandMultiIndex(operator=pbtf.OP_MEAN)
     res = fmt._modify_dataframe(mi_df)
-    assert res.ix['a'].tolist() == [1.5, 2.5, 3.5, ('a',)]
+    assert res.loc['a'].tolist() == [1.5, 2.5, 3.5, ('a',)]
 
     fmt = pbtf.FmtExpandMultiIndex(operator=pbtf.OP_NONE)
     res = fmt._modify_dataframe(mi_df)
-    assert res.ix['a'].tolist() == ['', '', '', ('a',)]
+    assert res.loc['a'].tolist() == ['', '', '', ('a',)]
 
     fmt = pbtf.FmtExpandMultiIndex(operator=pbtf.OP_SUM, total_columns=['column1'])
     res = fmt._modify_dataframe(mi_df)
-    assert res.ix['a'].tolist() == ['', 5., '', ('a',)]
+    assert res.loc['a'].tolist() == ['', 5., '', ('a',)]
 
 
 def test_FmtExpandMultiIndex_cell_css():

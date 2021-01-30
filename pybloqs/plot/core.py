@@ -1,20 +1,19 @@
+import sys
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
-
-from datetime import datetime
-from pandas.core.generic import NDFrame
-
-from pybloqs.block.base import BaseBlock
-from pybloqs.block.image import ImgBlock
-
-from pybloqs.html import js_elem, append_to
-from pybloqs.util import camelcase, Cfg, dt_epoch_msecs, np_dt_epoch_msec
-from pybloqs.static import JScript, register_interactive
-from six import text_type, iteritems, StringIO
+from six import StringIO, iteritems, text_type, PY3
 from six.moves import range
 
-import sys
-if sys.version_info > (3,):
+from pandas.core.generic import NDFrame
+from pybloqs.block.base import BaseBlock
+from pybloqs.block.image import ImgBlock
+from pybloqs.html import append_to, js_elem
+from pybloqs.static import JScript
+from pybloqs.util import Cfg, camelcase, dt_epoch_msecs, np_dt_epoch_msec
+
+if PY3:
     long = int
 
 
@@ -22,24 +21,11 @@ if sys.version_info > (3,):
 _univariate_plots = {"area", "areaspline", "column", "flags", "line", "scatter", "spline", "pie", "gauge", "funnel"}
 _range_plots = {"arearange", "areasplinerange", "candlestick", "columnrange", "ohlc"}
 
-highstock_jscript = JScript("highstock")
-highcharts_more_jscript = JScript("highcharts-more")
-highcharts_3d_jscript = JScript("highcharts-3d")
-highcharts_heatmap_jscript = JScript("heatmap")
-highcharts_funnel_jscript = JScript("funnel")
-highcharts_exporting_jscript = JScript("exporting")
-highcharts_exporting_csv_jscript = JScript("export-csv")
-highcharts_pybloqs_jscript = JScript("highcharts-pybloqs")
-
-register_interactive(highstock_jscript,
-                     highcharts_more_jscript,
-                     highcharts_3d_jscript,
-                     highcharts_heatmap_jscript,
-                     highcharts_funnel_jscript,
-                     highcharts_exporting_jscript,
-                     highcharts_exporting_csv_jscript,
-                     highcharts_pybloqs_jscript)
-
+HIGHCHARTS_MAIN = "highstock"
+HIGHCHARTS_MODULES = ["highcharts-more", "highcharts-3d", "heatmap", "funnel", "exporting", "export-csv"]
+HIGHCHARTS_PYBLOQS = "highcharts-pybloqs"
+# Ordering has to be: main, modules, pybloqs-specific
+HIGHCHARTS_ALL = [HIGHCHARTS_MAIN] + HIGHCHARTS_MODULES + [HIGHCHARTS_PYBLOQS] 
 
 class Expr(object):
     """
@@ -97,14 +83,7 @@ class Plot(BaseBlock):
     figure.
     """
 
-    resource_deps = [highstock_jscript,
-                     highcharts_more_jscript,
-                     highcharts_3d_jscript,
-                     highcharts_heatmap_jscript,
-                     highcharts_funnel_jscript,
-                     highcharts_exporting_jscript,
-                     highcharts_exporting_csv_jscript,
-                     highcharts_pybloqs_jscript]
+    resource_deps = [JScript(m) for m in HIGHCHARTS_ALL]
 
     def __init__(self, data, *args, **kwargs):
         """
@@ -628,7 +607,7 @@ def _sniff_list_dim(data):
         try:
             dim.append(len(item))
             _sniff_rec(item[0])
-        except:
+        except Exception:
             pass
 
     _sniff_rec(data)

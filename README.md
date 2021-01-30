@@ -1,6 +1,6 @@
 # [![pybloqs](logo/logo50.png)](https://github.com/manahl/pybloqs)
 
-[![CircleCI](https://circleci.com/gh/manahl/PyBloqs.svg?style=shield)](https://circleci.com/gh/manahl/PyBloqs)
+[![CircleCI](https://circleci.com/gh/man-group/PyBloqs.svg?style=shield)](https://circleci.com/gh/man-group/PyBloqs)
 [![PyPI](https://img.shields.io/pypi/pyversions/pybloqs.svg)](https://pypi.python.org/pypi/pybloqs/)
 [![ReadTheDocs](https://readthedocs.org/projects/pybloqs/badge)](https://pybloqs.readthedocs.io)
 [![Coverage Status](https://coveralls.io/repos/github/manahl/PyBloqs/badge.svg?branch=master)](https://coveralls.io/github/manahl/PyBloqs?branch=master)
@@ -189,6 +189,7 @@ Contributors:
  * [Matthew Dodds](https://github.com/doddsiedodds)
  * [Han Wei Teo](https://github.com/HanTeo)
  * [Manjunath Goudreddy](https://github.com/manjugoudreddy)
+ * [Edwin Flores](https://github.com/edf825)
  * ... and many others ...
 
 Contributions welcome!

@@ -6,7 +6,7 @@ import webbrowser
 
 from six import BytesIO
 
-from pybloqs.config import user_config, ID_PRECISION
+from pybloqs.config import user_config
 from pybloqs.email import send_html_report
 from pybloqs.html import root, append_to, render, js_elem, id_generator
 import pybloqs.htmlconv as htmlconv
@@ -138,7 +138,7 @@ class BaseBlock(object):
         if filename is None and fmt is None:
             raise ValueError("One of `filename` or `fmt` must be provided.")
 
-        tempdir = tempfile.gettempdir()
+        tempdir = user_config["tmp_html_dir"]
 
         if filename:
             _, fmt_from_name = os.path.splitext(filename)
@@ -152,7 +152,7 @@ class BaseBlock(object):
                 if fmt != fmt_from_name:
                     filename += '.' + fmt
         else:
-            name = self._id[:ID_PRECISION] + "." + fmt
+            name = self._id[:user_config["id_precision"]] + "." + fmt
             filename = os.path.join(tempdir, name)
 
         # Force extension to be lower case so format checks are easier later
@@ -206,7 +206,7 @@ class BaseBlock(object):
         :param fmt: The format of the saved block. Supports the same output as `Block.save`
         :return: Path to the block file.
         """
-        file_name = self._id[:ID_PRECISION] + "." + fmt
+        file_name = self._id[:user_config["id_precision"]] + "." + fmt
         file_path = self.publish(os.path.expanduser(os.path.join(user_config["tmp_html_dir"], file_name)),
                                  header_block=header_block, footer_block=footer_block)
 

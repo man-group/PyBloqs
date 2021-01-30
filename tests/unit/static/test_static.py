@@ -104,16 +104,3 @@ def test_dependency_tracker_insertion_order():
     dep.add('D')
     dep.add('B')
     assert list(dep) == ['A', 'C', 'D', 'B']
-
-
-def test_register_interactive_write_interactive():
-    test_css = ps.Css(css_string='test styles', name='test name')
-    ps.register_interactive(test_css)
-    stream = StringIO()
-    ps.write_interactive(stream)
-    assert 'test styles' in stream.getvalue()
-    # Add once more, should not be in final output more than once
-    ps.register_interactive(test_css)
-    stream = StringIO()
-    ps.write_interactive(stream)
-    assert stream.getvalue().count('test styles') == 1
