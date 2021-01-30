@@ -56,17 +56,17 @@ class TableFormatter(object):
         Provides CSS styles to all <col> HTML tags.
     """
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=True, apply_to_header=False, apply_to_index=False):
-            """Initialise formatter and specify which rows and columns it is applied to. Default None applies to all."""
+    def __init__(self, rows=None, columns=None, apply_to_header_and_index=(True, True)):
+            """Initialise formatter and specify which rows and columns it is applied to. Default None applies to all.
+            boolean or 2-tuple of booleans can be supplied to apply_to_header_and_index.
+            """
             self.rows = rows
             self.columns = columns
             self.apply_to_header_and_index = apply_to_header_and_index
-            if not self.apply_to_header_and_index:
-                self.apply_to_header = apply_to_header
-                self.apply_to_index = apply_to_index
-            else:
-                self.apply_to_header = False
-                self.apply_to_index = False
+            if isinstance(apply_to_header_and_index, bool):
+                apply_to_header_and_index = (apply_to_header_and_index, apply_to_header_and_index)
+            self.apply_to_header = apply_to_header_and_index[0]
+            self.apply_to_index = apply_to_header_and_index[1]
             return
 
     def _get_row_and_column_index(self, row_name, column_name, df):
@@ -83,19 +83,17 @@ class TableFormatter(object):
         return Row_col_index(row_index, column_index)
 
     def _is_selected_cell(self, row_name, column_name):
-            if (row_name == HEADER_ROW_NAME or column_name == INDEX_COL_NAME) and self.apply_to_header_and_index:
-                return True
-            elif (row_name == HEADER_ROW_NAME) and self.apply_to_header:
+            if (row_name == HEADER_ROW_NAME) and self.apply_to_header:
                 return True
             elif (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and self.apply_to_index:
                 return True
             is_outside_selection = (self.columns is not None and column_name not in self.columns or
                                     self.rows is not None and row_name not in self.rows)
             is_selected_cell = not is_outside_selection
-            if not self.apply_to_header_and_index and not self.apply_to_header:
+            if not self.apply_to_header:
                     if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
                         is_selected_cell = False
-            if not self.apply_to_header_and_index and not self.apply_to_index:
+            if not self.apply_to_index:
                     if (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and (self.columns is None or INDEX_COL_NAME not in self.columns):
                         is_selected_cell = False
             return is_selected_cell
@@ -350,8 +348,8 @@ class FmtHighlightText(TableFormatter):
     """Change font formatting to highlight text in cell."""
 
     def __init__(self, bold=True, italic=True, font_color=colors.BLUE, rows=None, columns=None,
-                 apply_to_header_and_index=False, apply_to_header=False, apply_to_index=False):
-        super(FmtHighlightText, self).__init__(rows, columns, apply_to_header_and_index, apply_to_header, apply_to_index)
+                 apply_to_header_and_index=False):
+        super(FmtHighlightText, self).__init__(rows, columns, apply_to_header_and_index)
         self.bold = bold
         self.italic = italic
         self.font_color = font_color
@@ -372,8 +370,8 @@ class FmtHighlightText(TableFormatter):
 class FmtHighlightBackground(TableFormatter):
     """Set background color of selected cells"""
 
-    def __init__(self, color=colors.RED, rows=None, columns=None, apply_to_header_and_index=False, apply_to_header=False, apply_to_index=False):
-        super(FmtHighlightBackground, self).__init__(rows, columns, apply_to_header_and_index, apply_to_header, apply_to_index)
+    def __init__(self, color=colors.RED, rows=None, columns=None, apply_to_header_and_index=False):
+        super(FmtHighlightBackground, self).__init__(rows, columns, apply_to_header_and_index)
         self.color = color
         return
 
@@ -396,8 +394,8 @@ class FmtBold(TableFormatter):
 class FmtAlignCellContents(TableFormatter):
     """Align cell contents. Possible alignment values: left, center, right."""
 
-    def __init__(self, alignment='center', rows=None, columns=None, apply_to_header_and_index=True, apply_to_header=False, apply_to_index=False):
-        super(FmtAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index, apply_to_header, apply_to_index)
+    def __init__(self, alignment='center', rows=None, columns=None, apply_to_header_and_index=True):
+        super(FmtAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index)
         self.alignment = alignment
         return
 
