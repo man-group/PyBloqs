@@ -56,12 +56,18 @@ class TableFormatter(object):
         Provides CSS styles to all <col> HTML tags.
     """
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
-        """Initialise formatter and specify which rows and columns it is applied to. Default None applies to all."""
-        self.rows = rows
-        self.columns = columns
-        self.apply_to_header_and_index = apply_to_header_and_index
-        return
+    def __init__(self, rows=None, columns=None, apply_to_header_and_index=(True, True)):
+            """Initialise formatter and specify which rows and columns it is applied to. Default None applies to all.
+            boolean or 2-tuple of booleans can be supplied to apply_to_header_and_index.
+            """
+            self.rows = rows
+            self.columns = columns
+            self.apply_to_header_and_index = apply_to_header_and_index
+            if isinstance(apply_to_header_and_index, bool):
+                apply_to_header_and_index = (apply_to_header_and_index, apply_to_header_and_index)
+            self.apply_to_header = apply_to_header_and_index[0]
+            self.apply_to_index = apply_to_header_and_index[1]
+            return
 
     def _get_row_and_column_index(self, row_name, column_name, df):
         "Return row index and column index of given row_name and column name. Requires unique index and column names."
@@ -77,17 +83,20 @@ class TableFormatter(object):
         return Row_col_index(row_index, column_index)
 
     def _is_selected_cell(self, row_name, column_name):
-        if (row_name == HEADER_ROW_NAME or column_name == INDEX_COL_NAME) and self.apply_to_header_and_index:
-            return True
-        is_outside_selection = (self.columns is not None and column_name not in self.columns or
-                                self.rows is not None and row_name not in self.rows)
-        is_selected_cell = not is_outside_selection
-        if not self.apply_to_header_and_index:
-            if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
-                is_selected_cell = False
-            if column_name == INDEX_COL_NAME and (self.columns is None or INDEX_COL_NAME not in self.columns):
-                is_selected_cell = False
-        return is_selected_cell
+            if (row_name == HEADER_ROW_NAME) and self.apply_to_header:
+                return True
+            elif (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and self.apply_to_index:
+                return True
+            is_outside_selection = (self.columns is not None and column_name not in self.columns or
+                                    self.rows is not None and row_name not in self.rows)
+            is_selected_cell = not is_outside_selection
+            if not self.apply_to_header:
+                    if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
+                        is_selected_cell = False
+            if not self.apply_to_index:
+                    if (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and (self.columns is None or INDEX_COL_NAME not in self.columns):
+                        is_selected_cell = False
+            return is_selected_cell
 
     def _insert_additional_html(self):
         """Insert HTML string before table."""
@@ -410,7 +419,7 @@ class FmtHeader(TableFormatter):
     """Set various header formatting. Fixes table width."""
 
     def __init__(self, fixed_width='100%', index_width=None, column_width=None, rotate_deg=0,
-                 top_padding=None, no_wrap=True, columns=None):
+                 top_padding=None, no_wrap=True, columns=None, color=None):
         super(FmtHeader, self).__init__(None, None)
         self.fixed_width = fixed_width
         self.index_width = index_width
@@ -419,6 +428,7 @@ class FmtHeader(TableFormatter):
         self.top_padding = top_padding
         self.no_wrap = no_wrap
         self.columns = columns
+        self.color = color
         return
 
     def _create_table_level_css(self):
@@ -455,6 +465,8 @@ class FmtHeader(TableFormatter):
                 css_substrings.append(CSS_WIDTH + self.index_width)
             elif self.column_width is not None:
                 css_substrings.append('width:' + self.column_width)
+            if self.color is not None:
+                css_substrings.append(CSS_BACKGROUND_COLOR + colors.css_color(self.color))
             return "; ".join(css_substrings)
         else:
             return None
