@@ -159,6 +159,26 @@ def test__jinja_hides_multiindex_flattening():
     assert "('x', 'x')" not in str(container.append.call_args_list[0][0][0])
 
 
+def test__jinja_header_row_name():
+    df = pd.DataFrame(
+        [["first", 2, 3], ["second", 5, 6]],
+        columns=['a', 'b', 'c'],
+    ).set_index("a")
+
+    formatter = abtf.TableFormatter()
+    formatter._create_row_level_css = MagicMock(return_value=None)
+    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+
+    container = MagicMock()
+    actual_cfg = MagicMock()
+    table._write_contents(MagicMock(), MagicMock())
+
+    names = [args[0][0].name for args in formatter._create_row_level_css.call_args_list]
+    assert names[0] == abtf.HEADER_ROW_NAME
+    assert names[1] == "first"
+    assert names[2] == "second"
+
+
 def test__get_header_iterable_multiindex():
     df = pd.DataFrame(np.arange(12, dtype=float).reshape(3, 4), index=['a', 'b', 'c'], columns=['aa', 'bb', 'cc', 'aa'])
     df['grouping'] = 'g'
