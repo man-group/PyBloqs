@@ -8,7 +8,7 @@
     </colgroup>
     <thead {{create_thead_level_css()}}>
         {% for header_index, header_row in enumerate(header_iterable)  %}
-            <tr {{create_row_level_css(__JINJA_HEADER__, header_row)}}>
+            <tr {{create_row_level_css("__JINJA_HEADER__", header_row)}}>
                 {% for col_index, col_name in enumerate(df.index.names) %}
                     {% if header_index == len(header_iterable) - 1 %}
                         <th {{create_cell_level_css(col_name, "__JINJA_HEADER__", "__JINJA_INDEX__")}}>
