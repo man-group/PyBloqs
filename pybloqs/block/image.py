@@ -16,7 +16,7 @@ from pybloqs.util import cfg_to_css_string
 try:
     from plotly.graph_objs import Figure as PlotlyFigure
     import plotly.offline as po
-    from plotly.offline import init_notebook_mode
+    from plotly.offline import init_notebook_mode, iplot
     _PLOTLY_AVAILABLE = True
 except ImportError:
     _PLOTLY_AVAILABLE = False
@@ -268,7 +268,7 @@ class PlotlyPlotBlock(BaseBlock):
         # prefix = "<script>document.addEventListener('DOMContentLoaded', function() { Plotly = window._Plotly}</script>"
         # prefix = "<script type=text/javascript src='https://cdn.plot.ly/plotly-2.4.2.min.js'>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
         # self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
-        self._contents = contents.show()
+        self._contents = prefix + iplot(contents, **plotly_kwargs)
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
