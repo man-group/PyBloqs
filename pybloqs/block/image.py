@@ -16,7 +16,6 @@ from pybloqs.util import cfg_to_css_string
 try:
     from plotly.graph_objs import Figure as PlotlyFigure
     import plotly.offline as po
-    from plotly.offline import init_notebook_mode, iplot
     _PLOTLY_AVAILABLE = True
 except ImportError:
     _PLOTLY_AVAILABLE = False
@@ -29,8 +28,6 @@ try:
 except ImportError:
     _BOKEH_AVAILABLE = False
 
-
-init_notebook_mode(True)
 
 _MIME_TYPES = {
     "png": "png",
