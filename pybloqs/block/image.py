@@ -261,7 +261,7 @@ class PlotlyPlotBlock(BaseBlock):
             raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
 
         plotly_kwargs = plotly_kwargs or {}
-        prefix = "Plotly = window._Plotly"
+        prefix = "<script>Plotly = window._Plotly</script>"
         # prefix = "<script type=text/javascript src='https://cdn.plot.ly/plotly-2.4.2.min.js'>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
         self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
 
