@@ -267,8 +267,7 @@ class PlotlyPlotBlock(BaseBlock):
         prefix = "<script>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
         # prefix = "<script>document.addEventListener('DOMContentLoaded', function() { Plotly = window._Plotly}</script>"
         # prefix = "<script type=text/javascript src='https://cdn.plot.ly/plotly-2.4.2.min.js'>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
-        # self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
-        self._contents = prefix + iplot(contents, **plotly_kwargs)
+        self._contents = prefix + po.plot(contents, include_plotlyjs=True, output_type='div', **plotly_kwargs)
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
