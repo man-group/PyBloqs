@@ -30,6 +30,8 @@ except ImportError:
     _BOKEH_AVAILABLE = False
 
 
+init_notebook_mode(True)
+
 _MIME_TYPES = {
     "png": "png",
     "svg": "svg+xml"
@@ -260,7 +262,6 @@ class PlotlyPlotBlock(BaseBlock):
 
         if not isinstance(contents, PlotlyFigure):
             raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
-        init_notebook_mode(True)
 
         plotly_kwargs = plotly_kwargs or {}
         prefix = "<script>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
