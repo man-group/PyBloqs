@@ -268,7 +268,7 @@ class PlotlyPlotBlock(BaseBlock):
         # prefix = "<script>document.addEventListener('DOMContentLoaded', function() { Plotly = window._Plotly}</script>"
         # prefix = "<script type=text/javascript src='https://cdn.plot.ly/plotly-2.4.2.min.js'>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
         data_html = po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
-        data_html = data_html.replace("window.PLOTLYENV = window.PLOTLYENV", "require(['plotly'], function (Plotly){ window.PLOTLYENV = window.PLOTLYENV").replace("</script>", "}</script>")
+        data_html = data_html.replace("window.PLOTLYENV=window.PLOTLYENV", "require(['plotly'], function (Plotly){ window.PLOTLYENV = window.PLOTLYENV").replace("</script>", "}</script>")
 
         self._contents = data_html
 
