@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: quangdv-pybloqs
+Version: 1.2.12
+Summary: Data Visualization and Report Building fork from PyBlogs
+Home-page: https://github.com/quangduong109/Quangdv3_PyBloqs
+Author: Man AHL Technology
+Author-email: ManAHLTech@ahl.com
+License: UNKNOWN
+Description: Data Visualization and Report Building fork from PyBlogs
+Keywords: ahl,pdf,html,visualization,report
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.6
+Provides-Extra: docs_and_notebook
+Provides-Extra: plotly
+Provides-Extra: bokeh

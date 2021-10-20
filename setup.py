@@ -163,14 +163,14 @@ class PyTest(TestCommand):
 
 
 setup(
-    name="pybloqs",
+    name="quangdv-pybloqs",
     version="1.2.12",
     author="Man AHL Technology",
     author_email="ManAHLTech@ahl.com",
-    description="Data Visualization and Report Building",
-    long_description='\n'.join((long_description, changelog)),
+    description="Data Visualization and Report Building fork from PyBlogs",
+    long_description="Data Visualization and Report Building fork from PyBlogs",
     keywords=["ahl", "pdf", "html", "visualization", "report"],
-    url="https://github.com/manahl/pybloqs",
+    url="https://github.com/quangduong109/Quangdv3_PyBloqs",
     setup_requires=["jsmin"],
     install_requires=[
         "beautifulsoup4",
