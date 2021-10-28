@@ -188,6 +188,7 @@ setup(
             "sphinx",
             "nbsphinx",
             "ipython[notebook]",
+            "sphinxcontrib-apidoc",
         ],
         "plotly": [
             "plotly"
