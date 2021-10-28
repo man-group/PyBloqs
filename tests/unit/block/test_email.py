@@ -9,7 +9,7 @@ import sys
 
 
 user_config = \
-    yaml.load(
+    yaml.full_load(
         """
         smtp_kwargs:
           host: smtp.example.com
