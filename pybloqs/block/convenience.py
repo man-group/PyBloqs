@@ -1,4 +1,8 @@
-import collections
+# Python 3.10 compatibility
+try:
+    from collections import Iterable
+except ImportError:
+    from typing import Iterable
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
@@ -9,7 +13,7 @@ _block_types = dict()
 
 
 def add_block_types(objects, block_cls):
-    if not isinstance(objects, collections.Iterable):
+    if not isinstance(objects, Iterable):
         objects = [objects]
     for o in objects:
         _block_types[o] = block_cls
