@@ -52,8 +52,8 @@ def interactive(verbose=True):
 
     stream = StringIO()
 
-    stream.write(JScript("block-core", encode=False).write())
-    stream.write(JScript("jsinflate", encode=False).write())
+    stream.write(str(JScript("block-core", encode=False).write()))
+    stream.write(str(JScript("jsinflate", encode=False).write()))
     add_highcharts_shim_to_stream(stream, HIGHCHARTS_ALL)
 
     display_html(stream.getvalue(), raw=True)

@@ -165,12 +165,12 @@ class PyTest(TestCommand):
 setup(
     name="pybloqs",
     version="1.2.11",
-    author="Man AHL Technology",
-    author_email="ManAHLTech@ahl.com",
+    author="Man Alpha Technology",
+    author_email="ManAlphaTech@man.com",
     description="Data Visualization and Report Building",
     long_description='\n'.join((long_description, changelog)),
     keywords=["ahl", "pdf", "html", "visualization", "report"],
-    url="https://github.com/manahl/pybloqs",
+    url="https://github.com/man-group/pybloqs",
     setup_requires=["jsmin"],
     install_requires=[
         "beautifulsoup4",
@@ -188,6 +188,7 @@ setup(
             "sphinx",
             "nbsphinx",
             "ipython[notebook]",
+            "sphinxcontrib-apidoc",
         ],
         "plotly": [
             "plotly"
@@ -198,7 +199,7 @@ setup(
     },
     tests_require=[
         "mock",
-        "pytest==4.6.4",
+        "pytest",
         "pytest-cov",
     ],
     classifiers=[
@@ -209,6 +210,8 @@ setup(
         "Topic :: Scientific/Engineering",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.10",
     ],
     cmdclass={
         "install": PyBloqsInstall,
