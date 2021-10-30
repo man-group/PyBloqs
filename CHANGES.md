@@ -132,8 +132,3 @@ Changelog
 ### 1.2.11 (2020-12-03)
 
   * Bugfix: Stop MultiIndex flattening columns from being rendered
-
-### 1.2.12 (2021-09-14)
-
-  * Bugfix: Fix bug when export html, chart plotly not show
-

@@ -23,7 +23,7 @@ separately for fast development turnover. Lists of blocks can be stacked togethe
 For a minimal install without HighCharts support run:
 
 ```
-pip install quangdv-pybloqs
+pip install pybloqs
 ```
 or when installing in development mode:
 ```
@@ -72,11 +72,11 @@ in the main PyBloqs directory.
 
 - Bokeh (optional). To install Bokeh dependency, you can use:
 ```
-pip install quangdv-pybloqs[bokeh]
+pip install pybloqs[bokeh]
 ```
 - Plotly (optional). To install Plotly dependency, you can use:
 ```
-pip install quangdv-pybloqs[plotly]
+pip install pybloqs[plotly]
 ```
 
  
