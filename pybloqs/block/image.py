@@ -261,8 +261,11 @@ class PlotlyPlotBlock(BaseBlock):
             raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
 
         plotly_kwargs = plotly_kwargs or {}
-        prefix = "<script>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
-        self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
+        # prefix = "<script>if (typeof require !== 'undefined' && Plotly) {var Plotly = require('plotly')}</script>"
+        data_html = po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
+        data_html = data_html.replace("window.PLOTLYENV=window.PLOTLYENV", "require(['plotly'], function (Plotly){ window.PLOTLYENV = window.PLOTLYENV").replace("</script>", "})</script>")
+
+        self._contents = data_html
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
