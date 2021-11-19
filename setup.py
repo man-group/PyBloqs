@@ -156,7 +156,6 @@ class PyTest(TestCommand):
         args.extend(['--cov', 'pybloqs',
                      '--cov-report', 'xml',
                      '--cov-report', 'html',
-                     '--junitxml', 'junit.xml',
                      ])
         errno = pytest.main(args)
         sys.exit(errno)
