@@ -8,8 +8,7 @@ from six import iteritems, string_types
 
 import numpy as np
 import pandas as pd
-import pybloqs.block.colors as colors
-from pybloqs.block.table import HTMLJinjaTableBlock
+from pybloqs.block import colors as colors
 
 OP_SUM = np.sum
 OP_MEAN = np.mean
@@ -1044,7 +1043,7 @@ class FmtTruncateContentsWithEllipsis(TableFormatter):
     ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
 
-    def _create_cell_level_css(self, data: HTMLJinjaTableBlock.FormatterData) -> str:
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         css_substrings = ["white-space:nowrap", "overflow:hidden", "text-overflow:ellipsis"]
         return "; ".join(css_substrings)
 
@@ -1143,7 +1142,7 @@ class FmtHideInsignificant(TableFormatter):
     ) -> None:
         super(FmtHideInsignificant, self).__init__(rows, columns, apply_to_header_and_index)
 
-    def _modify_cell_content(self, data: HTMLJinjaTableBlock.FormatterData) -> str:
+    def _modify_cell_content(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         try:
             datastr = str(data.cell)
             strippedstr = datastr.replace("-", "").replace(".", "").replace(",", "").replace("0", "")
