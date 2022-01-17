@@ -28,5 +28,5 @@ __all__ = [
     "Pre",
     "Span",
     "Markdown",
-    "Cfg",
+    "Cfg"
 ]

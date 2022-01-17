@@ -2,12 +2,13 @@ from collections import namedtuple
 import datetime
 import itertools
 import numbers
+from typing import Optional, Any, List
+
 from six import iteritems, string_types
 
 import numpy as np
 import pandas as pd
-import pybloqs.block.colors as colors
-
+from pybloqs.block import colors as colors
 
 OP_SUM = np.sum
 OP_MEAN = np.mean
@@ -1032,6 +1033,124 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
         if self.cell_css is None:
             self._init_cell_css(data.df)
         return super(FmtColumnMultiIndexRows, self)._create_cell_level_css(data)
+
+
+class FmtTruncateContentsWithEllipsis(TableFormatter):
+    """Truncate cell contents replacing truncated text with the ellipsis character"""
+
+    def __init__(
+        self, rows: Optional[Any] = None, columns: List[str] = None, apply_to_header_and_index: bool = False
+    ) -> None:
+        super().__init__(rows, columns, apply_to_header_and_index)
+
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
+        css_substrings = ["white-space:nowrap", "overflow:hidden", "text-overflow:ellipsis"]
+        return "; ".join(css_substrings)
+
+
+class FmtHeatmapWithCenter(TableFormatter):
+    """Color cell background by value. For column-wise or row-wise min/max coloring, set axis parameter.
+       Additional ability to set a center parameter, defining the value that should be considered the 'middle'
+       number in the data."""
+
+    def __init__(
+        self,
+        min_color=colors.HEATMAP_RED,
+        max_color=colors.HEATMAP_GREEN,
+        center_color=colors.WHITE,
+        threshold=0.0,
+        center=0.0,
+        axis=None,
+        rows=None,
+        columns=None,
+        apply_to_header_and_index=False,
+        cache=None,
+    ):
+        super(FmtHeatmapWithCenter, self).__init__(rows, columns, apply_to_header_and_index)
+        self.axis = axis
+        self.min_color = min_color
+        self.max_color = max_color
+        self.center_color = center_color
+        self.threshold = threshold
+        self.cache = cache
+        self.center = center
+        return
+
+    def _get_selected_cell_values(self, rows, columns, df):
+        """Return all cell values within selected rows/columns range."""
+        if rows is None:
+            rows = df.index.tolist()
+        if columns is None:
+            columns = df.columns.tolist()
+        # If multi-index, user full index tuple from ORG_ROW_NAMES column
+        if isinstance(rows[0], tuple):
+            selection = df[df[ORG_ROW_NAMES].isin(rows)][columns]
+        else:
+            selection = df.loc[rows, columns]
+
+        # Replace strings with nan as they otherwise confuse min() and max()
+        selection = selection.applymap(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
+
+        return selection
+
+    def _get_min_max_from_selected_cell_values(self, rows, columns, df):
+        """ Returns the min and max from the selected cell values, possibly using a cache to store the results. """
+
+        if self.cache is None:
+            cell_values = self._get_selected_cell_values(rows, columns, df)
+            return np.nanmin(cell_values), np.nanmax(cell_values)
+        else:
+            cache_key = (rows and frozenset(rows), columns and frozenset(columns))
+            if cache_key not in self.cache:
+                cell_values = self._get_selected_cell_values(rows, columns, df)
+                self.cache[cache_key] = (np.nanmin(cell_values), np.nanmax(cell_values))
+            return self.cache[cache_key]
+
+    def _create_cell_level_css(self, data):
+        """Create heatmap with ranges from min to (center-threshold) and from (center+threshold) to max."""
+        if isinstance(data.cell, numbers.Number):
+            # Get selected cells. If axis is specified, get only data from the same row (axis=0) or column (axis=1)
+            rows = self.rows
+            columns = self.columns
+            if self.axis == 0:
+                rows = [data.row_name]
+            elif self.axis == 1:
+                columns = [data.column_name]
+
+            # Get min max values from selected cells
+            (min_value, max_value) = self._get_min_max_from_selected_cell_values(rows, columns, data.df)
+
+            # Create color with alpha according to value / (min or max)
+            if data.cell - self.center > self.threshold:
+                cell_color_alpha = (data.cell - self.center) / (max_value - self.center)
+                cell_color = self.max_color + (cell_color_alpha,)
+            elif data.cell - self.center < -self.threshold:
+                cell_color_alpha = (data.cell - self.center) / (min_value - self.center)
+                cell_color = self.min_color + (cell_color_alpha,)
+            else:
+                return CSS_BACKGROUND_COLOR + colors.css_color(self.center_color)
+            return CSS_BACKGROUND_COLOR + colors.css_color(cell_color)
+        else:
+            return None
+
+
+class FmtHideInsignificant(TableFormatter):
+    """Replace zero values with blank strings in columns specified"""
+
+    def __init__(
+        self, rows: Optional[Any] = None, columns: Optional[Any] = None, apply_to_header_and_index: bool = True
+    ) -> None:
+        super(FmtHideInsignificant, self).__init__(rows, columns, apply_to_header_and_index)
+
+    def _modify_cell_content(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
+        try:
+            datastr = str(data.cell)
+            strippedstr = datastr.replace("-", "").replace(".", "").replace(",", "").replace("0", "")
+            if "0" in str(data.cell) and len(strippedstr.strip()) == 0:
+                return ""
+        except Exception:
+            pass
+        return data.cell
 
 #
 # Definition of default formatters

@@ -156,7 +156,6 @@ class PyTest(TestCommand):
         args.extend(['--cov', 'pybloqs',
                      '--cov-report', 'xml',
                      '--cov-report', 'html',
-                     '--junitxml', 'junit.xml',
                      ])
         errno = pytest.main(args)
         sys.exit(errno)
@@ -208,7 +207,6 @@ setup(
         "Intended Audience :: Science/Research",
         "Programming Language :: Python",
         "Topic :: Scientific/Engineering",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.10",
