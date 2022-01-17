@@ -9,4 +9,3 @@ markdown
 pandas
 matplotlib
 future
-typing
