@@ -163,7 +163,7 @@ class PyTest(TestCommand):
 
 setup(
     name="pybloqs",
-    version="1.2.11",
+    version="1.2.12",
     author="Man Alpha Technology",
     author_email="ManAlphaTech@man.com",
     description="Data Visualization and Report Building",
