@@ -11,17 +11,6 @@ from setuptools.command.test import test as TestCommand
 import sys
 
 
-# Convert Markdown to RST for PyPI
-# http://stackoverflow.com/a/26737672
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-    changelog = pypandoc.convert('CHANGES.md', 'rst')
-except (IOError, ImportError, OSError):
-    long_description = open('README.md').read()
-    changelog = open('CHANGES.md').read()
-
-
 def _copy_hc_files(source_paths, dest_path):
     """Copies all .js files (excluding .src.js) from source_path into dest_path."""
     if source_paths is None:
@@ -166,7 +155,8 @@ setup(
     author="Man Alpha Technology",
     author_email="ManAlphaTech@man.com",
     description="Data Visualization and Report Building",
-    long_description='\n'.join((long_description, changelog)),
+    long_description='\n'.join((open('README.md').read(), open('CHANGES.md').read())),
+    long_description_content_type="text/markdown",
     keywords=["ahl", "pdf", "html", "visualization", "report"],
     url="https://github.com/man-group/pybloqs",
     setup_requires=["jsmin"],
