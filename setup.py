@@ -8,7 +8,6 @@ import os
 from setuptools import setup, find_packages, Command
 from setuptools.command.install import install
 from setuptools.command.test import test as TestCommand
-import six
 import sys
 
 
@@ -152,7 +151,7 @@ class PyTest(TestCommand):
         # import here, cause outside the eggs aren't loaded
         import pytest
 
-        args = [self.pytest_args] if isinstance(self.pytest_args, six.string_types) else list(self.pytest_args)
+        args = [self.pytest_args] if isinstance(self.pytest_args, str) else list(self.pytest_args)
         args.extend(['--cov', 'pybloqs',
                      '--cov-report', 'xml',
                      '--cov-report', 'html',
