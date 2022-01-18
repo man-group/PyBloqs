@@ -132,3 +132,9 @@ Changelog
 ### 1.2.11 (2020-12-03)
 
   * Bugfix: Stop MultiIndex flattening columns from being rendered
+   
+### 1.2.12 (2022-01-18)
+
+  * Feature: Add CommonTableFormatter builder to configuring table formatting
+  * Bugfix: Fix striped background for table formatting
+  * Deprecate Python 2.7, make Python 3.6 minimum required version
