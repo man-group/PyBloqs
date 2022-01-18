@@ -18,7 +18,6 @@ import tempfile
 
 from html5lib import treebuilders
 import html5lib
-import six
 
 from pybloqs.config import user_config
 
