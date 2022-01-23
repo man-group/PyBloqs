@@ -267,6 +267,9 @@ class PlotlyPlotBlock(BaseBlock):
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
 
+    def _repr_html_(self):
+        return self.render_html()
+
 
 class BokehPlotBlock(BaseBlock):
 
