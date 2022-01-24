@@ -24,6 +24,8 @@ defaults: &defaults
     - run: sudo apt-get install pandoc
     - run: npm install
     - run: npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
+    # Phantomjs is required to Bokeh static output
+    - run: npm install phantomjs-prebuilt
     - run:
        name: Create and activate virtualenv
        command: |

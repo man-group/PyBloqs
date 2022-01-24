@@ -189,11 +189,13 @@ setup(
             "sphinxcontrib-apidoc",
         ],
         "plotly": [
-            "plotly"
+            "plotly",
+            "kaleido"
         ],
         "bokeh": [
-            "bokeh"
-        ]
+            "bokeh",
+            "selenium"
+            ]
     },
     tests_require=[
         "mock",
@@ -222,4 +224,4 @@ setup(
                                      "css/pybloqs_default/main.css"],
                   "pybloqs.jinja": ["table.html"],
                   "pybloqs.htmlconv": ["*.js"]}
-)
+
