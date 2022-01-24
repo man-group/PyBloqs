@@ -9,3 +9,4 @@ markdown
 pandas
 matplotlib
 future
+html5lib
