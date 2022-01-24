@@ -224,4 +224,4 @@ setup(
                                      "css/pybloqs_default/main.css"],
                   "pybloqs.jinja": ["table.html"],
                   "pybloqs.htmlconv": ["*.js"]}
-
+)
