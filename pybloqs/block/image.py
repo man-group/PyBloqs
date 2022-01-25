@@ -272,6 +272,9 @@ class PlotlyPlotBlock(BaseBlock):
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
 
+    def _repr_html_(self):
+        return self.render_html()
+
     def _to_static(self):
         # Create a static png image for use e.g. in an email body
         with tempfile.NamedTemporaryFile(suffix=".png") as f:
