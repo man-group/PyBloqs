@@ -138,3 +138,8 @@ Changelog
   * Feature: Add CommonTableFormatter builder to configuring table formatting
   * Bugfix: Fix striped background for table formatting
   * Deprecate Python 2.7, make Python 3.6 minimum required version
+
+### 1.2.13 (2022-01-25)
+
+  * Bugfix: Fix output of Plotly blocks no longer showing in newer versions of Jupyter
+  * Bugfix: Add static output to Bokeh and Plotly to enable sending within email body
