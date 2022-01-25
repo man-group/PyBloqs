@@ -1,6 +1,7 @@
 import base64
 from six import StringIO, BytesIO
 import struct
+import tempfile
 from contextlib import contextmanager
 
 from matplotlib.artist import Artist
@@ -24,6 +25,7 @@ try:
     from bokeh.resources import CSSResources, JSResources
     from bokeh.plotting.figure import Figure as BokehFigure
     from bokeh.embed.standalone import components
+    from bokeh.io import export_png
     _BOKEH_AVAILABLE = True
 except ImportError:
     _BOKEH_AVAILABLE = False
@@ -242,12 +244,13 @@ class PlotBlock(ImgBlock):
 
 class PlotlyPlotBlock(BaseBlock):
 
-    def __init__(self, contents, plotly_kwargs=None, **kwargs):
+    def __init__(self, contents, plotly_kwargs=None, static_kwargs=None, **kwargs):
         """
         Writes out the content as raw text or HTML.
 
         :param contents: Plotly graphics object figure.
         :param plotly_kwargs: Kwargs that are passed to plotly plot function.
+        :param static_kwargs: Kwargs that are passed to plotly function write_image() for static output.
         :param kwargs: Optional styling arguments. The `style` keyword argument has special
                        meaning in that it allows styling to be grouped as one argument.
                        It is also useful in case a styling parameter name clashes with a standard
@@ -261,7 +264,9 @@ class PlotlyPlotBlock(BaseBlock):
             raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
 
         plotly_kwargs = plotly_kwargs or {}
+        self.static_kwargs = static_kwargs or {}
         prefix = "<script>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
+        self._fig = contents
         self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
 
     def _write_contents(self, container, *args, **kwargs):
@@ -270,14 +275,22 @@ class PlotlyPlotBlock(BaseBlock):
     def _repr_html_(self):
         return self.render_html()
 
+    def _to_static(self):
+        # Create a static png image for use e.g. in an email body
+        with tempfile.NamedTemporaryFile(suffix=".png") as f:
+            self._fig.write_image(f.name, **self.static_kwargs)
+            static_block = ImgBlock.from_file(f)
+        return static_block
+
 
 class BokehPlotBlock(BaseBlock):
 
-    def __init__(self, contents, **kwargs):
+    def __init__(self, contents, static_kwargs=None, **kwargs):
         """
         Writes out the content as raw text or HTML.
 
         :param contents: Bokeh plotting figure.
+        :param static_kwargs: Kwargs that are passed to Bokeh function export_png() for static output.
         :param kwargs: Optional styling arguments. The `style` keyword argument has special
                        meaning in that it allows styling to be grouped as one argument.
                        It is also useful in case a styling parameter name clashes with a standard
@@ -291,11 +304,20 @@ class BokehPlotBlock(BaseBlock):
         if not isinstance(contents, BokehFigure):
             raise ValueError("Expected bokeh.plotting.figure.Figure type but got %s", type(contents))
 
+        self._fig = contents
+        self.static_kwargs = static_kwargs or {}
         script, div = components(contents)
         self._contents = script + div
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
+
+    def _to_static(self):
+        # Create a static png image for use e.g. in an email body
+        with tempfile.NamedTemporaryFile(suffix=".png") as f:
+            export_png(self._fig, filename=f.name, **self.static_kwargs)
+            static_block = ImgBlock.from_file(f)
+        return static_block
 
 
 add_block_types(Artist, PlotBlock)

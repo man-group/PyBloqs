@@ -189,11 +189,13 @@ setup(
             "sphinxcontrib-apidoc",
         ],
         "plotly": [
-            "plotly"
+            "plotly",
+            "kaleido"
         ],
         "bokeh": [
-            "bokeh"
-        ]
+            "bokeh",
+            "selenium"
+            ]
     },
     tests_require=[
         "mock",
