@@ -115,7 +115,7 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
         idx += 1
 
     html = dom.toxml()
-    if isinstance(html, six.text_type) and convert_to_ascii:
+    if isinstance(html, str) and convert_to_ascii:
         html = html.encode("us-ascii", "ignore")
         message.attach(MIMEText(html, "html", "us-ascii"))
     else:
