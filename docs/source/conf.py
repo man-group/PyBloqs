@@ -14,6 +14,7 @@
 
 import sys
 import os
+import shutil
 import subprocess
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -372,6 +373,8 @@ matplotlib.use('Agg')
 # This is to avoid the build error searching for highstocks.js in readthedocs.io
 nbsphinx_allow_errors = True
 
-proc = subprocess.Popen(["npm", "install", "highcharts", "--save"], stdout=subprocess.PIPE, shell=True)
+proc = subprocess.Popen("npm install --prefix /tmp highcharts", stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 print(f"NPM install \n{out}\nERR:{err}")
+
+shutil.copytree("/tmp/node_modules/highcharts", "../../pybloqs/static")
