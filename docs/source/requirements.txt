@@ -10,3 +10,5 @@ pandas
 matplotlib
 future
 html5lib
+plotly
+bokeh
