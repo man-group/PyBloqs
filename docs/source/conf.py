@@ -367,3 +367,6 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 import matplotlib
 matplotlib.use('Agg')
+
+# This is to avoid the build error searching for highstocks.js in readthedocs.io
+nbsphinx_allow_errors = True
