@@ -14,6 +14,7 @@
 
 import sys
 import os
+import subprocess
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -370,3 +371,7 @@ matplotlib.use('Agg')
 
 # This is to avoid the build error searching for highstocks.js in readthedocs.io
 nbsphinx_allow_errors = True
+
+proc = subprocess.Popen(["npm", "install", "highcharts", "--save"], stdout=subprocess.PIPE, shell=True)
+(out, err) = proc.communicate()
+print(f"NPM install \n{out}\nERR:{err}")
