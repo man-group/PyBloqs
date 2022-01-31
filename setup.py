@@ -57,7 +57,7 @@ class LoadHighcharts(Command):
     ]
 
     def initialize_options(self):
-        self.highcharts = None
+        self.highcharts = os.getenv("HIGHCHART_PATHS")
 
     def finalize_options(self):
         assert self.highcharts is not None, "Please provide --highcharts parameter"
