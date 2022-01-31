@@ -378,6 +378,6 @@ proc = subprocess.Popen(f"npm install highcharts", stdout=subprocess.PIPE, shell
 (out, err) = proc.communicate()
 print(f"NPM install \n{out}\nERR:{err}")
 
-proc = subprocess.Popen(f"find /usr -name highcharts", stdout=subprocess.PIPE, shell=True)
+proc = subprocess.Popen(f"find / -name highcharts* 2>/dev/null", stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 print(f"Find node_modules: \n{out}\n{err if err else ''}")
