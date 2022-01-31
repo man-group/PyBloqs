@@ -373,10 +373,7 @@ matplotlib.use('Agg')
 # This is to avoid the build error searching for highstocks.js in readthedocs.io
 nbsphinx_allow_errors = True
 
-dependencies_dir = "/../../dependencies"
-os.makedirs(dependencies_dir, exist_ok=True)
-proc = subprocess.Popen(f"npm install --prefix {dependencies_dir} highcharts", stdout=subprocess.PIPE, shell=True)
+
+proc = subprocess.Popen(f"npm install highcharts", stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 print(f"NPM install \n{out}\nERR:{err}")
-
-shutil.copytree(f"{dependencies_dir}/node_modules/highcharts", "../../pybloqs/static")
