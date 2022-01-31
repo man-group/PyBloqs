@@ -377,3 +377,7 @@ nbsphinx_allow_errors = True
 proc = subprocess.Popen(f"npm install highcharts", stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 print(f"NPM install \n{out}\nERR:{err}")
+
+proc = subprocess.Popen(f"ls -la ./", stdout=subprocess.PIPE, shell=True)
+(out, err) = proc.communicate()
+print(f"List curr directory: \n{out}\n{err if err else ''}")
