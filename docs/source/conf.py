@@ -378,6 +378,6 @@ proc = subprocess.Popen(f"npm install highcharts", stdout=subprocess.PIPE, shell
 (out, err) = proc.communicate()
 print(f"NPM install \n{out}\nERR:{err}")
 
-proc = subprocess.Popen(f"ls -la /usr/local/", stdout=subprocess.PIPE, shell=True)
+proc = subprocess.Popen(f"ls -la /usr/local/lib/", stdout=subprocess.PIPE, shell=True)
 (out, err) = proc.communicate()
 print(f"list /usr/local/: \n{out}\n{err if err else ''}")
