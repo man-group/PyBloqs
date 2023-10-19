@@ -537,8 +537,12 @@ class FmtHeatmap(TableFormatter):
         """Return all cell values within selected rows/columns range."""
         if rows is None:
             rows = df.index.tolist()
+        else:
+            rows = df.index.isin(rows)
         if columns is None:
             columns = df.columns.tolist()
+        else:
+            columns = df.columns.isin(columns)
         # If multi-index, user full index tuple from ORG_ROW_NAMES column
         if isinstance(rows[0], tuple):
             selection = df[df[ORG_ROW_NAMES].isin(rows)][columns]
@@ -1080,8 +1084,12 @@ class FmtHeatmapWithCenter(TableFormatter):
         """Return all cell values within selected rows/columns range."""
         if rows is None:
             rows = df.index.tolist()
+        else:
+            rows = df.index.isin(rows)
         if columns is None:
             columns = df.columns.tolist()
+        else:
+            columns = df.columns.isin(columns)
         # If multi-index, user full index tuple from ORG_ROW_NAMES column
         if isinstance(rows[0], tuple):
             selection = df[df[ORG_ROW_NAMES].isin(rows)][columns]
