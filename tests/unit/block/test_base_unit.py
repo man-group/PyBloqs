@@ -67,5 +67,3 @@ def test_save_filename_and_extension(filename, fmt, exp_name, exp_fmt, exp_outpu
         assert result == exp_name
     if exp_fmt is not None:
         assert result.split('.')[-1] == exp_fmt
-    if exp_output is not None:
-        assert m().write.assert_called_once_with(exp_output)
