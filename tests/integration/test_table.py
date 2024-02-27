@@ -1,5 +1,5 @@
 import os
-from pandas.util.testing import assert_series_equal
+from pandas.testing import assert_series_equal
 
 from pybloqs import Block
 
