@@ -621,7 +621,7 @@ class FmtAppendTotalsRow(TableFormatter):
             df_calculated = df[columns]
             last_row = self.operator(df_calculated[df_calculated.applymap(np.isreal)])
             last_row = last_row.fillna(0.)
-            last_row = last_row.append(pd.Series('', index=df.columns.difference(last_row.index)))
+            last_row = pd.concat([last_row, pd.Series('', index=df.columns.difference(last_row.index))])
         else:
             last_row = pd.Series('', index=df.columns)
         last_row.name = self.row_name
