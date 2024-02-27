@@ -621,13 +621,13 @@ class FmtAppendTotalsRow(TableFormatter):
             df_calculated = df[columns]
             last_row = self.operator(df_calculated[df_calculated.applymap(np.isreal)])
             last_row = last_row.fillna(0.)
-            last_row = pd.concat([last_row, pd.Series('', index=df.columns.difference(last_row.index))])
+            last_row = last_row._append(pd.Series('', index=df.columns.difference(last_row.index)))
         else:
             last_row = pd.Series('', index=df.columns)
         last_row.name = self.row_name
         # Appending kills index name, save now and restore after appending
         index_name = df.index.name
-        df = pd.concat([df, last_row])
+        df = df._append(last_row)
         df.index.name = index_name
         return df
 
