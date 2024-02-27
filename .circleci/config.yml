@@ -87,6 +87,11 @@ jobs:
     docker:
       - image: cimg/python:3.10-browsers
     <<: *defaults
+  build_3_11:
+    working_directory: ~/manahl/PyBloqs_3_11
+    docker:
+      - image: cimg/python:3.11-browsers
+    <<: *defaults
 workflows:
   version: 2
   build_all:
@@ -94,3 +99,4 @@ workflows:
       - build_3_6
       - build_3_8
       - build_3_10
+      - build_3_11
