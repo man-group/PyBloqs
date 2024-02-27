@@ -22,7 +22,10 @@ except ImportError:
     _PLOTLY_AVAILABLE = False
 
 try:
-    from bokeh.resources import CSSResources, JSResources
+    try:
+        from bokeh.resources import CSSResources, JSResources
+    except ImportError:
+        from bokeh.templates import CSSResources, JSResources
     from bokeh.plotting.figure import Figure as BokehFigure
     from bokeh.embed.standalone import components
     from bokeh.io import export_png

@@ -41,7 +41,7 @@
                     {{modify_cell_content(item, row_names[0], "__JINJA_INDEX__")}}
                 </td>
             {% endfor %}
-            {% for col_name, cell in row.iteritems() %}
+            {% for col_name, cell in row.items() %}
                 <td {{create_cell_level_css(cell, row_name, col_name)}}>
                     {{modify_cell_content(cell, row_name, col_name)}}
                 </td>
