@@ -162,7 +162,7 @@ class PyTest(TestCommand):
 
 setup(
     name="pybloqs",
-    version="1.2.13",
+    version="1.2.14",
     author="Man Alpha Technology",
     author_email="ManAlphaTech@man.com",
     description="Data Visualization and Report Building",
