@@ -4,6 +4,7 @@ import pytest
 
 import numpy as np
 import pandas as pd
+from pandas._testing import makeMixedDataFrame
 import pybloqs.block.colors as colors
 import pybloqs.block.table_formatters as pbtf
 
@@ -588,11 +589,11 @@ def test_FmtAppendTotalsRow_modify_dataframe():
 
 
 def test_FmtAppendTotalsRow_mixed_datatypes():
-    df = pd.util.testing.makeMixedDataFrame()
+    df = makeMixedDataFrame()
     fmt = pbtf.FmtAppendTotalsRow(total_columns=['A'])
     res = fmt._modify_dataframe(df)
     last_row_expected = pd.Series({'A': 10., 'B': '', 'C': '', 'D': ''}, name="Total")
-    pd.util.testing.assert_series_equal(res.iloc[-1], last_row_expected)
+    pd.testing.assert_series_equal(res.iloc[-1], last_row_expected)
 
 
 def test_FmtAppendTotalsRow_cell_css():
