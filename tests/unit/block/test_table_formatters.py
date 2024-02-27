@@ -4,7 +4,6 @@ import pytest
 
 import numpy as np
 import pandas as pd
-from pandas._testing import makeMixedDataFrame
 import pybloqs.block.colors as colors
 import pybloqs.block.table_formatters as pbtf
 
@@ -589,7 +588,18 @@ def test_FmtAppendTotalsRow_modify_dataframe():
 
 
 def test_FmtAppendTotalsRow_mixed_datatypes():
-    df = makeMixedDataFrame()
+    df = pd.read_dict({
+        'A': {0: 0.0, 1: 1.0, 2: 2.0, 3: 3.0, 4: 4.0}, 
+        'B': {0: 0.0, 1: 1.0, 2: 0.0, 3: 1.0, 4: 0.0}, 
+        'C': {0: 'foo1', 1: 'foo2', 2: 'foo3', 3: 'foo4', 4: 'foo5'},
+        'D': {
+            0: pd.Timestamp('2009-01-01 00:00:00'), 
+            1: pd.Timestamp('2009-01-02 00:00:00'), 
+            2: pd.Timestamp('2009-01-05 00:00:00'), 
+            3: pd.Timestamp('2009-01-06 00:00:00'), 
+            4: pd.Timestamp('2009-01-07 00:00:00')
+        }
+    })
     fmt = pbtf.FmtAppendTotalsRow(total_columns=['A'])
     res = fmt._modify_dataframe(df)
     last_row_expected = pd.Series({'A': 10., 'B': '', 'C': '', 'D': ''}, name="Total")
