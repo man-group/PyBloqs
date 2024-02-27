@@ -203,14 +203,14 @@ setup(
         "pytest-cov",
     ],
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
         "Intended Audience :: Science/Research",
         "Programming Language :: Python",
         "Topic :: Scientific/Engineering",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     cmdclass={
         "install": PyBloqsInstall,
