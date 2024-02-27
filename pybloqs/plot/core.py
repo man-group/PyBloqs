@@ -273,7 +273,7 @@ class Plot(BaseBlock):
 
         def _decompose_l1(cfg):
             return [cfg.override_many(data=value).inherit_many(name=key)
-                    for key, value in data.iteritems()]
+                    for key, value in data.items()]
 
         def _decompose_l2(cfg):
             component_series = []
