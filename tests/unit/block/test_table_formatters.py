@@ -588,7 +588,7 @@ def test_FmtAppendTotalsRow_modify_dataframe():
 
 
 def test_FmtAppendTotalsRow_mixed_datatypes():
-    df = pd.read_dict({
+    df = pd.DataFrame.from_dict({
         'A': {0: 0.0, 1: 1.0, 2: 2.0, 3: 3.0, 4: 4.0}, 
         'B': {0: 0.0, 1: 1.0, 2: 0.0, 3: 1.0, 4: 0.0}, 
         'C': {0: 'foo1', 1: 'foo2', 2: 'foo3', 3: 'foo4', 4: 'foo5'},
