@@ -627,7 +627,7 @@ class FmtAppendTotalsRow(TableFormatter):
         last_row.name = self.row_name
         # Appending kills index name, save now and restore after appending
         index_name = df.index.name
-        df = df.append(last_row)
+        df = pd.concat([df, last_row])
         df.index.name = index_name
         return df
 
