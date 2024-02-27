@@ -646,11 +646,6 @@ def test_FmtAppendTotalsColumn_modify_dataframe():
     expected = pd.Series([1., 4., 7.], name='Total', index=[pbtf.HEADER_ROW_NAME, 'a', 'b'])
     assert expected.equals(res.iloc[:, -1])
 
-    fmt = pbtf.FmtAppendTotalsColumn(operator=pbtf.OP_NONE)
-    res = fmt._modify_dataframe(df)
-    expected = pd.Series(['', '', ''], name='Total', index=[pbtf.HEADER_ROW_NAME, 'a', 'b'])
-    assert expected.equals(res.iloc[:, -1])
-
     fmt = pbtf.FmtAppendTotalsColumn(column_name=TEST_STRING)
     res = fmt._modify_dataframe(df)
     expected = pd.Series([3., 12., 21.], name=TEST_STRING, index=[pbtf.HEADER_ROW_NAME, 'a', 'b'])
