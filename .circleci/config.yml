@@ -72,11 +72,6 @@ defaults: &defaults
 
 version: 2
 jobs:
-  build_3_6:
-    working_directory: ~/manahl/PyBloqs_3_6
-    docker:
-    - image: circleci/python:3.6-stretch-node-browsers
-    <<: *defaults
   build_3_8:
     working_directory: ~/manahl/PyBloqs_3_8
     docker:
@@ -96,7 +91,6 @@ workflows:
   version: 2
   build_all:
     jobs:
-      - build_3_6
       - build_3_8
       - build_3_10
       - build_3_11
