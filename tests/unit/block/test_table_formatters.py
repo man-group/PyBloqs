@@ -320,7 +320,7 @@ def test_FmtReplaceNaN():
     n = 42.0
     fmt = pbtf.FmtReplaceNaN(value=n)
     # Check basic replacement
-    df = pd.concat({'a': pd.Series([0, 1, 2, np.NaN])}, axis=1)
+    df = pd.concat({'a': pd.Series([0, 1, 2, np.nan])}, axis=1)
     res = fmt._modify_dataframe(df)
     assert res.equals(pd.concat({'a': pd.Series([0, 1, 2, n])}, axis=1))
     # Check that non-nan number is preseved

@@ -14,7 +14,7 @@ TEST_DATA = pd.DataFrame(
         "GPA": [3.8, 3.7, 3.75, 3.2, 4.0, 3.95, 3.9],
         "Plagiarism Score (bps)": [0.02, 0.003, 0.1, 0.0004, 0.12, 0.095, 0.18],
         "Tuition Fees": [9000, 9000, 9000, 9000, 3000, 9000, 0],
-        "Tuition Costs": [12566, -20564, 27284, -750, np.NaN, 4673, 0],
+        "Tuition Costs": [12566, -20564, 27284, -750, np.nan, 4673, 0],
         "Estimated Household Income": [2e5, 4e6, 3e5, 1e5, 2e5, 5e5, 2e7],
         "Subject": ["Physics", "Computer Science and Mathematics with Industrial Experience", "Chemistry", "French",
                     "Medicine", "History of Art Architecture and Design", "Nursing"],
