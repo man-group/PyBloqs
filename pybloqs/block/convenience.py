@@ -1,8 +1,4 @@
-# Python 3.10 compatibility
-try:
-    from collections import Iterable
-except ImportError:
-    from typing import Iterable
+from collections.abc import Iterable
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw

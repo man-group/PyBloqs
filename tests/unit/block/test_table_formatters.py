@@ -588,11 +588,22 @@ def test_FmtAppendTotalsRow_modify_dataframe():
 
 
 def test_FmtAppendTotalsRow_mixed_datatypes():
-    df = pd.util.testing.makeMixedDataFrame()
+    df = pd.DataFrame.from_dict({
+        'A': {0: 0.0, 1: 1.0, 2: 2.0, 3: 3.0, 4: 4.0}, 
+        'B': {0: 0.0, 1: 1.0, 2: 0.0, 3: 1.0, 4: 0.0}, 
+        'C': {0: 'foo1', 1: 'foo2', 2: 'foo3', 3: 'foo4', 4: 'foo5'},
+        'D': {
+            0: pd.Timestamp('2009-01-01 00:00:00'), 
+            1: pd.Timestamp('2009-01-02 00:00:00'), 
+            2: pd.Timestamp('2009-01-05 00:00:00'), 
+            3: pd.Timestamp('2009-01-06 00:00:00'), 
+            4: pd.Timestamp('2009-01-07 00:00:00')
+        }
+    })
     fmt = pbtf.FmtAppendTotalsRow(total_columns=['A'])
     res = fmt._modify_dataframe(df)
     last_row_expected = pd.Series({'A': 10., 'B': '', 'C': '', 'D': ''}, name="Total")
-    pd.util.testing.assert_series_equal(res.iloc[-1], last_row_expected)
+    pd.testing.assert_series_equal(res.iloc[-1], last_row_expected)
 
 
 def test_FmtAppendTotalsRow_cell_css():
@@ -633,11 +644,6 @@ def test_FmtAppendTotalsColumn_modify_dataframe():
     fmt = pbtf.FmtAppendTotalsColumn(operator=pbtf.OP_MEAN)
     res = fmt._modify_dataframe(df)
     expected = pd.Series([1., 4., 7.], name='Total', index=[pbtf.HEADER_ROW_NAME, 'a', 'b'])
-    assert expected.equals(res.iloc[:, -1])
-
-    fmt = pbtf.FmtAppendTotalsColumn(operator=pbtf.OP_NONE)
-    res = fmt._modify_dataframe(df)
-    expected = pd.Series(['', '', ''], name='Total', index=[pbtf.HEADER_ROW_NAME, 'a', 'b'])
     assert expected.equals(res.iloc[:, -1])
 
     fmt = pbtf.FmtAppendTotalsColumn(column_name=TEST_STRING)

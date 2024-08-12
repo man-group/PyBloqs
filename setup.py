@@ -162,7 +162,7 @@ class PyTest(TestCommand):
 
 setup(
     name="pybloqs",
-    version="1.2.13",
+    version="1.2.14",
     author="Man Alpha Technology",
     author_email="ManAlphaTech@man.com",
     description="Data Visualization and Report Building",
@@ -203,14 +203,14 @@ setup(
         "pytest-cov",
     ],
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
         "Intended Audience :: Science/Research",
         "Programming Language :: Python",
         "Topic :: Scientific/Engineering",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     cmdclass={
         "install": PyBloqsInstall,

@@ -273,7 +273,7 @@ class Plot(BaseBlock):
 
         def _decompose_l1(cfg):
             return [cfg.override_many(data=value).inherit_many(name=key)
-                    for key, value in data.iteritems()]
+                    for key, value in data.items()]
 
         def _decompose_l2(cfg):
             component_series = []
@@ -404,7 +404,7 @@ class Plot(BaseBlock):
             stream.write(str(dt_epoch_msecs(value)))
         elif isinstance(value, (bool, np.bool_)):
             stream.write("true" if value else "false")
-        elif isinstance(value, (int, long, float, np.int, np.float, np.number)):
+        elif isinstance(value, (int, long, float, np.number)):
             if np.isnan(value):
                 stream.write('null')
             elif np.isinf(value):
