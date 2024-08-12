@@ -619,7 +619,7 @@ class FmtAppendTotalsRow(TableFormatter):
             columns = self.total_columns
         if self.operator is not OP_NONE:
             df_calculated = df[columns]
-            last_row = self.operator(df_calculated[df_calculated.applymap(np.isreal)])
+            last_row = self.operator(df_calculated[df_calculated.applymap(np.isreal)], axis=0)
             last_row = last_row.fillna(0.)
             last_row = last_row._append(pd.Series('', index=df.columns.difference(last_row.index)))
         else:
@@ -750,7 +750,7 @@ class FmtExpandMultiIndex(TableFormatter):
                             data_rows = pd.DataFrame('', columns=df.columns, index=[sub_index])
                         else:
                             df_subset = df.loc[index_tuple[:level_i + 1]]
-                            data_rows = self.operator(df_subset[df_subset.applymap(np.isreal)]).to_frame().T
+                            data_rows = self.operator(df_subset[df_subset.applymap(np.isreal)], axis=0).to_frame().T
                             data_rows = data_rows.fillna(0.)
                             data_rows.loc[:, ~data_rows.columns.isin(columns)] = ''
                     n_rows = len(data_rows)
