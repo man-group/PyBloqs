@@ -33,7 +33,7 @@ defaults: &defaults
          . ci/bin/activate
          pip install jsmin
          pip install six
-         pip install bokeh
+         pip install "bokeh<=3.1"
          pip install plotly
          pip install lxml
          pip install coveralls
