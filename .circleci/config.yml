@@ -38,6 +38,7 @@ defaults: &defaults
          pip install plotly
          pip install lxml
          pip install coveralls
+         pip install sphinx
          pip install -r docs/source/requirements.txt
          python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv --wkhtmltopdf=wkhtmltox/bin
          python setup.py load_highcharts  --highcharts=node_modules/highcharts/,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv
