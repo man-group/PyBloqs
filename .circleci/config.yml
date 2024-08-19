@@ -23,7 +23,7 @@ defaults: &defaults
     - run: sudo apt-get install poppler-utils
     - run: sudo apt-get install pandoc
     - run: npm install
-    - run: npm install highcharts highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
+    - run: npm install highcharts@5.0.11 highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
     # Phantomjs is required to Bokeh static output
     - run: npm install phantomjs-prebuilt
     - run:
@@ -33,7 +33,8 @@ defaults: &defaults
          . ci/bin/activate
          pip install jsmin
          pip install six
-         pip install bokeh
+         pip install "numpy<2"
+         pip install "bokeh<=2.4"
          pip install plotly
          pip install lxml
          pip install coveralls

@@ -1,5 +1,5 @@
 nbconvert
-sphinx
+sphinx<=5.0
 nbsphinx
 matplotlib
 ipython[notebook]
