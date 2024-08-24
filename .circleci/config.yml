@@ -55,7 +55,7 @@ defaults: &defaults
          . ci/bin/activate
          mkdir -p /tmp/circleci-test-results
          python setup.py test --pytest-args="--junitxml=/tmp/circleci-test-results/junit.xml"
-         python setup.py build_sphinx
+         sphinx-build docs/source build/sphinx/html
     - run: 
        name: Get code coverage
        command: |
