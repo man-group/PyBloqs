@@ -34,7 +34,7 @@ defaults: &defaults
          pip install jsmin
          pip install six
          pip install "numpy<2"
-         pip install "bokeh<=3.0"
+         pip install bokeh
          pip install plotly
          pip install lxml
          pip install coveralls

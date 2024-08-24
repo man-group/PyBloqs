@@ -23,9 +23,15 @@ except ImportError:
 
 try:
     try:
-        from bokeh.resources import CSSResources, JSResources
+        # Bokeh >= 3.1
+        from bokeh.resources import Resources
+        JSResources = Resources
+        CSSResources = Resources
     except ImportError:
-        from bokeh.templates import CSSResources, JSResources
+        try:
+            from bokeh.resources import CSSResources, JSResources
+        except ImportError:
+            from bokeh.templates import CSSResources, JSResources
     try:
         from bokeh.plotting.figure import Figure as BokehFigure
     except ImportError:
