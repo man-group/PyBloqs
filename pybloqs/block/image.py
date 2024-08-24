@@ -26,7 +26,10 @@ try:
         from bokeh.resources import CSSResources, JSResources
     except ImportError:
         from bokeh.templates import CSSResources, JSResources
-    from bokeh.plotting.figure import Figure as BokehFigure
+    try:
+        from bokeh.plotting.figure import Figure as BokehFigure
+    except ImportError:
+        from bokeh.plotting import figure as BokehFigure
     from bokeh.embed.standalone import components
     from bokeh.io import export_png
     _BOKEH_AVAILABLE = True

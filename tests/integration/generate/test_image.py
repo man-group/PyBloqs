@@ -4,7 +4,7 @@ import numpy as np
 from bokeh.models import ColumnDataSource, FactorRange
 from bokeh.plotting import figure
 
-from pybloqs.block.image import PlotBlock, ImgBlock, PlotlyPlotBlock, BokehPlotBlock
+from pybloqs.block.image import PlotBlock, ImgBlock, PlotlyPlotBlock, BokehPlotBlock, _BOKEH_AVAILABLE
 from .generation_framework import assert_report_generated
 import plotly.graph_objs as go
 
@@ -51,6 +51,8 @@ def test_plotlyplot():
 
     return PlotlyPlotBlock(fig)
 
+def test_bokeh_available():
+    assert _BOKEH_AVAILABLE
 
 @assert_report_generated
 def test_bokehplot():
