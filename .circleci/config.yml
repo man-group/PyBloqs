@@ -33,7 +33,7 @@ defaults: &defaults
          . ci/bin/activate
          pip install jsmin
          pip install six
-         pip install "numpy<2"
+         pip install numpy
          pip install bokeh
          pip install plotly
          pip install lxml
