@@ -23,7 +23,7 @@ defaults: &defaults
     - run: sudo apt-get install poppler-utils
     - run: sudo apt-get install pandoc
     - run: npm install
-    - run: npm install highcharts@5.0.11 highcharts-heatmap highcharts-export-csv highcharts-exporting highcharts-funnel
+    - run: npm install highcharts@10.0.0
     # Phantomjs is required to Bokeh static output
     - run: npm install phantomjs-prebuilt
     - run:
@@ -39,8 +39,8 @@ defaults: &defaults
          pip install lxml
          pip install coveralls
          pip install -r docs/source/requirements.txt
-         python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv --wkhtmltopdf=wkhtmltox/bin
-         python setup.py load_highcharts  --highcharts=node_modules/highcharts/,node_modules/highcharts-heatmap/,node_modules/highcharts-funnel,node_modules/highcharts-exporting,node_modules/highcharts-export-csv
+         python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts/modules/ --wkhtmltopdf=wkhtmltox/bin
+         python setup.py load_highcharts  --highcharts=node_modules/highcharts/,node_modules/highcharts/modules
     # Save dependency cache
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
