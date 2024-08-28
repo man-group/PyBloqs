@@ -69,7 +69,7 @@ class _PlotDim(Expr):
 
     def __pow__(self, power, modulo=None):
         if modulo is not None:
-            raise NotImplementedError()
+            raise NotImplementedError
 
         return self._construct_arith("^", power)
 
