@@ -33,16 +33,18 @@ class HTMLConverter(object):
 
     def run_command(self, cmd):
         """Run cmd as subprocess and return stdout and stderr."""
-        logger.info("Running external application: {}".format(cmd))
+        logger.info("Running external application: %s", cmd)
         proc = subprocess.Popen(cmd)
 
         # Wait for the process to exit
         output, errors = proc.communicate()
 
         if proc.returncode != 0:
-            raise ValueError("{} returned:\n stdout:{}\n stderr:{}".format(cmd, output, errors))
+            raise ValueError(
+                "{} returned:\n stdout:{}\n stderr:{}".format(cmd, output, errors),
+            )
         else:
-            logger.info("Returned:\n stdout: {}\n stderr:{}".format(output, errors))
+            logger.info("Returned:\n stdout: %s\n stderr:%s", output, errors)
         return output, errors
 
     @staticmethod
@@ -61,7 +63,7 @@ class HTMLConverter(object):
                 try:
                     os.remove(f)
                 except (IOError, OSError):
-                    logger.exception("Failed to remove a temporary file: {}.".format(f))
+                    logger.exception("Failed to remove a temporary file: %s.", f)
 
     @abstractmethod
     def htmlconv(
