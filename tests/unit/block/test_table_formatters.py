@@ -387,13 +387,7 @@ def test_FmtBold():
     assert res == pbtf.CSS_BOLD
 
 
-@pytest.mark.parametrize("apply_to_header_and_index", [True, False])
-def test_test_FmtBold_headerandindex(apply_to_header_and_index):
-    fmt = pbtf.FmtBold(apply_to_header_and_index=apply_to_header_and_index)
-    assert fmt.apply_to_header_and_index == apply_to_header_and_index
-
-
-@pytest.mark.parametrize("apply_to_header_and_index", [(True, False), (False, True)])
+@pytest.mark.parametrize("apply_to_header_and_index", [True, False, (True, False), (False, True)])
 def test_test_FmtBold_headerandindex(apply_to_header_and_index):
     fmt = pbtf.FmtBold(apply_to_header_and_index=apply_to_header_and_index)
     assert fmt.apply_to_header_and_index == apply_to_header_and_index
@@ -494,7 +488,7 @@ def test_FmtAlignTable():
 
 
 @pytest.mark.parametrize("apply_to_header_and_index", [True, False])
-def test_FmtAlignTable(apply_to_header_and_index):
+def test_FmtAlignTable_apply_to_header_and_index(apply_to_header_and_index):
     fmt = pbtf.FmtAlignTable("center", apply_to_header_and_index=apply_to_header_and_index)
     assert fmt.apply_to_header_and_index == apply_to_header_and_index
 
