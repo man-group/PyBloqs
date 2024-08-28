@@ -41,7 +41,7 @@ pip install --install-option="INSTALL OPTIONS" git+https://github.com/manahl/pyb
 e.g.
 
 ```
-pip install --install-option="--highcharts=~/node_modules/highcharts/,~/node_modules/highcharts-heatmap/" git+https://github.com/manahl/pybloqs.git
+pip install --install-option="--highcharts=~/node_modules/highcharts/,~/node_modules/highcharts/modules/" git+https://github.com/manahl/pybloqs.git
 ```
 
 
@@ -83,21 +83,17 @@ pip install pybloqs[plotly]
 - HighCharts (optional; proprietary license, see https://shop.highsoft.com/highcharts-t2):
 
 Highcharts is not bundled with PyBloqs. To create blocks with Highcharts plots, you need to download Highcharts 
-separately (e.g. with `npm install highcharts`, `npm install highcharts-heatmap` etc.), and provide the path to your 
-highcharts installation. Please make sure you have the right license for Highcharts. For full functionality you will 
-need the following highcharts packages: highcharts, highcharts-heatmap, highcharts-funnel, highcharts-exporting, 
-highcharts-export-csv (this example assumes, npm installed files into directory ~/node_modules).
+separately (e.g. with `npm install highcharts`), and provide the path to your 
+highcharts installation. PyBloqs currently only support `highcharts^10.0.0`.
+Please make sure you have the right license for Highcharts. This example assumes, npm installed files into directory ~/node_modules).
 
 ```
---highcharts=~/node_modules/highcharts/,
-~/node_modules/highcharts-heatmap/,~/node_modules/highcharts-funnel,~/node_modules/highcharts-exporting,
-~/node_modules/highcharts-export-csv
+--highcharts=~/node_modules/highcharts/,~/node_modules/highcharts/modules
 ```
 
 When installing in development mode you can load highcharts explicitly (this example assumes, npm installed files into directory ~/node_modules)
 ```
-python setup.py load_highcharts --highcharts=~/node_modules/highcharts/,~/node_modules/highcharts-heatmap/,\
-~/node_modules/highcharts-funnel,~/node_modules/highcharts-exporting,~/node_modules/highcharts-export-csv
+python setup.py load_highcharts --highcharts=~/node_modules/highcharts/,~/node_modules/highcharts/modules/
 ```
 
 ### Using PyBloqs

@@ -23,10 +23,19 @@ except ImportError:
 
 try:
     try:
-        from bokeh.resources import CSSResources, JSResources
+        # Bokeh >= 3.1
+        from bokeh.resources import Resources
+        JSResources = Resources
+        CSSResources = Resources
     except ImportError:
-        from bokeh.templates import CSSResources, JSResources
-    from bokeh.plotting.figure import Figure as BokehFigure
+        try:
+            from bokeh.resources import CSSResources, JSResources
+        except ImportError:
+            from bokeh.templates import CSSResources, JSResources
+    try:
+        from bokeh.plotting.figure import Figure as BokehFigure
+    except ImportError:
+        from bokeh.plotting import figure as BokehFigure
     from bokeh.embed.standalone import components
     from bokeh.io import export_png
     _BOKEH_AVAILABLE = True

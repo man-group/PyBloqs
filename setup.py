@@ -223,7 +223,7 @@ setup(
     ],
     extras_require={
         "docs_and_notebook": [
-            "sphinx<=5.0",
+            "sphinx",
             "nbsphinx",
             "ipython[notebook]",
             "sphinxcontrib-apidoc",

@@ -22,7 +22,7 @@ _univariate_plots = {"area", "areaspline", "column", "flags", "line", "scatter",
 _range_plots = {"arearange", "areasplinerange", "candlestick", "columnrange", "ohlc"}
 
 HIGHCHARTS_MAIN = "highstock"
-HIGHCHARTS_MODULES = ["highcharts-more", "highcharts-3d", "heatmap", "funnel", "exporting", "export-csv"]
+HIGHCHARTS_MODULES = ["highcharts-more", "highcharts-3d", "heatmap", "funnel", "exporting", "export-data"]
 HIGHCHARTS_PYBLOQS = "highcharts-pybloqs"
 # Ordering has to be: main, modules, pybloqs-specific
 HIGHCHARTS_ALL = [HIGHCHARTS_MAIN] + HIGHCHARTS_MODULES + [HIGHCHARTS_PYBLOQS] 
