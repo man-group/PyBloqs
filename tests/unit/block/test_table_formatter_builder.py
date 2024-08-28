@@ -68,8 +68,6 @@ def test_smokey():
     )
     for i in range(7):
         fmt_bldr = fmt_bldr.divider_line_horizontal(row=i)
-    print(
-        pybloqs.HTMLJinjaTableBlock(TEST_DATA, formatters=fmt_bldr.formatters, use_default_formatters=False).publish(
-            "foo.html"
-        )
+    pybloqs.HTMLJinjaTableBlock(TEST_DATA, formatters=fmt_bldr.formatters, use_default_formatters=False).publish(
+        "foo.html",
     )
