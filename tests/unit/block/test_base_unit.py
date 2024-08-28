@@ -15,7 +15,9 @@ def test_publish_block():
     with patch("os.makedirs") as md, patch.object(b, "save") as save:
         b.publish(publish_name)
 
-        expected_path = os.path.expanduser(os.path.join(config.user_config["public_dir"], publish_name))
+        expected_path = os.path.expanduser(
+            os.path.join(config.user_config["public_dir"], publish_name),
+        )
         expected_dir = os.path.dirname(expected_path)
 
         md.assert_called_with(expected_dir)
@@ -46,15 +48,29 @@ def test_show_block_with_env_var():
 
 
 @pytest.mark.parametrize(
-    "filename, fmt, exp_name, exp_fmt, exp_output",
+    ("filename", "fmt", "exp_name", "exp_fmt", "exp_output"),
     [
-        pytest.param(None, None, None, None, None, marks=pytest.mark.xfail(raises=ValueError)),
+        pytest.param(
+            None,
+            None,
+            None,
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
         (None, "html", None, "html", "<HTML>"),
         (None, "pdf", None, "pdf", None),
         ("test.html", None, "test.html", "html", "<HTML>"),
         ("test.html", "html", "test.html", "html", "<HTML>"),
         ("test", "html", "test.html", "html", "<HTML>"),
-        pytest.param("test", None, None, None, None, marks=pytest.mark.xfail(raises=ValueError)),
+        pytest.param(
+            "test",
+            None,
+            None,
+            None,
+            None,
+            marks=pytest.mark.xfail(raises=ValueError),
+        ),
         ("test.pdf", "pdf", "test.pdf", "pdf", None),
         ("test.pdf", "html", "test.pdf.html", "html", "<HTML>"),
     ],

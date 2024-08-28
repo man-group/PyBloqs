@@ -87,7 +87,8 @@ def test_send_html_report_utf8():
     assert "From: lovelace@example.com" in msg
     assert "To: bayes@example.com,cantor@example.com" in msg
     assert "Cc: fourier@example.com,galois@example.com" in msg
-    assert "hilbert@example.com" not in msg and "ito@example.com" not in msg
+    assert "hilbert@example.com" not in msg
+    assert "ito@example.com" not in msg
     assert 'Content-Type: text/html; charset="utf-8"' in msg
 
 

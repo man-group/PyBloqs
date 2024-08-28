@@ -18,7 +18,11 @@ def test_HTMLJinjaTableBlock_constructor_formatters_list():
     table = abt.HTMLJinjaTableBlock(df, formatters=None, use_default_formatters=True)
     assert table.formatters == abtf.DEFAULT_FORMATTERS + abtf.DEFAULT_DECIMALS_FORMATTER
     formatter = abtf.TableFormatter()
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=True)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=True,
+    )
     assert table.formatters == abtf.DEFAULT_FORMATTERS + [formatter] + abtf.DEFAULT_DECIMALS_FORMATTER
 
 
@@ -26,13 +30,21 @@ def test_HTMLJinjaTableBlock_constructor_formatters_list():
 def test_HTMLJinjaTableBlock_constructor_df_formatter(mock_formatter):
     mock_formatter.return_value = df - 1
     formatter = abtf.TableFormatter()
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     mock_formatter.assert_called_with(df)
     assert table.df.equals(df - 1)
     # NotImplementedError should be handled
     mock_formatter.side_effect = NotImplementedError
     formatter = abtf.TableFormatter()
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     mock_formatter.assert_called_with(df)
 
 
@@ -49,7 +61,11 @@ def test_HTMLJinjaTableBlock_insert_additional_html_concat():
     dummy_html2 = "<div></div>"
     formatter2 = abtf.TableFormatter()
     formatter2.insert_additional_html = MagicMock(return_value=dummy_html2)
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter1, formatter2], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter1, formatter2],
+        use_default_formatters=False,
+    )
     res = table.insert_additional_html()
     assert res == dummy_html1 + dummy_html2
 
@@ -58,7 +74,11 @@ def test_HTMLJinjaTableBlock_insert_additional_html_concat():
 def test_HTMLJinjaTableBlock_insert_additional_html_not_implemented(mock_formatter):
     mock_formatter.side_effect = NotImplementedError
     formatter = abtf.TableFormatter()
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     res = table.insert_additional_html()
     mock_formatter.assert_called_once_with()
     assert res == ""
@@ -68,7 +88,11 @@ def test_HTMLJinjaTableBlock_insert_additional_html_not_implemented(mock_formatt
 def test_HTMLJinjaTableBlock_modify_cell_content(mock_formatter):
     mock_formatter.return_value = 1234
     formatter = abtf.TableFormatter()
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     res = table.modify_cell_content(None, None, None)
     assert mock_formatter.call_count == 1
     assert res == 1234
@@ -78,7 +102,11 @@ def test_HTMLJinjaTableBlock_modify_cell_content(mock_formatter):
 def test_HTMLJinjaTableBlock_modify_cell_content_not_implemented(mock_formatter):
     mock_formatter.side_effect = NotImplementedError
     formatter = abtf.TableFormatter()
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     res = table.modify_cell_content(42.0, None, None)
     assert mock_formatter.call_count == 1
     assert res == 42.0
@@ -88,7 +116,11 @@ def test__aggregate_css_formatters_no_args():
     dummy_css = "dummy_css"
     formatter = abtf.TableFormatter()
     formatter.dummy_function = MagicMock(return_value="dummy_css")
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     res = table._aggregate_css_formatters("dummy_function")
     assert res == 'style="' + dummy_css + '"'
     formatter.dummy_function.assert_called_once_with()
@@ -99,7 +131,11 @@ def test__aggregate_css_formatters_args():
     dummy_parameter = "42"
     formatter = abtf.TableFormatter()
     formatter.dummy_function = MagicMock(side_effect=lambda x: dummy_css + x)
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     res = table._aggregate_css_formatters("dummy_function", fmt_args=[dummy_parameter])
     assert res == 'style="' + dummy_css + dummy_parameter + '"'
     formatter.dummy_function.assert_called_once_with(dummy_parameter)
@@ -108,7 +144,11 @@ def test__aggregate_css_formatters_args():
 def test__aggregate_css_formatters_not_implemented():
     formatter = abtf.TableFormatter()
     formatter.dummy_function = MagicMock(side_effect=NotImplementedError())
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
     res = table._aggregate_css_formatters("dummy_function")
     assert res == 'style=""'
 
@@ -120,7 +160,11 @@ def test__aggregate_css_formatters_concatenation():
     css2 = "bbbbb"
     formatter2 = abtf.TableFormatter()
     formatter2.dummy_function = MagicMock(return_value=css2)
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter1, formatter2], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter1, formatter2],
+        use_default_formatters=False,
+    )
     res = table._aggregate_css_formatters("dummy_function")
     res = res.replace(" ", "")
     res = res.replace("'", '"')
@@ -132,7 +176,11 @@ def test__jinja_calls_formatters_correctly():
 
     formatter = abtf.TableFormatter()
     formatter.create_cell_level_css = MagicMock(side_effect=NotImplementedError)
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
 
     container = MagicMock()
     actual_cfg = MagicMock()
@@ -147,7 +195,11 @@ def test__jinja_calls_formatters_correctly():
 def test__jinja_hides_multiindex_flattening():
     df = pd.DataFrame(columns=["a", "b", "c"], index=pd.MultiIndex.from_tuples([("x", "x"), ("y", "y"), ("z", "z")]))
 
-    table = abt.HTMLJinjaTableBlock(df, formatters=[abtf.FmtExpandMultiIndex()], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[abtf.FmtExpandMultiIndex()],
+        use_default_formatters=False,
+    )
 
     container = MagicMock()
     actual_cfg = MagicMock()
@@ -164,7 +216,11 @@ def test__jinja_header_row_name():
 
     formatter = abtf.TableFormatter()
     formatter._create_row_level_css = MagicMock(return_value=None)
-    table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
+    table = abt.HTMLJinjaTableBlock(
+        df,
+        formatters=[formatter],
+        use_default_formatters=False,
+    )
 
     table._write_contents(MagicMock(), MagicMock())
 

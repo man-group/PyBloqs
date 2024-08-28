@@ -1,12 +1,12 @@
+import pytest
 from numpy import nan
 from pandas import Index, Series
-from pytest import fixture
 from six import StringIO
 
 from pybloqs.plot import Plot
 
 
-@fixture
+@pytest.fixture()
 def plot():
     return Plot([1, 2, 3])
 

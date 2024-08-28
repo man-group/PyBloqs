@@ -5,11 +5,11 @@ from mock import patch
 
 
 def test_missing_matplotlib_raises_error():
-    with pytest.raises(ImportError):
-        with patch.dict("sys.modules", {"matplotlib.pyplot": None}):
-            # Force re-import if imported in previous test
-            if "pybloqs.block.image" in sys.modules:
-                del sys.modules["pybloqs.block.image"]
+    with patch.dict("sys.modules", {"matplotlib.pyplot": None}):
+        # Force re-import if imported in previous test
+        if "pybloqs.block.image" in sys.modules:
+            del sys.modules["pybloqs.block.image"]
+        with pytest.raises(ImportError):
             import pybloqs.block.image  # noqa: F401
 
 

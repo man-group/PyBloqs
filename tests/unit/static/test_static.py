@@ -8,12 +8,12 @@ import pybloqs.static as ps
 
 
 @pytest.mark.parametrize(
-    "file_name, extension, expected",
+    ("file_name", "extension", "expected"),
     [
-        ["test_file", None, "test_file"],
-        ["test_file.ext", None, "test_file.ext"],
-        ["test_file", "ext", "test_file.ext"],
-        ["test_file.ext", "ext", "test_file.ext"],
+        ("test_file", None, "test_file"),
+        ("test_file.ext", None, "test_file.ext"),
+        ("test_file", "ext", "test_file.ext"),
+        ("test_file.ext", "ext", "test_file.ext"),
     ],
 )
 def test_resource_with_file_name(file_name, extension, expected):

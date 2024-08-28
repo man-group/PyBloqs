@@ -476,7 +476,8 @@ def test_FmtStripeBackground_headerandindex(apply_to_header_and_index):
 def test_FmtAlignTable():
     fmt = pbtf.FmtAlignTable("center")
     res = fmt._create_table_level_css()
-    assert pbtf.CSS_MARGIN_LEFT in res and pbtf.CSS_MARGIN_RIGHT in res
+    assert pbtf.CSS_MARGIN_LEFT in res
+    assert pbtf.CSS_MARGIN_RIGHT in res
 
     fmt = pbtf.FmtAlignTable("right")
     res = fmt._create_table_level_css()
@@ -512,16 +513,19 @@ def test_FmtHeatmap__get_min_max_from_selected_cell_values_with_cache():
     cache = {}
     fmt = pbtf.FmtHeatmap(cache=cache)
     res = fmt._get_min_max_from_selected_cell_values(None, None, df_pn)
-    assert len(cache) == 1 and (None, None) in cache.keys()
+    assert len(cache) == 1
+    assert (None, None) in cache.keys()
     assert res == (np.nanmin(df_pn), np.nanmax(df_pn))
 
     min_value, max_value = np.nanmin(df.loc[["a"], ["aa", "bb"]]), np.nanmax(df.loc[["a"], ["aa", "bb"]])
     res = fmt._get_min_max_from_selected_cell_values(["a"], ["aa", "bb"], df)
-    assert len(cache) == 2 and (frozenset(["a"]), frozenset(["aa", "bb"])) in cache.keys()
+    assert len(cache) == 2
+    assert (frozenset(["a"]), frozenset(["aa", "bb"])) in cache.keys()
     assert res == (min_value, max_value)
 
     res = fmt._get_min_max_from_selected_cell_values(["a"], ["aa", "bb"], df)
-    assert len(cache) == 2 and (frozenset(["a"]), frozenset(["aa", "bb"])) in cache.keys()
+    assert len(cache) == 2
+    assert (frozenset(["a"]), frozenset(["aa", "bb"])) in cache.keys()
     assert res == (min_value, max_value)
 
 
