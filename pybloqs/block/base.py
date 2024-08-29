@@ -1,3 +1,4 @@
+import contextlib
 import os
 import uuid
 import webbrowser
@@ -218,10 +219,8 @@ class BaseBlock(object):
 
         base_dir = os.path.dirname(full_path)
 
-        try:
+        with contextlib.suppress(OSError):  # Ignore if directory already exists
             os.makedirs(base_dir)
-        except OSError:
-            pass  # Directory already exists
 
         self.save(full_path, *args, **kwargs)
 

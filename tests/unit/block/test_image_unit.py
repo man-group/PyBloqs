@@ -54,5 +54,5 @@ def test_plot_format_ctx_manager():
     with i.plot_format("svg", 1000):
         assert i._PLOT_FORMAT == "svg"
         assert i._PLOT_DPI == 1000
-    assert i._PLOT_FORMAT == old_fmt
-    assert i._PLOT_DPI == old_dpi
+    assert old_fmt == i._PLOT_FORMAT
+    assert old_dpi == i._PLOT_DPI

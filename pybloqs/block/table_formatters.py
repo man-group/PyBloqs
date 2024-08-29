@@ -88,9 +88,13 @@ class TableFormatter(object):
         return Row_col_index(row_index, column_index)
 
     def _is_selected_cell(self, row_name, column_name):
-        if (row_name == HEADER_ROW_NAME) and self.apply_to_header:
-            return True
-        elif (column_name == INDEX_COL_NAME) and (row_name != HEADER_ROW_NAME) and self.apply_to_index:
+        if (
+            (row_name == HEADER_ROW_NAME)
+            and self.apply_to_header
+            or (column_name == INDEX_COL_NAME)
+            and (row_name != HEADER_ROW_NAME)
+            and self.apply_to_index
+        ):
             return True
         is_outside_selection = (
             self.columns is not None
@@ -99,16 +103,16 @@ class TableFormatter(object):
             and row_name not in self.rows
         )
         is_selected_cell = not is_outside_selection
-        if not self.apply_to_header:
-            if row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows):
-                is_selected_cell = False
-        if not self.apply_to_index:
-            if (
-                (column_name == INDEX_COL_NAME)
-                and (row_name != HEADER_ROW_NAME)
-                and (self.columns is None or INDEX_COL_NAME not in self.columns)
-            ):
-                is_selected_cell = False
+        if (not self.apply_to_header) and (
+            row_name == HEADER_ROW_NAME and (self.rows is None or HEADER_ROW_NAME not in self.rows)
+        ):
+            is_selected_cell = False
+        if (not self.apply_to_index) and (
+            (column_name == INDEX_COL_NAME)
+            and (row_name != HEADER_ROW_NAME)
+            and (self.columns is None or INDEX_COL_NAME not in self.columns)
+        ):
+            is_selected_cell = False
         return is_selected_cell
 
     def _insert_additional_html(self):
@@ -259,7 +263,7 @@ class FmtDates(FmtToString):
 
     def _modify_cell_content(self, data):
         """Change cell value from number to string formatted by fmt_string"""
-        if isinstance(data.cell, pd.Timestamp) or isinstance(data.cell, datetime.datetime):
+        if isinstance(data.cell, (pd.Timestamp, datetime.datetime)):
             return super(FmtDates, self)._modify_cell_content(data)
         else:
             return data.cell
@@ -968,16 +972,19 @@ class FmtHideCells(TableFormatter):
         return
 
     def _apply_formatter(self, data):
-        if data.row_name == HEADER_ROW_NAME or data.column_name == INDEX_COL_NAME:
-            if self.rows is None and self.columns is not None and data.column_name not in self.columns:
-                return False
-            elif self.rows is not None and self.columns is None and data.row_name not in self.rows:
-                return False
-            elif (self.rows is not None and self.columns is not None) and (
-                data.column_name not in self.columns or data.row_name not in self.rows
-            ):
-                return False
-        return True
+        return not (
+            (data.row_name == HEADER_ROW_NAME or data.column_name == INDEX_COL_NAME)
+            and (
+                self.rows is None
+                and self.columns is not None
+                and data.column_name not in self.columns
+                or self.rows is not None
+                and self.columns is None
+                and data.row_name not in self.rows
+                or (self.rows is not None and self.columns is not None)
+                and (data.column_name not in self.columns or data.row_name not in self.rows)
+            )
+        )
 
     def _create_cell_level_css(self, data):
         """Set to hidden if row_name matches."""

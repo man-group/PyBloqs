@@ -119,7 +119,8 @@ class ImgBlock(BaseBlock):
         # Wrapping a block in an image will render it
         if hasattr(data, "_write_block"):
             img_file = data.save(fmt=mime_type)
-            data = open(img_file, "rb").read()
+            with open(img_file, "rb") as f:
+                data = f.read()
 
         self._img_data = base64.b64encode(data)
         self._mime_type = mime_type
@@ -173,7 +174,7 @@ class ImgBlock(BaseBlock):
         close_file = False
 
         if isinstance(img_file, str):
-            img_file = open(img_file, "rb")
+            img_file = open(img_file, "rb")  # noqa: SIM115
             close_file = True
 
         try:

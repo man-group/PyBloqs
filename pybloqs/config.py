@@ -17,8 +17,9 @@ user_config = {
 }
 
 try:
-    stored_config = yaml.load(open(os.path.expanduser("~/.pybloqs.cfg"), "r"))
-    if stored_config is not None:
-        user_config.update(stored_config)
+    with open(os.path.expanduser("~/.pybloqs.cfg"), "r") as config_file:
+        stored_config = yaml.load(config_file)
+        if stored_config is not None:
+            user_config.update(stored_config)
 except IOError:
     pass

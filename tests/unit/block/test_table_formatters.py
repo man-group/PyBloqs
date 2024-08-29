@@ -514,18 +514,18 @@ def test_FmtHeatmap__get_min_max_from_selected_cell_values_with_cache():
     fmt = pbtf.FmtHeatmap(cache=cache)
     res = fmt._get_min_max_from_selected_cell_values(None, None, df_pn)
     assert len(cache) == 1
-    assert (None, None) in cache.keys()
+    assert (None, None) in cache
     assert res == (np.nanmin(df_pn), np.nanmax(df_pn))
 
     min_value, max_value = np.nanmin(df.loc[["a"], ["aa", "bb"]]), np.nanmax(df.loc[["a"], ["aa", "bb"]])
     res = fmt._get_min_max_from_selected_cell_values(["a"], ["aa", "bb"], df)
     assert len(cache) == 2
-    assert (frozenset(["a"]), frozenset(["aa", "bb"])) in cache.keys()
+    assert (frozenset(["a"]), frozenset(["aa", "bb"])) in cache
     assert res == (min_value, max_value)
 
     res = fmt._get_min_max_from_selected_cell_values(["a"], ["aa", "bb"], df)
     assert len(cache) == 2
-    assert (frozenset(["a"]), frozenset(["aa", "bb"])) in cache.keys()
+    assert (frozenset(["a"]), frozenset(["aa", "bb"])) in cache
     assert res == (min_value, max_value)
 
 

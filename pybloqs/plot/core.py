@@ -415,9 +415,7 @@ class Plot(BaseBlock):
         elif isinstance(value, (bool, np.bool_)):
             stream.write("true" if value else "false")
         elif isinstance(value, (int, long, float, np.number)):
-            if np.isnan(value):
-                stream.write("null")
-            elif np.isinf(value):
+            if np.isnan(value) or np.isinf(value):
                 stream.write("null")
             else:
                 stream.write(str(value))

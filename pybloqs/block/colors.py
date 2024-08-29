@@ -85,7 +85,7 @@ def css_color(color):
     """
     if isinstance(color, str):
         return css_color_from_string(color)
-    elif isinstance(color, tuple) or isinstance(color, list):
+    elif isinstance(color, (tuple, list)):
         return css_color_from_tuple(color)
     else:
         raise ValueError("Color definition is neither string, tuple or list:", color)
