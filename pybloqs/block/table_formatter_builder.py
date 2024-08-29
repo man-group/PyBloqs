@@ -312,7 +312,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
                 font_size,
                 unit="pt",
                 rows=[pbtf.HEADER_ROW_NAME],
-                columns=[pbtf.INDEX_COL_NAME] + self._data.columns.tolist(),
+                columns=[pbtf.INDEX_COL_NAME, *self._data.columns.tolist()],
                 apply_to_header_and_index=False,
             )
             if font_size is not None
@@ -323,7 +323,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             FormatterType.header,
             pbtf.FmtAddCellPadding(
                 rows=[pbtf.HEADER_ROW_NAME],
-                columns=[pbtf.INDEX_COL_NAME] + self._data.columns.tolist(),
+                columns=[pbtf.INDEX_COL_NAME, *self._data.columns.tolist()],
                 left=cell_padding,
                 right=cell_padding,
                 top=cell_padding,
@@ -423,7 +423,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             pbtf.FmtAlignCellContents(
                 alignment=align_index,
                 apply_to_header_and_index=False,
-                rows=self._data.index.tolist() + [pbtf.HEADER_ROW_NAME],
+                rows=[*self._data.index.tolist(), pbtf.HEADER_ROW_NAME],
                 columns=[pbtf.INDEX_COL_NAME],
             )
             if align_index is not None
@@ -677,7 +677,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         :returns builder
         """
         return self.highlight(
-            columns=[pbtf.INDEX_COL_NAME] + self._data.columns.tolist(), highlight_column=highlight_column
+            columns=[pbtf.INDEX_COL_NAME, *self._data.columns.tolist()], highlight_column=highlight_column
         )
 
     def color_background(

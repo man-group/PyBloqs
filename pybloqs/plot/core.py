@@ -24,7 +24,7 @@ HIGHCHARTS_MAIN = "highstock"
 HIGHCHARTS_MODULES = ["highcharts-more", "highcharts-3d", "heatmap", "funnel", "exporting", "export-data"]
 HIGHCHARTS_PYBLOQS = "highcharts-pybloqs"
 # Ordering has to be: main, modules, pybloqs-specific
-HIGHCHARTS_ALL = [HIGHCHARTS_MAIN] + HIGHCHARTS_MODULES + [HIGHCHARTS_PYBLOQS]
+HIGHCHARTS_ALL = [HIGHCHARTS_MAIN, *HIGHCHARTS_MODULES, HIGHCHARTS_PYBLOQS]
 
 
 class Expr(object):
@@ -83,7 +83,7 @@ class Plot(BaseBlock):
     figure.
     """
 
-    resource_deps = [JScript(m) for m in HIGHCHARTS_ALL]
+    resource_deps = tuple(JScript(m) for m in HIGHCHARTS_ALL)
 
     def __init__(self, data, *args, **kwargs):
         """
@@ -196,7 +196,7 @@ class Plot(BaseBlock):
                 if not categories.is_numeric():
                     chart_cfg = chart_cfg.inherit_many(plot_axis(categories=list(categories)))
 
-        data = [list(index) + [value] for index, value in list(np.ndenumerate(data))]
+        data = [[*index, value] for index, value in list(np.ndenumerate(data))]
 
         if switch_zy:
             for i in range(len(data)):
@@ -440,9 +440,9 @@ class Plot(BaseBlock):
                 ndval = values[i]
 
                 if isinstance(label, tuple):
-                    merged.append(label + tuple(ndval))
+                    merged.append(tuple(*label, *ndval))
                 else:
-                    merged.append([label] + list(ndval))
+                    merged.append([label, *ndval])
 
             self._write_iterable(stream, merged)
         elif isinstance(value, (np.ndarray, pd.Index)):

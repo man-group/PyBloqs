@@ -23,7 +23,7 @@ def test_HTMLJinjaTableBlock_constructor_formatters_list():
         formatters=[formatter],
         use_default_formatters=True,
     )
-    assert table.formatters == abtf.DEFAULT_FORMATTERS + [formatter] + abtf.DEFAULT_DECIMALS_FORMATTER
+    assert table.formatters == [*abtf.DEFAULT_FORMATTERS, formatter, *abtf.DEFAULT_DECIMALS_FORMATTER]
 
 
 @patch.object(abtf.TableFormatter, "modify_dataframe")

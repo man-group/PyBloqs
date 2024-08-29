@@ -28,12 +28,12 @@ class DataTablesCSSClass(TableFormatter):
 
 
 class DataTablesHTMLJinjaTableBlock(HTMLJinjaTableBlock):
-    resource_deps = [
+    resource_deps = (
         Css("css/jquery-dataTables"),
         JScript("jquery"),
         JScript("jquery-dataTables"),
         JScript("jquery-dataTables-impl"),
-    ]
+    )
 
     def __init__(
         self, df, formatters=None, use_default_formatters=False, paging=True, searching=True, info=True, **kwargs

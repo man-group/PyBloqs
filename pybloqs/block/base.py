@@ -25,7 +25,7 @@ class BaseBlock(object):
     """
 
     container_tag = "div"
-    resource_deps = []
+    resource_deps = ()
 
     def __init__(
         self,

@@ -210,7 +210,7 @@ def index_to_iterable(index, merge_depth=False):
                         continue
                     merged_cells.append(IndexCell(cell.value, cell.names, cell.span, merge_count))
                     merge_count = 0
-                cells = merged_cells + [cells[-1]]
+                cells = [*merged_cells, cells[-1]]
 
             result.append(cells)
 

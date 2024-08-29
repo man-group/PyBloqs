@@ -625,10 +625,10 @@ class FmtHeatmap(TableFormatter):
             # Create color with alpha according to value / (min or max)
             if data.cell > self.threshold:
                 cell_color_alpha = data.cell / max_value
-                cell_color = self.max_color + (cell_color_alpha,)
+                cell_color = (*self.max_color, cell_color_alpha)
             elif data.cell < -self.threshold:
                 cell_color_alpha = data.cell / min_value
-                cell_color = self.min_color + (cell_color_alpha,)
+                cell_color = (*self.min_color, cell_color_alpha)
             else:
                 return CSS_BACKGROUND_COLOR + colors.css_color(colors.WHITE)
             return CSS_BACKGROUND_COLOR + colors.css_color(cell_color)
@@ -1146,7 +1146,7 @@ class FmtTruncateContentsWithEllipsis(TableFormatter):
     """Truncate cell contents replacing truncated text with the ellipsis character"""
 
     def __init__(
-        self, rows: Optional[Any] = None, columns: List[str] = None, apply_to_header_and_index: bool = False
+        self, rows: Optional[Any] = None, columns: Optional[List[str]] = None, apply_to_header_and_index: bool = False
     ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
 
@@ -1230,10 +1230,10 @@ class FmtHeatmapWithCenter(TableFormatter):
             # Create color with alpha according to value / (min or max)
             if data.cell - self.center > self.threshold:
                 cell_color_alpha = (data.cell - self.center) / (max_value - self.center)
-                cell_color = self.max_color + (cell_color_alpha,)
+                cell_color = (*self.max_color, cell_color_alpha)
             elif data.cell - self.center < -self.threshold:
                 cell_color_alpha = (data.cell - self.center) / (min_value - self.center)
-                cell_color = self.min_color + (cell_color_alpha,)
+                cell_color = (*self.min_color, cell_color_alpha)
             else:
                 return CSS_BACKGROUND_COLOR + colors.css_color(self.center_color)
             return CSS_BACKGROUND_COLOR + colors.css_color(cell_color)
