@@ -64,7 +64,7 @@ def test_save_filename_and_extension(filename, fmt, exp_name, exp_fmt, exp_outpu
     with patch("pybloqs.block.base.open", m, create=True):
         with patch.object(bbase.BaseBlock, "render_html", return_value="<HTML>"):
             with patch.object(bbase.BaseBlock, "publish", return_value=""):
-                with patch("pybloqs.block.base.htmlconv") as mock_conv:
+                with patch("pybloqs.block.base.htmlconv"):
                     b = bbase.BaseBlock()
                     result = b.save(filename, fmt)
     if exp_name is not None:

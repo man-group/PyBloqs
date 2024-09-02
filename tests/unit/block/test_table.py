@@ -166,8 +166,6 @@ def test__jinja_header_row_name():
     formatter._create_row_level_css = MagicMock(return_value=None)
     table = abt.HTMLJinjaTableBlock(df, formatters=[formatter], use_default_formatters=False)
 
-    container = MagicMock()
-    actual_cfg = MagicMock()
     table._write_contents(MagicMock(), MagicMock())
 
     names = [args[0][0].name for args in formatter._create_row_level_css.call_args_list]
