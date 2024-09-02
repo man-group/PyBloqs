@@ -51,85 +51,85 @@ def test_TableFormatter__is_selected_cell():
 
     # Check case 1)
     tf = pbtf.TableFormatter(rows=None, columns=None)
-    assert tf._is_selected_cell("a", "aa") == True
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == True
+    assert tf._is_selected_cell("a", "aa")
+    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 2)
     tf = pbtf.TableFormatter(rows=None, columns=None, apply_to_header_and_index=False)
-    assert tf._is_selected_cell("a", "aa") == True
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == False
+    assert tf._is_selected_cell("a", "aa")
+    assert not tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 3)
     row_names = ["a", pbtf.HEADER_ROW_NAME]
     column_names = ["aa", pbtf.INDEX_COL_NAME]
     tf = pbtf.TableFormatter(rows=row_names, columns=column_names, apply_to_header_and_index=False)
-    assert tf._is_selected_cell("a", "aa") == True
-    assert tf._is_selected_cell("a", "bb") == False
-    assert tf._is_selected_cell("b", "aa") == False
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell("b", pbtf.INDEX_COL_NAME) == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb") == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell("a", "cc") == False
+    assert tf._is_selected_cell("a", "aa")
+    assert not tf._is_selected_cell("a", "bb")
+    assert not tf._is_selected_cell("b", "aa")
+    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert not tf._is_selected_cell("b", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
+    assert not tf._is_selected_cell("a", "cc")
 
     # Check case 4)
     tf = pbtf.TableFormatter(rows=["b"], columns=["bb"], apply_to_header_and_index=True)
-    assert tf._is_selected_cell("b", "bb") == True
-    assert tf._is_selected_cell("b", "aa") == False
-    assert tf._is_selected_cell("a", "bb") == False
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell("b", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == True
+    assert tf._is_selected_cell("b", "bb")
+    assert not tf._is_selected_cell("b", "aa")
+    assert not tf._is_selected_cell("a", "bb")
+    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell("b", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 5)
     tf = pbtf.TableFormatter(rows=None, columns=None, apply_to_header_and_index=(True, True))
-    assert tf._is_selected_cell("a", "aa") == True
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == True
+    assert tf._is_selected_cell("a", "aa")
+    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 6)
     tf = pbtf.TableFormatter(rows=None, columns=None, apply_to_header_and_index=(False, True))
-    assert tf._is_selected_cell("a", "aa") == True
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == False
+    assert tf._is_selected_cell("a", "aa")
+    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 7)
     tf = pbtf.TableFormatter(rows=None, columns=None, apply_to_header_and_index=(True, False))
-    assert tf._is_selected_cell("a", "aa") == True
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == True
+    assert tf._is_selected_cell("a", "aa")
+    assert not tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 8)
     tf = pbtf.TableFormatter(rows=["b"], columns=["bb"], apply_to_header_and_index=(False, True))
-    assert tf._is_selected_cell("b", "bb") == True
-    assert tf._is_selected_cell("b", "aa") == False
-    assert tf._is_selected_cell("a", "bb") == False
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell("b", pbtf.INDEX_COL_NAME) == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb") == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == False
+    assert tf._is_selected_cell("b", "bb")
+    assert not tf._is_selected_cell("b", "aa")
+    assert not tf._is_selected_cell("a", "bb")
+    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell("b", pbtf.INDEX_COL_NAME)
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb")
+    assert not tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
     # Check case 9)
     tf = pbtf.TableFormatter(rows=["b"], columns=["bb"], apply_to_header_and_index=(True, False))
-    assert tf._is_selected_cell("b", "bb") == True
-    assert tf._is_selected_cell("b", "aa") == False
-    assert tf._is_selected_cell("a", "bb") == False
-    assert tf._is_selected_cell("a", pbtf.INDEX_COL_NAME) == False
-    assert tf._is_selected_cell("b", pbtf.INDEX_COL_NAME) == False
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb") == True
-    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME) == True
+    assert tf._is_selected_cell("b", "bb")
+    assert not tf._is_selected_cell("b", "aa")
+    assert not tf._is_selected_cell("a", "bb")
+    assert not tf._is_selected_cell("a", pbtf.INDEX_COL_NAME)
+    assert not tf._is_selected_cell("b", pbtf.INDEX_COL_NAME)
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "aa")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, "bb")
+    assert tf._is_selected_cell(pbtf.HEADER_ROW_NAME, pbtf.INDEX_COL_NAME)
 
 
 def test_TableFormatter_modify_cell_content():
