@@ -1,13 +1,12 @@
 from collections import namedtuple
-import itertools
+
+import pandas as pd
 from jinja2 import Environment, PackageLoader
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
-from pybloqs.block.table_formatters import DEFAULT_FORMATTERS, DEFAULT_DECIMALS_FORMATTER, ORG_ROW_NAMES, INDEX_COL_NAME
+from pybloqs.block.table_formatters import DEFAULT_DECIMALS_FORMATTER, DEFAULT_FORMATTERS, ORG_ROW_NAMES
 from pybloqs.html import parse
-
-import pandas as pd
 
 _jinja_env = Environment(loader=PackageLoader('pybloqs', 'jinja'))
 _jinja_env.globals.update(len=len)
@@ -84,7 +83,7 @@ class HTMLJinjaTableBlock(BaseBlock):
                 css_substring = fmt_func(*fmt_args)
             except NotImplementedError:
                 continue
-            if not css_substring is None:
+            if css_substring is not None:
                 css_substrings.append(css_substring)
         return self._join_css_substrings(css_substrings, prefix)
 

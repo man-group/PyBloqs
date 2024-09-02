@@ -1,10 +1,10 @@
 import pandas as pd
+
+import pybloqs.plot as pbp
 from pybloqs.block.base import HRule
 from pybloqs.block.text import Raw
-import pybloqs.plot as pbp
 
 from .generation_framework import assert_report_generated
-
 
 HELLO_WORLD = Raw("Hello World!", title="A Title")
 

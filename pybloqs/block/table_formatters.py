@@ -1,13 +1,13 @@
-from collections import namedtuple
 import datetime
 import itertools
 import numbers
-from typing import Optional, Any, List
-
-from six import iteritems, string_types
+from collections import namedtuple
+from typing import Any, List, Optional
 
 import numpy as np
 import pandas as pd
+from six import iteritems, string_types
+
 from pybloqs.block import colors as colors
 
 OP_SUM = np.sum

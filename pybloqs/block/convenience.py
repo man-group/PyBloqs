@@ -1,9 +1,9 @@
 from collections.abc import Iterable
 
+from six import string_types
+
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
-
-from six import string_types
 
 _block_types = dict()
 

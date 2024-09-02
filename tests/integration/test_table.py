@@ -1,12 +1,12 @@
 import os
-from pandas.testing import assert_series_equal
-
-from pybloqs import Block
 
 import numpy as np
 import pandas as pd
+from pandas.testing import assert_series_equal
+
 import pybloqs.block.colors as colors
 import pybloqs.block.table_formatters as tf
+from pybloqs import Block
 
 
 def test_multi_index_df_to_jinja_table():

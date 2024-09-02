@@ -1,9 +1,8 @@
 import getpass
 import os
 import tempfile
-import yaml
 
-import pybloqs.util as util
+import yaml
 
 # Default values that can be overridden by those stored in ~/.pybloqs.cfg
 user_config = {

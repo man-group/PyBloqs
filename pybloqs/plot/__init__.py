@@ -42,7 +42,8 @@ def add_highcharts_shim_to_stream(stream, highcharts_all):
 def interactive(verbose=True):
     """Inject Highcharts JS into Jupyter notebook to use pybloqs.plot functions inside notebooks."""
     from IPython.core.display import display_html
-    from pybloqs.html import set_id_generator, id_generator_uuid
+
+    from pybloqs.html import id_generator_uuid, set_id_generator
 
     set_id_generator(id_generator_uuid)
 

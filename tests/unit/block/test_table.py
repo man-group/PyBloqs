@@ -1,12 +1,9 @@
-from collections import namedtuple
-from mock import patch, MagicMock
-import pytest
+import numpy as np
+import pandas as pd
+from mock import MagicMock, patch
 
 import pybloqs.block.table as abt
 import pybloqs.block.table_formatters as abtf
-import numpy as np
-import pandas as pd
-
 
 df = pd.DataFrame(np.arange(9, dtype=float).reshape(3, 3), index=[abtf.HEADER_ROW_NAME, 'a', 'b'],
                   columns=[abtf.INDEX_COL_NAME, 'aa', 'bb'])

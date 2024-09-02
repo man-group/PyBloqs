@@ -1,13 +1,12 @@
 import copy
 import math
-import pandas as pd
-
-from pybloqs.util import Cfg
-from pybloqs.html import append_to
-from pybloqs.block.base import BaseBlock
-from pybloqs.block.convenience import Block, add_block_types
 
 from six.moves import range
+
+from pybloqs.block.base import BaseBlock
+from pybloqs.block.convenience import Block, add_block_types
+from pybloqs.html import append_to
+from pybloqs.util import Cfg
 
 
 class CompositeBlockMixin(object):

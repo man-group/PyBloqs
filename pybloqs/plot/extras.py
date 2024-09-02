@@ -1,6 +1,5 @@
-from pybloqs.plot import (
-    Plot, Options3d, Chart, Legend, XAxis, YAxis, Expr, ColorAxis, Tooltip, Heatmap as HeatmapPlot, Scatter,
-    Title)
+from pybloqs.plot import Chart, ColorAxis, Expr, Legend, Options3d, Plot, Scatter, Title, Tooltip, XAxis, YAxis
+from pybloqs.plot import Heatmap as HeatmapPlot
 
 
 class Heatmap(Plot):

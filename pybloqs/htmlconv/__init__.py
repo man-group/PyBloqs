@@ -1,6 +1,6 @@
-from pybloqs.htmlconv.wkhtmltox import WkhtmltopdfConverter, WkhtmltoimageConverter
 from pybloqs.config import user_config
 from pybloqs.htmlconv.chrome_headless import ChromeHeadlessConverter
+from pybloqs.htmlconv.wkhtmltox import WkhtmltoimageConverter, WkhtmltopdfConverter
 
 PDF_CONVERTERS = {
     'wkhtmltopdf': WkhtmltopdfConverter,

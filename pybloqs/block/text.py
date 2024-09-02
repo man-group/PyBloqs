@@ -1,14 +1,15 @@
 """
 Module for blocks with text-only content
 """
-import markdown
-import textwrap
 import sys
+import textwrap
+
+import markdown
+from six import string_types
 
 from pybloqs import BaseBlock
 from pybloqs.html import parse
 
-from six import string_types
 
 class Raw(BaseBlock):
 

@@ -1,6 +1,7 @@
-import bs4
 import uuid
 from functools import partial
+
+import bs4
 from six import text_type
 
 # Use the default python parser as this is lenient and does not

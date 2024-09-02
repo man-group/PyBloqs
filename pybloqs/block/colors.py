@@ -2,7 +2,6 @@ import re
 
 import numpy as np
 
-
 # Heatmap colors
 HEATMAP_GREEN = (0.5, 0.9, 0.5)
 HEATMAP_RED = (0.9, 0.5, 0.5)

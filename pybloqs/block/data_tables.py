@@ -1,13 +1,15 @@
 from pybloqs.block.table import HTMLJinjaTableBlock
-from pybloqs.block.table_formatters import (fmt_fontsize_12,
-                                            fmt_decimals_2,
-                                            fmt_page_break,
-                                            fmt_table_center,
-                                            fmt_align_cells,
-                                            fmt_align_header_index,
-                                            fmt_header_index_bold,
-                                            TableFormatter)
-from pybloqs.static import JScript, Css
+from pybloqs.block.table_formatters import (
+    TableFormatter,
+    fmt_align_cells,
+    fmt_align_header_index,
+    fmt_decimals_2,
+    fmt_fontsize_12,
+    fmt_header_index_bold,
+    fmt_page_break,
+    fmt_table_center,
+)
+from pybloqs.static import Css, JScript
 
 
 class DataTablesCSSClass(TableFormatter):

@@ -1,9 +1,10 @@
-import re
-import zlib
 import base64
 import calendar
 import itertools
-from six import iterkeys, iteritems, PY3
+import re
+import zlib
+
+from six import PY3, iteritems, iterkeys
 
 if PY3:
     long = int

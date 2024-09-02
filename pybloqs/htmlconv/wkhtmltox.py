@@ -1,6 +1,6 @@
 import os
 
-from pybloqs.htmlconv.html_converter import HTMLConverter, A4, PORTRAIT
+from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
 
 
 class WkhtmltopdfConverter(HTMLConverter):

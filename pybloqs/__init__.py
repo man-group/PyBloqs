@@ -1,13 +1,11 @@
-from pybloqs.util import Cfg
-
 from pybloqs.block.base import BaseBlock, HRule
-from pybloqs.block.text import Raw, Pre, Span, Markdown
-from pybloqs.block.layout import Grid, Flow, HStack, VStack
 from pybloqs.block.convenience import Block
 from pybloqs.block.image import ImgBlock, PlotBlock, set_plot_format
+from pybloqs.block.layout import Flow, Grid, HStack, VStack
 from pybloqs.block.table import HTMLJinjaTableBlock
+from pybloqs.block.text import Markdown, Pre, Raw, Span
 from pybloqs.block.wrap import Box, Paragraph
-
+from pybloqs.util import Cfg
 
 __all__ = [
     # Core PyBloqs

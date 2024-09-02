@@ -1,17 +1,16 @@
-from io import open
 import logging
 import os
 import subprocess
 import uuid
-
-from mock import patch, Mock
-from six import text_type
-import pytest
+from io import open
 
 import numpy as np
+import pytest
+from mock import Mock, patch
+from six import text_type
+
 import pybloqs as p
 from pybloqs.htmlconv.html_converter import LANDSCAPE, HTMLConverter
-
 
 # set up logging output to help with external function calls
 logging.basicConfig(level=logging.INFO)

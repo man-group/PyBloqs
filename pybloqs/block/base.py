@@ -1,20 +1,17 @@
-from io import open
 import os
-import tempfile
 import uuid
 import webbrowser
+from io import open
 
 from six import BytesIO
-
-from pybloqs.config import user_config
-from pybloqs.email import send_html_report
-from pybloqs.html import root, append_to, render, js_elem, id_generator
-import pybloqs.htmlconv as htmlconv
-
-from pybloqs.static import DependencyTracker, Css, script_inflate, script_block_core, register_interactive
-from pybloqs.util import Cfg, cfg_to_css_string
 from six.moves.urllib.parse import urljoin
 
+import pybloqs.htmlconv as htmlconv
+from pybloqs.config import user_config
+from pybloqs.email import send_html_report
+from pybloqs.html import append_to, id_generator, js_elem, render, root
+from pybloqs.static import Css, DependencyTracker, register_interactive, script_block_core, script_inflate
+from pybloqs.util import Cfg, cfg_to_css_string
 
 default_css_main = Css(os.path.join("css", "pybloqs_default", "main"))
 register_interactive(default_css_main)

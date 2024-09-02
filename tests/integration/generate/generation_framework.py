@@ -1,12 +1,11 @@
-from distutils.spawn import find_executable
-from functools import wraps, partial
 import logging
 import os
 import subprocess
 import sys
+from distutils.spawn import find_executable
+from functools import partial, wraps
 
 import matplotlib
-
 
 matplotlib.use('Agg')
 

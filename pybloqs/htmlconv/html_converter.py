@@ -1,9 +1,10 @@
-from abc import ABCMeta, abstractmethod
-from io import open
 import logging
 import os
 import subprocess
 import sys
+from abc import ABCMeta, abstractmethod
+from io import open
+
 from pybloqs.config import user_config
 
 logger = logging.getLogger(__name__)

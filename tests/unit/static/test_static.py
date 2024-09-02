@@ -1,7 +1,7 @@
 import os
 
-from mock import patch, mock_open
 import pytest
+from mock import mock_open, patch
 from six import StringIO
 
 import pybloqs.static as ps

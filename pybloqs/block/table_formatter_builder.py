@@ -1,8 +1,9 @@
-from collections import OrderedDict
 import enum
-from typing import Callable, cast, Dict, List, Optional, Tuple, Union
+from collections import OrderedDict
+from typing import Callable, Dict, List, Optional, Tuple, Union, cast
 
 import pandas as pd
+
 import pybloqs.block.table_formatters as pbtf
 from pybloqs.block import colors
 

@@ -1,12 +1,12 @@
 # This Python file uses the following encoding: utf-8
-from mock import patch, MagicMock, sentinel, call, ANY
-import yaml
+import sys
 from email.message import Message
 
-import pybloqs
 import pytest
-import sys
+import yaml
+from mock import ANY, MagicMock, call, patch, sentinel
 
+import pybloqs
 
 user_config = \
     yaml.full_load(

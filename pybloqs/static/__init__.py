@@ -1,10 +1,10 @@
-from io import open
 import os
+from io import open
 
 from pkg_resources import resource_filename
 from six import StringIO
 
-from pybloqs.html import js_elem, css_elem,  render
+from pybloqs.html import css_elem, js_elem, render
 from pybloqs.util import encode_string
 
 

@@ -1,8 +1,9 @@
 from numpy import nan
-from pandas import Series, Index
-from pybloqs.plot import Plot
-from six import StringIO
+from pandas import Index, Series
 from pytest import fixture
+from six import StringIO
+
+from pybloqs.plot import Plot
 
 
 @fixture

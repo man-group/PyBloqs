@@ -4,23 +4,22 @@ Common email related functions used by various reports.
 from __future__ import absolute_import
 
 import base64
+import getpass
+import logging
+import os
+import smtplib
+import tempfile
 from email import encoders
 from email.message import Message
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import getpass
-import logging
-import os
-import smtplib
-import tempfile
 
-from html5lib import treebuilders
 import html5lib
+from html5lib import treebuilders
 
 from pybloqs.config import user_config
-
 
 _log = logging.getLogger(__name__)
 

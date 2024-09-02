@@ -1,22 +1,22 @@
 import base64
-from six import StringIO, BytesIO
 import struct
 import tempfile
 from contextlib import contextmanager
 
+import matplotlib.pyplot as plt
 from matplotlib.artist import Artist
 from matplotlib.figure import Figure
+from six import BytesIO, StringIO
 
-import matplotlib.pyplot as plt
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
 from pybloqs.html import append_to, parse
-from pybloqs.static import JScript, Css
+from pybloqs.static import Css, JScript
 from pybloqs.util import cfg_to_css_string
 
 try:
-    from plotly.graph_objs import Figure as PlotlyFigure
     import plotly.offline as po
+    from plotly.graph_objs import Figure as PlotlyFigure
     _PLOTLY_AVAILABLE = True
 except ImportError:
     _PLOTLY_AVAILABLE = False

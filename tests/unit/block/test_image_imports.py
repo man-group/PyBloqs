@@ -1,6 +1,7 @@
-from mock import patch
-import pytest
 import sys
+
+import pytest
+from mock import patch
 
 
 def test_missing_matplotlib_raises_error():

@@ -1,12 +1,12 @@
 from collections import namedtuple
 from datetime import datetime as dt
-import pytest
 
 import numpy as np
 import pandas as pd
+import pytest
+
 import pybloqs.block.colors as colors
 import pybloqs.block.table_formatters as pbtf
-
 
 TEST_STRING = 'dummy'
 
@@ -756,7 +756,7 @@ def test_FmtAddCellPadding():
     fmt = pbtf.FmtAddCellPadding()
     data = FormatterData(TEST_STRING, pbtf.HEADER_ROW_NAME, 'aa', df)
     res = fmt._create_cell_level_css(data)
-    assert res is ''
+    assert res == ''
     # Test that we can set all paddings and that default unit is px
     fmt = pbtf.FmtAddCellPadding(left=10, right=20, top=30, bottom=40)
     data = FormatterData(TEST_STRING, pbtf.HEADER_ROW_NAME, 'aa', df)
@@ -778,7 +778,7 @@ def test_FmtAddCellBorder():
     fmt = pbtf.FmtAddCellBorder()
     data = FormatterData(TEST_STRING, pbtf.HEADER_ROW_NAME, 'aa', df)
     res = fmt._create_cell_level_css(data)
-    assert res is ''
+    assert res == ''
 
     # Test that we can set all borders and that default unit is px and default style is solid
     fmt = pbtf.FmtAddCellBorder(left=10, right=20, top=30, bottom=40)

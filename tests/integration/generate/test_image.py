@@ -1,12 +1,14 @@
 import os
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+import plotly.graph_objs as go
 from bokeh.models import ColumnDataSource, FactorRange
 from bokeh.plotting import figure
 
-from pybloqs.block.image import PlotBlock, ImgBlock, PlotlyPlotBlock, BokehPlotBlock, _BOKEH_AVAILABLE
+from pybloqs.block.image import _BOKEH_AVAILABLE, BokehPlotBlock, ImgBlock, PlotBlock, PlotlyPlotBlock
+
 from .generation_framework import assert_report_generated
-import plotly.graph_objs as go
 
 
 @assert_report_generated

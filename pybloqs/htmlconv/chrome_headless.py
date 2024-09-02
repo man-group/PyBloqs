@@ -2,8 +2,7 @@ from numbers import Number
 
 from pkg_resources import resource_filename
 
-from pybloqs.htmlconv.html_converter import HTMLConverter, PORTRAIT, A4
-
+from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
 
 _NODE_SCRIPT_LOC = resource_filename(__name__, "puppeteer.js")
 

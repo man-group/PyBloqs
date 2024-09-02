@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
 
-from pybloqs import Block
-import pybloqs.block.table_formatters as blformat
 import pybloqs.block.colors as colors
+import pybloqs.block.table_formatters as blformat
+from pybloqs import Block
 
 from .generation_framework import assert_report_generated
-
 
 np.random.seed(123)
 TABLE_DATA = np.random.randn(7, 5) * 2 - 1

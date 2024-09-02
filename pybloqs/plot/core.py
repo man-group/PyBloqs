@@ -1,12 +1,11 @@
-import sys
 from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from six import StringIO, iteritems, text_type, PY3
+from pandas.core.generic import NDFrame
+from six import PY3, StringIO, iteritems, text_type
 from six.moves import range
 
-from pandas.core.generic import NDFrame
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.image import ImgBlock
 from pybloqs.html import append_to, js_elem
