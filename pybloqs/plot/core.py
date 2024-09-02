@@ -24,7 +24,8 @@ HIGHCHARTS_MAIN = "highstock"
 HIGHCHARTS_MODULES = ["highcharts-more", "highcharts-3d", "heatmap", "funnel", "exporting", "export-data"]
 HIGHCHARTS_PYBLOQS = "highcharts-pybloqs"
 # Ordering has to be: main, modules, pybloqs-specific
-HIGHCHARTS_ALL = [HIGHCHARTS_MAIN] + HIGHCHARTS_MODULES + [HIGHCHARTS_PYBLOQS] 
+HIGHCHARTS_ALL = [HIGHCHARTS_MAIN] + HIGHCHARTS_MODULES + [HIGHCHARTS_PYBLOQS]
+
 
 class Expr(object):
     """
@@ -189,7 +190,7 @@ class Plot(BaseBlock):
 
         # Inject categories into the axis definitions of the plot
         if isinstance(data, NDFrame):
-            for i, plot_axis in plot_axes_def[:data.ndim]:
+            for i, plot_axis in plot_axes_def[: data.ndim]:
                 categories = data.axes[i]
                 # Skip numeric indices
                 if not categories.is_numeric():
@@ -208,8 +209,9 @@ class Plot(BaseBlock):
     @staticmethod
     def _set_chart_defaults(chart_cfg, chart_cls):
         if chart_cls == "StockChart":
-            chart_cfg = chart_cfg.inherit_many(Chart(zoom_type="x"),
-                                               PlotOptions(Series(States(Hover(enabled=False, halo=False)))))
+            chart_cfg = chart_cfg.inherit_many(
+                Chart(zoom_type="x"), PlotOptions(Series(States(Hover(enabled=False, halo=False))))
+            )
         else:
             chart_cfg = chart_cfg.inherit_many(Chart(zoom_type="xy"))
 
@@ -271,8 +273,7 @@ class Plot(BaseBlock):
         """
 
         def _decompose_l1(cfg):
-            return [cfg.override_many(data=value).inherit_many(name=key)
-                    for key, value in data.items()]
+            return [cfg.override_many(data=value).inherit_many(name=key) for key, value in data.items()]
 
         def _decompose_l2(cfg):
             component_series = []
@@ -328,9 +329,11 @@ class Plot(BaseBlock):
             try:
                 if isinstance(data[0], Plot):
                     return data[0]._chart_cls
-                if (len(data[0]) > 1) \
-                        and isinstance(data[0], (list, tuple)) \
-                        and isinstance(data[0][0], (np.datetime64, datetime)):
+                if (
+                    (len(data[0]) > 1)
+                    and isinstance(data[0], (list, tuple))
+                    and isinstance(data[0][0], (np.datetime64, datetime))
+                ):
                     return "StockChart"
             except TypeError:
                 pass
@@ -360,17 +363,25 @@ class Plot(BaseBlock):
         if static_output:
             # Chart load wait handles for static output.
             stream.write("registerWaitHandle('%s');" % container_id)
-            overrides = [Chart(Events(load=Expr("function(){setLoaded('%s');}" % container_id))),
-                         Exporting(enabled=False), Navigator(enabled=False), Scrollbar(enabled=False),
-                         PlotOptions(Series(enable_mouse_tracking=False, shadow=False, animation=False)),
-                         RangeSelector(enabled=False)]
+            overrides = [
+                Chart(Events(load=Expr("function(){setLoaded('%s');}" % container_id))),
+                Exporting(enabled=False),
+                Navigator(enabled=False),
+                Scrollbar(enabled=False),
+                PlotOptions(Series(enable_mouse_tracking=False, shadow=False, animation=False)),
+                RangeSelector(enabled=False),
+            ]
 
             chart_cfg = chart_cfg.override_many(*overrides)
 
-        stream.write(("var %s=setInterval(function(){"
-                      "var container=document.getElementById('%s');"
-                      "if(container){clearInterval(%s);")
-                     % (js_timer_var_name, container_id, js_timer_var_name))
+        stream.write(
+            (
+                "var %s=setInterval(function(){"
+                "var container=document.getElementById('%s');"
+                "if(container){clearInterval(%s);"
+            )
+            % (js_timer_var_name, container_id, js_timer_var_name)
+        )
 
         # Write out the chart script into a separate buffer before running it through
         # the encoding/compression
@@ -405,9 +416,9 @@ class Plot(BaseBlock):
             stream.write("true" if value else "false")
         elif isinstance(value, (int, long, float, np.number)):
             if np.isnan(value):
-                stream.write('null')
+                stream.write("null")
             elif np.isinf(value):
-                stream.write('null')
+                stream.write("null")
             else:
                 stream.write(str(value))
         elif isinstance(value, str):
@@ -512,9 +523,11 @@ Scrollbar = _make_chart_cfg("scrollbar")
 Subtitle = _make_chart_cfg("subtitle")
 Title = _make_chart_cfg("title")
 Tooltip = _make_chart_cfg("tooltip")
-TooltipPct = _make_chart_cfg("tooltip", value_decimals=3,
-                             point_format="<span style=\"color:{series.color}\">{series.name}</span>:"
-                                          " <b>{point.y}%</b><br/>")
+TooltipPct = _make_chart_cfg(
+    "tooltip",
+    value_decimals=3,
+    point_format='<span style="color:{series.color}">{series.name}</span>:' " <b>{point.y}%</b><br/>",
+)
 
 XAxis = _make_chart_cfg("x_axis")
 YAxis = _make_chart_cfg("y_axis")
@@ -561,7 +574,6 @@ class _PlotOpts(Cfg):
 
 def _make_plot_opts(plot_type, rank):
     class _SpecPlotOpts(_PlotOpts):
-
         def __init__(self, *args, **kwargs):
             super(_SpecPlotOpts, self).__init__(*args, **kwargs)
             self.type = plot_type
@@ -584,8 +596,10 @@ def _make_plot_opts(plot_type, rank):
                     minor_axis_length = max(minor_axis_length - 1, 1)
 
             if minor_axis_length < rank:
-                raise ValueError("Supplied array length for plot type %s must be %s on the minor axis (got %s)." %
-                                 (self.type, rank, minor_axis_length))
+                raise ValueError(
+                    "Supplied array length for plot type %s must be %s on the minor axis (got %s)."
+                    % (self.type, rank, minor_axis_length)
+                )
 
     return _SpecPlotOpts
 

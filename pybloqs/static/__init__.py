@@ -9,30 +9,30 @@ from pybloqs.util import encode_string
 
 
 class Resource(object):
-    def __init__(self, file_name=None, extension='', content_string=None, name=None):
+    def __init__(self, file_name=None, extension="", content_string=None, name=None):
         """
         An external script dependency definition.
 
         :param file_name: Name of resource file included in static directory.
-        :param extension: File extension of resource. Used to complement file_name if necessary. 
+        :param extension: File extension of resource. Used to complement file_name if necessary.
         :param content_string: String with code or style, etc. provided as unicode string.
         :param name: Unique label used to identify duplicates. Only required with script_string.
         """
         # Do XOR for checking if either file_name or content_string and name are set
         if (file_name is None) == ((content_string is None) or (name is None)):
-            raise ValueError('Please specify either resource file_name or content_string with name.')
+            raise ValueError("Please specify either resource file_name or content_string with name.")
         if file_name is None:
             self.name = name
             self.content_string = content_string
         else:
             self.name = os.path.splitext(file_name)[0]
-            with open(self._local_path(file_name, extension), encoding='utf-8') as f:
+            with open(self._local_path(file_name, extension), encoding="utf-8") as f:
                 self.content_string = f.read()
 
     @classmethod
     def _local_path(cls, file_name, extension):
         """Generate the local path to the script using pkg_resources."""
-        return resource_filename(__name__, file_name if file_name.endswith(extension) else file_name + '.' + extension)
+        return resource_filename(__name__, file_name if file_name.endswith(extension) else file_name + "." + extension)
 
     def write(self, parent):
         pass
@@ -50,6 +50,7 @@ class JScript(Resource):
     """
     Definition for external JS script dependencies.
     """
+
     # Global flag to turn off script encoding/compression everywhere
     global_encode = True
 
@@ -62,7 +63,7 @@ class JScript(Resource):
         :param name: Unique label used to identify duplicates. Only required with script_string.
         :param encode: Whether to compress and base64 encode the script.
         """
-        super(JScript, self).__init__(file_name, 'js', script_string, name)
+        super(JScript, self).__init__(file_name, "js", script_string, name)
         self.encode = encode
 
     def write(self, parent=None):
@@ -102,7 +103,7 @@ class Css(Resource):
         :param css_string: CSS provided as unicode string.
         :param name: Unique label used to identify duplicates. Only required with script_string.
         """
-        super(Css, self).__init__(file_name, 'css', css_string, name)
+        super(Css, self).__init__(file_name, "css", css_string, name)
 
     def write(self, parent=None):
         return css_elem(parent, self.content_string)

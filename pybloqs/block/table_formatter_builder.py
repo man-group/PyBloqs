@@ -841,10 +841,8 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         :returns builder
         """
         self.add_formatter(
-            FormatterType.hide_insignificant, pbtf.FmtHideInsignificant(
-                columns=columns,
-                apply_to_header_and_index=False
-            )
+            FormatterType.hide_insignificant,
+            pbtf.FmtHideInsignificant(columns=columns, apply_to_header_and_index=False),
         )
         return self
 

@@ -24,4 +24,3 @@ def test_box_composite():
 @assert_report_generated
 def test_paragraph():
     return Paragraph("Hello World!", color="red")
-

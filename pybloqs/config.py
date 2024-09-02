@@ -10,9 +10,7 @@ user_config = {
     "public_dir": "/tmp",
     "tmp_html_dir": tempfile.gettempdir(),
     "remove_temp_files": True,
-    "smtp_kwargs": {
-        "host": ""
-    },
+    "smtp_kwargs": {"host": ""},
     "pdf_converter": "wkhtmltopdf",  # options: wkhtmltopdf or chrome_headless
     "image_converter": "wkhtmltoimage",
     "id_precision": 10,  # Number of digits to use from the id hash

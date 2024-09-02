@@ -38,8 +38,9 @@ def test_img_file():
 
 @assert_report_generated
 def test_img_file_explicit_dimensions():
-    return ImgBlock.from_file(os.path.join(os.path.dirname(__file__), "test_image_file.png"),
-                              width="99px", height="33px")
+    return ImgBlock.from_file(
+        os.path.join(os.path.dirname(__file__), "test_image_file.png"), width="99px", height="33px"
+    )
 
 
 @assert_report_generated
@@ -48,30 +49,36 @@ def test_plotlyplot():
     y = np.array([2, 5, 8, 0, 2, -8, 4, 3, 1])
 
     data = [go.Scatter(x=x, y=y)]
-    fig = go.Figure(data=data, layout=go.Layout(title='Offline Plotly Testing', width=800, height=500,
-                                                xaxis=dict(title='X-axis'), yaxis=dict(title='Y-axis')))
+    fig = go.Figure(
+        data=data,
+        layout=go.Layout(
+            title="Offline Plotly Testing",
+            width=800,
+            height=500,
+            xaxis=dict(title="X-axis"),
+            yaxis=dict(title="Y-axis"),
+        ),
+    )
 
     return PlotlyPlotBlock(fig)
+
 
 def test_bokeh_available():
     assert _BOKEH_AVAILABLE
 
+
 @assert_report_generated
 def test_bokehplot():
-    fruits = ['Apples', 'Pears', 'Nectarines', 'Plums', 'Grapes', 'Strawberries']
-    years = ['2015', '2016', '2017']
+    fruits = ["Apples", "Pears", "Nectarines", "Plums", "Grapes", "Strawberries"]
+    years = ["2015", "2016", "2017"]
 
-    data = {'fruits': fruits,
-            '2015': [2, 1, 4, 3, 2, 4],
-            '2016': [5, 3, 3, 2, 4, 6],
-            '2017': [3, 2, 4, 4, 5, 3]}
+    data = {"fruits": fruits, "2015": [2, 1, 4, 3, 2, 4], "2016": [5, 3, 3, 2, 4, 6], "2017": [3, 2, 4, 4, 5, 3]}
 
     x = [(fruit, year) for fruit in fruits for year in years]
-    counts = sum(zip(data['2015'], data['2016'], data['2017']), ())  # like an hstack
+    counts = sum(zip(data["2015"], data["2016"], data["2017"]), ())  # like an hstack
 
     source = ColumnDataSource(data=dict(x=x, counts=counts))
 
-    fig = figure(x_range=FactorRange(*x), height=350, title="Fruit Counts by Year",
-                 toolbar_location=None, tools="")
-    fig.vbar(x='x', top='counts', width=0.9, source=source)
+    fig = figure(x_range=FactorRange(*x), height=350, title="Fruit Counts by Year", toolbar_location=None, tools="")
+    fig.vbar(x="x", top="counts", width=0.9, source=source)
     return BokehPlotBlock(fig)

@@ -51,4 +51,3 @@ def test_PlotBase_write_value_Index(plot):
     chart_buf = StringIO()
     plot._write_value(chart_buf, Index([1, 2, 3]))
     assert chart_buf.getvalue() == "[1,2,3]"
-

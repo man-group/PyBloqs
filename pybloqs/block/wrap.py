@@ -3,7 +3,6 @@ from pybloqs.block.convenience import Block
 
 
 class Box(BaseBlock):
-
     def __init__(self, contents, **kwargs):
         """
         Wrap the supplied content (can be anything that is supported by the basic blocks)
@@ -28,4 +27,5 @@ class Paragraph(Box):
     """
     Wraps the content in a paragraph.
     """
+
     container_tag = "p"

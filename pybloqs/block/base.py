@@ -22,21 +22,34 @@ class BaseBlock(object):
     Base class for all blocks. Provides infrastructure for rendering the block
     in an IPython Notebook or saving it to disk in HTML, PDF, PNG or JPG format.
     """
+
     container_tag = "div"
     resource_deps = []
 
-    def __init__(self, title=None, title_level=3, title_wrap=False,
-                 width=None, height=None, inherit_cfg=True,
-                 styles=None, classes=(), anchor=None, **kwargs):
-        self._settings = Cfg(title=title,
-                             title_level=title_level,
-                             title_wrap=title_wrap,
-                             cascading_cfg=Cfg(**kwargs).override(styles or Cfg()),
-                             default_cfg=Cfg(),
-                             inherit_cfg=inherit_cfg,
-                             width=width,
-                             height=height,
-                             classes=["pybloqs"] + ([classes] if isinstance(classes, str) else list(classes)))
+    def __init__(
+        self,
+        title=None,
+        title_level=3,
+        title_wrap=False,
+        width=None,
+        height=None,
+        inherit_cfg=True,
+        styles=None,
+        classes=(),
+        anchor=None,
+        **kwargs,
+    ):
+        self._settings = Cfg(
+            title=title,
+            title_level=title_level,
+            title_wrap=title_wrap,
+            cascading_cfg=Cfg(**kwargs).override(styles or Cfg()),
+            default_cfg=Cfg(),
+            inherit_cfg=inherit_cfg,
+            width=width,
+            height=height,
+            classes=["pybloqs"] + ([classes] if isinstance(classes, str) else list(classes)),
+        )
         # Anchor should not be inherited, so keep outside of Cfg
         self._anchor = anchor
         self._id = uuid.uuid4().hex
@@ -52,7 +65,7 @@ class BaseBlock(object):
         # Render the contents
         html = root("html", doctype="html")
         head = append_to(html, "head")
-        append_to(head, "meta", charset='utf-8')
+        append_to(head, "meta", charset="utf-8")
 
         body = append_to(html, "body")
 
@@ -74,15 +87,17 @@ class BaseBlock(object):
                 header_thead = append_to(content_table, "thead")
                 header_tr = append_to(header_thead, "tr")
                 header_td = append_to(header_tr, "th")
-                header_block._write_block(header_td, Cfg(), id_generator(), resource_deps=resource_deps,
-                                          static_output=static_output)
+                header_block._write_block(
+                    header_td, Cfg(), id_generator(), resource_deps=resource_deps, static_output=static_output
+                )
 
             if footer_block is not None:
-                footer_tfoot = append_to(content_table, "tfoot", id='footer')
+                footer_tfoot = append_to(content_table, "tfoot", id="footer")
                 footer_tr = append_to(footer_tfoot, "tr")
                 footer_td = append_to(footer_tr, "td")
-                footer_block._write_block(footer_td, Cfg(), id_generator(), resource_deps=resource_deps,
-                                          static_output=static_output)
+                footer_block._write_block(
+                    footer_td, Cfg(), id_generator(), resource_deps=resource_deps, static_output=static_output
+                )
 
             body_tbody = append_to(content_table, "tbody")
             body_tr = append_to(body_tbody, "tr")
@@ -106,9 +121,20 @@ class BaseBlock(object):
         content = render(html.parent, pretty=pretty)
         return content
 
-    def save(self, filename=None, fmt=None, pdf_zoom=1, pdf_page_size=htmlconv.html_converter.A4, pdf_auto_shrink=True,
-             orientation=htmlconv.html_converter.PORTRAIT, header_block=None, header_spacing=5, footer_block=None,
-             footer_spacing=5, **kwargs):
+    def save(
+        self,
+        filename=None,
+        fmt=None,
+        pdf_zoom=1,
+        pdf_page_size=htmlconv.html_converter.A4,
+        pdf_auto_shrink=True,
+        orientation=htmlconv.html_converter.PORTRAIT,
+        header_block=None,
+        header_spacing=5,
+        footer_block=None,
+        footer_spacing=5,
+        **kwargs,
+    ):
         """
         Render and save the block. Depending on whether the filename or the format is
         provided, the content will either be written out to a file or returned as a string.
@@ -142,14 +168,14 @@ class BaseBlock(object):
             # Exclude the dot from the extension, gosh darn it!
             fmt_from_name = fmt_from_name[1:]
             if fmt is None:
-                if fmt_from_name == '':
-                    raise ValueError('If fmt is not specified, filename must contain extension')
+                if fmt_from_name == "":
+                    raise ValueError("If fmt is not specified, filename must contain extension")
                 fmt = fmt_from_name
             else:
                 if fmt != fmt_from_name:
-                    filename += '.' + fmt
+                    filename += "." + fmt
         else:
-            name = self._id[:user_config["id_precision"]] + "." + fmt
+            name = self._id[: user_config["id_precision"]] + "." + fmt
             filename = os.path.join(tempdir, name)
 
         # Force extension to be lower case so format checks are easier later
@@ -159,18 +185,23 @@ class BaseBlock(object):
 
         if is_html:
             content = self.render_html(static_output=False, header_block=header_block, footer_block=footer_block)
-            with open(filename, "w", encoding='utf-8') as f:
+            with open(filename, "w", encoding="utf-8") as f:
                 f.write(content)
         else:
             converter = htmlconv.get_converter(fmt)
-            converter.htmlconv(self, filename,
-                               header_block=header_block, header_spacing=header_spacing,
-                               footer_block=footer_block, footer_spacing=footer_spacing,
-                               pdf_page_size=pdf_page_size,
-                               orientation=orientation,
-                               pdf_auto_shrink=pdf_auto_shrink,
-                               pdf_zoom=pdf_zoom,
-                               **kwargs)
+            converter.htmlconv(
+                self,
+                filename,
+                header_block=header_block,
+                header_spacing=header_spacing,
+                footer_block=footer_block,
+                footer_spacing=footer_spacing,
+                pdf_page_size=pdf_page_size,
+                orientation=orientation,
+                pdf_auto_shrink=pdf_auto_shrink,
+                pdf_zoom=pdf_zoom,
+                **kwargs,
+            )
         return filename
 
     def publish(self, name, *args, **kwargs):
@@ -192,7 +223,7 @@ class BaseBlock(object):
         except OSError:
             pass  # Directory already exists
 
-        self.save(full_path, * args, **kwargs)
+        self.save(full_path, *args, **kwargs)
 
         return full_path
 
@@ -203,9 +234,12 @@ class BaseBlock(object):
         :param fmt: The format of the saved block. Supports the same output as `Block.save`
         :return: Path to the block file.
         """
-        file_name = self._id[:user_config["id_precision"]] + "." + fmt
-        file_path = self.publish(os.path.expanduser(os.path.join(user_config["tmp_html_dir"], file_name)),
-                                 header_block=header_block, footer_block=footer_block)
+        file_name = self._id[: user_config["id_precision"]] + "." + fmt
+        file_path = self.publish(
+            os.path.expanduser(os.path.join(user_config["tmp_html_dir"], file_name)),
+            header_block=header_block,
+            footer_block=footer_block,
+        )
 
         try:
             url_base = user_config["public_dir"]
@@ -218,10 +252,19 @@ class BaseBlock(object):
 
         return path
 
-    def email(self, title="", recipients=(user_config["user_email_address"],),
-              header_block=None, footer_block=None,
-              from_address=None, cc=None, bcc=None, attachments=None,
-              convert_to_ascii=True, **kwargs):
+    def email(
+        self,
+        title="",
+        recipients=(user_config["user_email_address"],),
+        header_block=None,
+        footer_block=None,
+        from_address=None,
+        cc=None,
+        bcc=None,
+        attachments=None,
+        convert_to_ascii=True,
+        **kwargs,
+    ):
         """
         Send the rendered blocks as email. Each output format chosen will be added as an
         attachment.
@@ -249,8 +292,16 @@ class BaseBlock(object):
         # The email body needs to be static without any dynamic elements.
         email_html = self.render_html(header_block=header_block, footer_block=footer_block, **kwargs)
 
-        send_html_report(email_html, recipients, subject=title, attachments=attachments,
-                         From=from_address, Cc=cc, Bcc=bcc, convert_to_ascii=convert_to_ascii)
+        send_html_report(
+            email_html,
+            recipients,
+            subject=title,
+            attachments=attachments,
+            From=from_address,
+            Cc=cc,
+            Bcc=bcc,
+            convert_to_ascii=convert_to_ascii,
+        )
 
     def to_static(self):
         return self._visit(lambda block: block._to_static())
@@ -362,8 +413,11 @@ class BaseBlock(object):
         :param container: Container element.
         """
         if self._settings.title is not None and (self._settings.title != ""):
-            title = append_to(container, "H%s" % self._settings.title_level,
-                              style="white-space: %s" % ("normal" if self._settings.title_wrap else "nowrap"))
+            title = append_to(
+                container,
+                "H%s" % self._settings.title_level,
+                style="white-space: %s" % ("normal" if self._settings.title_wrap else "nowrap"),
+            )
             title.string = self._settings.title
 
     def _write_anchor(self, container):
@@ -416,7 +470,7 @@ class BaseBlock(object):
         output = BytesIO()
 
         for child in container.children:
-            output.write(render(child).encode('utf-8'))
+            output.write(render(child).encode("utf-8"))
 
         return output.getvalue()
 

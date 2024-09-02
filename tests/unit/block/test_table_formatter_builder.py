@@ -16,8 +16,15 @@ TEST_DATA = pd.DataFrame(
         "Tuition Fees": [9000, 9000, 9000, 9000, 3000, 9000, 0],
         "Tuition Costs": [12566, -20564, 27284, -750, np.nan, 4673, 0],
         "Estimated Household Income": [2e5, 4e6, 3e5, 1e5, 2e5, 5e5, 2e7],
-        "Subject": ["Physics", "Computer Science and Mathematics with Industrial Experience", "Chemistry", "French",
-                    "Medicine", "History of Art Architecture and Design", "Nursing"],
+        "Subject": [
+            "Physics",
+            "Computer Science and Mathematics with Industrial Experience",
+            "Chemistry",
+            "French",
+            "Medicine",
+            "History of Art Architecture and Design",
+            "Nursing",
+        ],
         "Unwanted": ["Nonsense" + str(i + 1) for i in range(7)],
         "Id": range(7),
     }
@@ -25,8 +32,19 @@ TEST_DATA = pd.DataFrame(
 TEST_DATA["Tuition Return"] = TEST_DATA["Tuition Fees"] / TEST_DATA["Tuition Costs"]
 TEST_DATA["Fees / Income"] = TEST_DATA["Tuition Fees"] / TEST_DATA["Estimated Household Income"]
 TEST_DATA = TEST_DATA[
-    ["Student", "Subject", "Graduation Date", "GPA", "Plagiarism Score (bps)", "Tuition Fees", "Tuition Costs",
-     "Tuition Return", "Estimated Household Income", "Fees / Income", "Unwanted"]
+    [
+        "Student",
+        "Subject",
+        "Graduation Date",
+        "GPA",
+        "Plagiarism Score (bps)",
+        "Tuition Fees",
+        "Tuition Costs",
+        "Tuition Return",
+        "Estimated Household Income",
+        "Fees / Income",
+        "Unwanted",
+    ]
 ]
 
 

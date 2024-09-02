@@ -46,7 +46,7 @@ def render(item, pretty=True, encoding="utf8"):
     :param pretty: Toggles pretty formatting of the resulting string.
     :return: Rendered content.
     """
-    return item.prettify(encoding=encoding).decode('utf8') if pretty else text_type(item)
+    return item.prettify(encoding=encoding).decode("utf8") if pretty else text_type(item)
 
 
 def append_to(parent, tag, **kwargs):
@@ -92,8 +92,8 @@ def construct_element(container=None, content=None, tag=None, element_type=None)
     return el
 
 
-js_elem = partial(construct_element, tag='script', element_type='text/javascript')
-css_elem = partial(construct_element, tag='style', element_type='text/css')
+js_elem = partial(construct_element, tag="script", element_type="text/javascript")
+css_elem = partial(construct_element, tag="style", element_type="text/css")
 
 
 def set_id_generator(generator):

@@ -7,7 +7,7 @@ from functools import partial, wraps
 
 import matplotlib
 
-matplotlib.use('Agg')
+matplotlib.use("Agg")
 
 
 def assert_report_generated(func=None, fmt="html", **kwargs):
@@ -31,13 +31,13 @@ def assert_report_generated(func=None, fmt="html", **kwargs):
         block = func()
         tmp_file = block.save(fmt=fmt, **kwargs)
 
-        assert os.path.getsize(tmp_file) > 1000, 'File {} should not be empty.'.format(tmp_file)
+        assert os.path.getsize(tmp_file) > 1000, "File {} should not be empty.".format(tmp_file)
 
-        if fmt.lower() == 'pdf':
-            if sys.platform == 'darwin':
-                logging.warning('Skipping call to pdfinfo as it is not available on this platform.')
+        if fmt.lower() == "pdf":
+            if sys.platform == "darwin":
+                logging.warning("Skipping call to pdfinfo as it is not available on this platform.")
             else:
-                if not find_executable('pdfinfo'):
+                if not find_executable("pdfinfo"):
                     raise Exception('Could not find executable "pdfinfo". Will not check PDF file integrity')
                 else:
                     cmd = ["pdfinfo", tmp_file]
