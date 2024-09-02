@@ -28,12 +28,12 @@ def add_highcharts_shim_to_stream(stream, highcharts_all):
         require([{require_names}], function({param_names}) {{
             Highcharts = {highcharts};
         """.format(
-            require_names=", ".join("'highcharts/{}'".format(l) for l in highcharts_lower[:-1]),
+            require_names=", ".join("'highcharts/{}'".format(m) for m in highcharts_lower[:-1]),
             param_names=", ".join(highcharts_lower[:-1]),
             highcharts=highcharts_lower[0],
         )
     )
-    stream.write("".join("{}(Highcharts);\n".format(l.replace("-", "_")) for l in highcharts_all[1:-1]))
+    stream.write("".join("{}(Highcharts);\n".format(m.replace("-", "_")) for m in highcharts_all[1:-1]))
     stream.write(static.JScript(highcharts_all[-1]).content_string)
     stream.write("\n")
     stream.writelines("\n".join(["window.Highcharts = Highcharts;", "});", "}", "</script>"]))

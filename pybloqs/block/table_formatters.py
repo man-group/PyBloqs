@@ -2,13 +2,17 @@ import datetime
 import itertools
 import numbers
 from collections import namedtuple
-from typing import Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 import numpy as np
 import pandas as pd
 from six import iteritems, string_types
 
 from pybloqs.block import colors as colors
+
+if TYPE_CHECKING:
+    from pybloqs.block.table import HTMLJinjaTableBlock
+
 
 OP_SUM = np.sum
 OP_MEAN = np.mean
