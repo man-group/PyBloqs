@@ -55,8 +55,8 @@ def test_plotlyplot():
             title="Offline Plotly Testing",
             width=800,
             height=500,
-            xaxis=dict(title="X-axis"),
-            yaxis=dict(title="Y-axis"),
+            xaxis={"title": "X-axis"},
+            yaxis={"title": "Y-axis"},
         ),
     )
 
@@ -77,7 +77,7 @@ def test_bokehplot():
     x = [(fruit, year) for fruit in fruits for year in years]
     counts = sum(zip(data["2015"], data["2016"], data["2017"]), ())  # like an hstack
 
-    source = ColumnDataSource(data=dict(x=x, counts=counts))
+    source = ColumnDataSource(data={"x": x, "counts": counts})
 
     fig = figure(x_range=FactorRange(*x), height=350, title="Fruit Counts by Year", toolbar_location=None, tools="")
     fig.vbar(x="x", top="counts", width=0.9, source=source)

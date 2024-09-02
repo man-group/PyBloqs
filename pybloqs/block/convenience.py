@@ -5,7 +5,7 @@ from six import string_types
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
 
-_block_types = dict()
+_block_types = {}
 
 
 def add_block_types(objects, block_cls):
