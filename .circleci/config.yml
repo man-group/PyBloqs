@@ -51,10 +51,16 @@ defaults: &defaults
     # Lint:
     - run:
        name: Check formatting
-       command: ruff format --check pybloqs tests
+       command: |
+         set -e
+         . ci/bin/activate
+         ruff format --check pybloqs tests
     - run:
        name: Run lints
-       command: ruff check pybloqs tests
+       command: |
+         set -e
+         . ci/bin/activate
+         ruff check pybloqs tests
     # Test
     - run:
        name: Run all tests
