@@ -6,7 +6,7 @@ from six import StringIO
 from pybloqs.plot import Plot
 
 
-@pytest.fixture()
+@pytest.fixture
 def plot():
     return Plot([1, 2, 3])
 
