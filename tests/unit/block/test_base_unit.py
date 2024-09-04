@@ -77,12 +77,9 @@ def test_show_block_with_env_var():
 )
 def test_save_filename_and_extension(filename, fmt, exp_name, exp_fmt, exp_output):
     m = mock_open()
-    with (
-        patch("pybloqs.block.base.open", m, create=True),
-        patch.object(bbase.BaseBlock, "render_html", return_value="<HTML>"),
-        patch.object(bbase.BaseBlock, "publish", return_value=""),
-        patch("pybloqs.block.base.htmlconv"),
-    ):
+    with patch("pybloqs.block.base.open", m, create=True), patch.object(
+        bbase.BaseBlock, "render_html", return_value="<HTML>"
+    ), patch.object(bbase.BaseBlock, "publish", return_value=""), patch("pybloqs.block.base.htmlconv"):
         b = bbase.BaseBlock()
         result = b.save(filename, fmt)
     if exp_name is not None:
