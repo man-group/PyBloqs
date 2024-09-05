@@ -1,11 +1,11 @@
 from collections.abc import Iterable
 
+from six import string_types
+
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
 
-from six import string_types
-
-_block_types = dict()
+_block_types = {}
 
 
 def add_block_types(objects, block_cls):
@@ -66,8 +66,9 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
                 container_tag = None
 
                 def __init__(self):
-                    super(_NestedBlock, self).__init__(title=title, title_level=title_level,
-                                                       title_wrap=title_wrap, inherit_cfg=inherit_cfg, **kwargs)
+                    super(_NestedBlock, self).__init__(
+                        title=title, title_level=title_level, title_wrap=title_wrap, inherit_cfg=inherit_cfg, **kwargs
+                    )
 
                 def _to_static(self):
                     return contents._to_static()
@@ -82,5 +83,6 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
         else:
             raise ValueError("Unrecognized argument type: %s" % type(contents))
 
-    return block_cls(contents, title=title, title_level=title_level, title_wrap=title_wrap,
-                     inherit_cfg=inherit_cfg, **kwargs)
+    return block_cls(
+        contents, title=title, title_level=title_level, title_wrap=title_wrap, inherit_cfg=inherit_cfg, **kwargs
+    )

@@ -2,8 +2,7 @@ from numbers import Number
 
 from pkg_resources import resource_filename
 
-from pybloqs.htmlconv.html_converter import HTMLConverter, PORTRAIT, A4
-
+from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
 
 _NODE_SCRIPT_LOC = resource_filename(__name__, "puppeteer.js")
 
@@ -17,8 +16,19 @@ class ChromeHeadlessConverter(HTMLConverter):
     dependencies
     """
 
-    def htmlconv(self, block, output_file, header_block=None, header_spacing=None, footer_block=None,
-                 footer_spacing=None, pdf_zoom=1, pdf_page_size=A4, orientation=PORTRAIT, **kwargs):
+    def htmlconv(
+        self,
+        block,
+        output_file,
+        header_block=None,
+        header_spacing=None,
+        footer_block=None,
+        footer_spacing=None,
+        pdf_zoom=1,
+        pdf_page_size=A4,
+        orientation=PORTRAIT,
+        **kwargs,
+    ):
         """
         Use headless chrome to convert the supplied html content to a PDF file.
 
@@ -36,27 +46,30 @@ class ChromeHeadlessConverter(HTMLConverter):
         # For compatibility with wkhtmltopdf handle spacing that is passed as number to be in mm.
         if header_spacing is not None and header_block is not None:
             if isinstance(header_spacing, Number):
-                header_block._settings.height = '{}mm'.format(header_spacing)
+                header_block._settings.height = "{}mm".format(header_spacing)
             else:
                 header_block._settings.height = header_spacing
         if footer_spacing is not None and footer_block is not None:
             if isinstance(footer_spacing, Number):
-                footer_block._settings.height = '{}mm'.format(footer_spacing)
+                footer_block._settings.height = "{}mm".format(footer_spacing)
             else:
                 footer_block._settings.height = footer_spacing
-        content = block.render_html(static_output=True,
-                                    header_block=header_block,
-                                    footer_block=footer_block)
+        content = block.render_html(static_output=True, header_block=header_block, footer_block=footer_block)
 
         html_filename = HTMLConverter.write_html_to_tempfile(block, content)
-        output, errors = self.run_command([
-            self.get_executable('node'),
-            _NODE_SCRIPT_LOC,
-            '--zoom', str(pdf_zoom),
-            '--landscape', 'false' if orientation == PORTRAIT else 'true',
-            '--format', pdf_page_size,
-            "file://{}".format(html_filename),
-            output_file
-        ])
+        output, errors = self.run_command(
+            [
+                self.get_executable("node"),
+                _NODE_SCRIPT_LOC,
+                "--zoom",
+                str(pdf_zoom),
+                "--landscape",
+                "false" if orientation == PORTRAIT else "true",
+                "--format",
+                pdf_page_size,
+                "file://{}".format(html_filename),
+                output_file,
+            ]
+        )
         HTMLConverter.remove_temporary_files([html_filename])
         return output, errors

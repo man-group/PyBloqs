@@ -1,9 +1,10 @@
-import re
-import zlib
 import base64
 import calendar
 import itertools
-from six import iterkeys, iteritems, PY3
+import re
+import zlib
+
+from six import PY3, iteritems, iterkeys
 
 if PY3:
     long = int
@@ -30,7 +31,7 @@ def encode_string(string, level=9):
     :param level: Compression level
     :return: Compressed and encoded string
     """
-    return base64.b64encode(zlib.compress(string.encode('utf8'), level)[2:-4])
+    return base64.b64encode(zlib.compress(string.encode("utf8"), level)[2:-4])
 
 
 def camelcase(value):
@@ -51,7 +52,7 @@ def underscorecase(camelcased):
     :param value: CamelCased string
     :return: Underscore separated string
     """
-    return re.sub('([A-Z]+)', r'_\1', camelcased).lower()
+    return re.sub("([A-Z]+)", r"_\1", camelcased).lower()
 
 
 def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v: v, separator=";"):

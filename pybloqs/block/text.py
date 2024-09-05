@@ -1,17 +1,18 @@
 """
 Module for blocks with text-only content
 """
-import markdown
-import textwrap
+
 import sys
+import textwrap
+
+import markdown
+from six import string_types
 
 from pybloqs import BaseBlock
 from pybloqs.html import parse
 
-from six import string_types
 
 class Raw(BaseBlock):
-
     def __init__(self, contents, dedent=True, **kwargs):
         """
         Writes out the content as raw text or HTML.
@@ -44,6 +45,7 @@ class Pre(Raw):
     """
     Renders the content with a fixed-width font, preserving whitespace.
     """
+
     container_tag = "pre"
 
 
@@ -51,6 +53,7 @@ class Span(Raw):
     """
     Renders a piece of text with formatting.
     """
+
     container_tag = "span"
 
 
@@ -58,10 +61,11 @@ class Markdown(Raw):
     """
     Renders Markdown into HTML content.
     """
+
     encoding = "UTF-8"
 
     def _process_raw_contents(self, contents):
-        if sys.version_info >= (3,0):
+        if sys.version_info >= (3, 0):
             return markdown.markdown(contents, output_format="html")
         else:
             return markdown.markdown(contents.decode(self.encoding), output_format="html").encode(self.encoding)

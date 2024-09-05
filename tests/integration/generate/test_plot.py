@@ -1,9 +1,10 @@
 import os
+
 import pandas as pd
+
 import pybloqs.plot as pbp
 
 from .generation_framework import assert_report_generated
-
 
 script_dir = os.path.dirname(__file__)
 
@@ -50,27 +51,32 @@ def test_bar_chart_stacked():
 
 @assert_report_generated
 def test_bar_chart_composite():
-    return pbp.Plot([pbp.Plot(a, pbp.Column(bar_grouping)),
-                     pbp.Plot(b, pbp.Column(bar_grouping))])
+    return pbp.Plot([pbp.Plot(a, pbp.Column(bar_grouping)), pbp.Plot(b, pbp.Column(bar_grouping))])
 
 
 @assert_report_generated
 def test_cumulative_difference():
-    return pbp.Plot(df_cr,
-                    pbp.PlotOptions(pbp.Series(compare="percent")),
-                    pbp.TooltipPct(),
-                    pbp.YAxisPct())
+    return pbp.Plot(df_cr, pbp.PlotOptions(pbp.Series(compare="percent")), pbp.TooltipPct(), pbp.YAxisPct())
 
 
 @assert_report_generated
 def test_multiple_axes():
-    return pbp.Plot([pbp.Plot(a),
-                     pbp.Plot(b, pbp.YAxis(pbp.Title(text="B Axis"), opposite=True)),
-                     pbp.Plot(c, pbp.YAxis(pbp.Title(text="C Axis"), opposite=True, offset=40))])
+    return pbp.Plot(
+        [
+            pbp.Plot(a),
+            pbp.Plot(b, pbp.YAxis(pbp.Title(text="B Axis"), opposite=True)),
+            pbp.Plot(c, pbp.YAxis(pbp.Title(text="C Axis"), opposite=True, offset=40)),
+        ]
+    )
 
 
 @assert_report_generated
 def test_separate_subplots():
-    return pbp.Plot([pbp.Plot(a, pbp.Line(), pbp.YAxis(pbp.Title(text="a only"), height=200)),
-                     pbp.Plot(b, pbp.Column(), pbp.YAxis(pbp.Title(text="b only"), top=250, height=100, offset=0))],
-                    pbp.Tooltip(value_decimals=2), height="400px")
+    return pbp.Plot(
+        [
+            pbp.Plot(a, pbp.Line(), pbp.YAxis(pbp.Title(text="a only"), height=200)),
+            pbp.Plot(b, pbp.Column(), pbp.YAxis(pbp.Title(text="b only"), top=250, height=100, offset=0)),
+        ],
+        pbp.Tooltip(value_decimals=2),
+        height="400px",
+    )

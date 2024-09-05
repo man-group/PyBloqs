@@ -1,26 +1,26 @@
 """
 Common email related functions used by various reports.
 """
+
 from __future__ import absolute_import
 
 import base64
+import getpass
+import logging
+import os
+import smtplib
+import tempfile
 from email import encoders
 from email.message import Message
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import getpass
-import logging
-import os
-import smtplib
-import tempfile
 
-from html5lib import treebuilders
 import html5lib
+from html5lib import treebuilders
 
 from pybloqs.config import user_config
-
 
 _log = logging.getLogger(__name__)
 
@@ -49,12 +49,12 @@ def send(message, recipients):
         message["To"] = ",".join(recipients)
 
     s = smtplib.SMTP(**user_config["smtp_kwargs"])
-    if 'smtp_pre_login_calls' in user_config:
-        smtp_pre_login_calls = user_config['smtp_pre_login_calls']
+    if "smtp_pre_login_calls" in user_config:
+        smtp_pre_login_calls = user_config["smtp_pre_login_calls"]
         for method, kwargs in smtp_pre_login_calls:
             getattr(s, method)(**kwargs)
-    if 'smtp_login' in user_config:
-        s.login(**user_config['smtp_login'])
+    if "smtp_login" in user_config:
+        s.login(**user_config["smtp_login"])
     s.sendmail(message["From"], recipients, message.as_string())
     s.quit()
 
@@ -89,14 +89,14 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
             hdr = "data:image/"
             hdr_index = src.index(hdr) + len(hdr)
             imgdef = src[hdr_index:]
-            subtype = imgdef[:imgdef.index(";")]
+            subtype = imgdef[: imgdef.index(";")]
 
             # At the moment outlook doesn't support SVG so remove such images.
             # TODO: Rasterize the SVG on the fly for embedding.
             if subtype.lower() == "svg+xml":
                 img_tag.parentNode.removeChild(img_tag)
                 continue
-            img_data = base64.b64decode(imgdef[(imgdef.index("base64,") + 7):])
+            img_data = base64.b64decode(imgdef[(imgdef.index("base64,") + 7) :])
         else:
             # get a unique name for the image
             name = "%s_%s" % (idx, os.path.basename(src))
@@ -141,7 +141,7 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
     :param Cc: cc recipient
     :param Bcc: bcc recipient
     :param convert_to_ascii: bool convert html format to ascii
-     """
+    """
     # create the dom for querying/modifying the html document
     parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
     dom = parser.parse(html_str)
@@ -179,8 +179,8 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
                 filename_no_ext, fmt = os.path.splitext(os.path.split(attachment_spec)[-1])
                 # Exclude the dot from the extension, gosh darn it!
                 fmt = fmt[1:]
-                if fmt == '':
-                    raise ValueError('Attachment file name has no extension:', attachment_spec)
+                if fmt == "":
+                    raise ValueError("Attachment file name has no extension:", attachment_spec)
 
                 with open(attachment_spec, "rb") as f:
                     content = f.read()
@@ -193,9 +193,7 @@ def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc
             filename_base = filename_no_ext or os.path.basename(tempfile.mktemp())
             attachment_spec = filename_base + "." + fmt
 
-            attachment.add_header('Content-Disposition',
-                                  'attachment',
-                                  filename=attachment_spec)
+            attachment.add_header("Content-Disposition", "attachment", filename=attachment_spec)
             mime_msg.attach(attachment)
 
     send(mime_msg, to)

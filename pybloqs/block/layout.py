@@ -1,13 +1,12 @@
 import copy
 import math
-import pandas as pd
-
-from pybloqs.util import Cfg
-from pybloqs.html import append_to
-from pybloqs.block.base import BaseBlock
-from pybloqs.block.convenience import Block, add_block_types
 
 from six.moves import range
+
+from pybloqs.block.base import BaseBlock
+from pybloqs.block.convenience import Block, add_block_types
+from pybloqs.html import append_to
+from pybloqs.util import Cfg
 
 
 class CompositeBlockMixin(object):
@@ -135,7 +134,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
 
         # Skip layout if there is no content.
         if content_count > 0:
-            cell_width = 100. / min(self._cols, content_count)
+            cell_width = 100.0 / min(self._cols, content_count)
 
             row_count = int(math.ceil(content_count / float(self._cols)))
 
@@ -156,9 +155,9 @@ class Grid(CompositeBlockMixin, BaseBlock):
                     cell_el = append_to(row_el, "div", style="width:%f%%;float:left;" % cell_width)
                     cell_el["class"] = ["pybloqs-grid-cell"]
 
-                    self._contents[item_count]._write_block(cell_el,
-                                                            actual_cfg if self._cascade_cfg else Cfg(),
-                                                            *args, **kwargs)
+                    self._contents[item_count]._write_block(
+                        cell_el, actual_cfg if self._cascade_cfg else Cfg(), *args, **kwargs
+                    )
 
             # Clear the floating, Yarr!
             append_to(container, "div", style="clear:both")

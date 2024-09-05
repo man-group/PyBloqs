@@ -1,9 +1,9 @@
 import pandas as pd
 
-from pybloqs.block.text import Span, Raw
-from pybloqs.block.layout import Flow, HStack, VStack, Grid
-from .generation_framework import assert_report_generated
+from pybloqs.block.layout import Flow, Grid, HStack, VStack
+from pybloqs.block.text import Raw, Span
 
+from .generation_framework import assert_report_generated
 
 colors = ["Red", "Green", "Blue", "Magenta", "Orange", "Yellow", "Teal"]
 

@@ -38,6 +38,7 @@ defaults: &defaults
          pip install plotly
          pip install lxml
          pip install coveralls
+         pip install ruff
          pip install -r docs/source/requirements.txt
          python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts/modules/ --wkhtmltopdf=wkhtmltox/bin
          python setup.py load_highcharts  --highcharts=node_modules/highcharts/,node_modules/highcharts/modules
@@ -47,6 +48,19 @@ defaults: &defaults
         paths:
         - ~/ci
         - ~/wkhtmltox
+    # Lint:
+    - run:
+       name: Check formatting
+       command: |
+         set -e
+         . ci/bin/activate
+         ruff format --check pybloqs tests
+    - run:
+       name: Run lints
+       command: |
+         set -e
+         . ci/bin/activate
+         ruff check pybloqs tests
     # Test
     - run:
        name: Run all tests

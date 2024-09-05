@@ -2,6 +2,7 @@
 import pandas as pd
 
 from pybloqs.block.convenience import Block
+
 from .generation_framework import assert_report_generated
 
 series = pd.Series([1, 2, 3])
@@ -15,7 +16,7 @@ def test_string():
 
 @assert_report_generated
 def test_unicode_string():
-    return Block(u"Hello £&ö World!", title=u"Salutations")
+    return Block("Hello £&ö World!", title="Salutations")
 
 
 @assert_report_generated

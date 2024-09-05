@@ -1,22 +1,23 @@
 import base64
-from six import StringIO, BytesIO
 import struct
 import tempfile
 from contextlib import contextmanager
 
+import matplotlib.pyplot as plt
 from matplotlib.artist import Artist
 from matplotlib.figure import Figure
+from six import BytesIO, StringIO
 
-import matplotlib.pyplot as plt
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
 from pybloqs.html import append_to, parse
-from pybloqs.static import JScript, Css
+from pybloqs.static import Css, JScript
 from pybloqs.util import cfg_to_css_string
 
 try:
-    from plotly.graph_objs import Figure as PlotlyFigure
     import plotly.offline as po
+    from plotly.graph_objs import Figure as PlotlyFigure
+
     _PLOTLY_AVAILABLE = True
 except ImportError:
     _PLOTLY_AVAILABLE = False
@@ -25,6 +26,7 @@ try:
     try:
         # Bokeh >= 3.1
         from bokeh.resources import Resources
+
         JSResources = Resources
         CSSResources = Resources
     except ImportError:
@@ -38,15 +40,13 @@ try:
         from bokeh.plotting import figure as BokehFigure
     from bokeh.embed.standalone import components
     from bokeh.io import export_png
+
     _BOKEH_AVAILABLE = True
 except ImportError:
     _BOKEH_AVAILABLE = False
 
 
-_MIME_TYPES = {
-    "png": "png",
-    "svg": "svg+xml"
-}
+_MIME_TYPES = {"png": "png", "svg": "svg+xml"}
 
 _PLOT_FORMAT = "png"
 _PLOT_MIME_TYPE = _MIME_TYPES[_PLOT_FORMAT]
@@ -99,7 +99,6 @@ def set_plot_format(plot_format=None, plot_dpi=None):
 
 
 class ImgBlock(BaseBlock):
-
     def __init__(self, data, mime_type="png", width=None, height=None, img_style=None, **kwargs):
         """
         Create a block containing an image. The dimensions can be sniffed from GIF
@@ -120,15 +119,16 @@ class ImgBlock(BaseBlock):
         # Wrapping a block in an image will render it
         if hasattr(data, "_write_block"):
             img_file = data.save(fmt=mime_type)
-            data = open(img_file, "rb").read()
+            with open(img_file, "rb") as f:
+                data = f.read()
 
         self._img_data = base64.b64encode(data)
         self._mime_type = mime_type
 
         if width is None and height is None:
             if mime_type.lower() == "png":
-                if struct.unpack('ccc', data[1:4]) != (b'P', b'N', b'G'):
-                    raise ValueError('Image type is not png and does not match mime type')
+                if struct.unpack("ccc", data[1:4]) != (b"P", b"N", b"G"):
+                    raise ValueError("Image type is not png and does not match mime type")
                 x, y = struct.unpack(">ii", data[16:24])
             elif mime_type.lower() == "gif":
                 x, y = struct.unpack("<HH", data[6:10])
@@ -174,7 +174,7 @@ class ImgBlock(BaseBlock):
         close_file = False
 
         if isinstance(img_file, str):
-            img_file = open(img_file, "rb")
+            img_file = open(img_file, "rb")  # noqa: SIM115
             close_file = True
 
         try:
@@ -186,9 +186,7 @@ class ImgBlock(BaseBlock):
 
 
 class PlotBlock(ImgBlock):
-
-    def __init__(self, plot, close_plot=True, bbox_inches="tight",
-                 width=None, height=None, **kwargs):
+    def __init__(self, plot, close_plot=True, bbox_inches="tight", width=None, height=None, **kwargs):
         """
         Create a block containing a matplotlib figure
 
@@ -202,7 +200,7 @@ class PlotBlock(ImgBlock):
                        block parameter.
         """
         if not isinstance(plot, Artist):
-            raise ValueError('PlotBlock contents must be matplotlib Artist')
+            raise ValueError("PlotBlock contents must be matplotlib Artist")
 
         if isinstance(plot, Figure):
             figure = plot
@@ -232,8 +230,9 @@ class PlotBlock(ImgBlock):
             # empty plot, disable bbox_inches to that savefig still works
             bbox_inches = None
 
-        figure.savefig(img_data, dpi=_PLOT_DPI, format=_PLOT_FORMAT,
-                       bbox_extra_artists=legends, bbox_inches=bbox_inches)
+        figure.savefig(
+            img_data, dpi=_PLOT_DPI, format=_PLOT_FORMAT, bbox_extra_artists=legends, bbox_inches=bbox_inches
+        )
 
         plt_width, plt_height = figure.get_size_inches()
 
@@ -243,11 +242,7 @@ class PlotBlock(ImgBlock):
         if close_plot:
             plt.close(figure)
 
-        super(PlotBlock, self).__init__(img_data.getvalue(),
-                                        _PLOT_MIME_TYPE,
-                                        width=width,
-                                        height=height,
-                                        **kwargs)
+        super(PlotBlock, self).__init__(img_data.getvalue(), _PLOT_MIME_TYPE, width=width, height=height, **kwargs)
 
     def _to_static(self):
         # Convert to a basic image block in case we contain 'dynamic' svg content
@@ -255,7 +250,6 @@ class PlotBlock(ImgBlock):
 
 
 class PlotlyPlotBlock(BaseBlock):
-
     def __init__(self, contents, plotly_kwargs=None, static_kwargs=None, **kwargs):
         """
         Writes out the content as raw text or HTML.
@@ -268,7 +262,7 @@ class PlotlyPlotBlock(BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        self.resource_deps = [JScript(script_string=po.offline.get_plotlyjs(), name='plotly')]
+        self.resource_deps = [JScript(script_string=po.offline.get_plotlyjs(), name="plotly")]
 
         super(PlotlyPlotBlock, self).__init__(**kwargs)
 
@@ -279,7 +273,7 @@ class PlotlyPlotBlock(BaseBlock):
         self.static_kwargs = static_kwargs or {}
         prefix = "<script>if (typeof require !== 'undefined') {var Plotly=require('plotly')}</script>"
         self._fig = contents
-        self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type='div', **plotly_kwargs)
+        self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type="div", **plotly_kwargs)
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._contents))
@@ -296,7 +290,6 @@ class PlotlyPlotBlock(BaseBlock):
 
 
 class BokehPlotBlock(BaseBlock):
-
     def __init__(self, contents, static_kwargs=None, **kwargs):
         """
         Writes out the content as raw text or HTML.
@@ -308,8 +301,8 @@ class BokehPlotBlock(BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        self.resource_deps = [JScript(script_string=s, name='bokeh_js') for s in JSResources().js_raw]
-        self.resource_deps += [Css(css_string=s, name='bokeh_css') for s in CSSResources().css_raw]
+        self.resource_deps = [JScript(script_string=s, name="bokeh_js") for s in JSResources().js_raw]
+        self.resource_deps += [Css(css_string=s, name="bokeh_css") for s in CSSResources().css_raw]
 
         super(BokehPlotBlock, self).__init__(**kwargs)
 

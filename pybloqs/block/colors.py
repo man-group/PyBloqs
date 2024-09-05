@@ -2,7 +2,6 @@ import re
 
 import numpy as np
 
-
 # Heatmap colors
 HEATMAP_GREEN = (0.5, 0.9, 0.5)
 HEATMAP_RED = (0.9, 0.5, 0.5)
@@ -15,8 +14,8 @@ LIGHT_GREY = (0.9, 0.9, 0.9)
 GREY = (0.5, 0.5, 0.5)
 DARK_GREY = (0.2, 0.2, 0.2)
 DARK_BLUE = (0.12, 0.2, 0.49)
-YELLOW = (.9, .9, 0.)
-LIGHT_ORANGE = (1., .647, 0.)
+YELLOW = (0.9, 0.9, 0.0)
+LIGHT_ORANGE = (1.0, 0.647, 0.0)
 
 # Plotting colors
 ORANGE = (0.886, 0.29, 0.2)
@@ -45,34 +44,34 @@ def css_color_from_tuple(color_tuple):
     if len(color_tuple) == 4:
         color_tuple = rgb_tuple_from_rgba(color_tuple)
     if len(color_tuple) != 3:
-        raise ValueError('Color passed as tuple, but length of tuple is not 3 or 4, but:', len(color_tuple))
-    rgb_tuple = ','.join([str(int(i * 255)) for i in color_tuple[0:3]])
-    rgb_string = 'rgb(' + rgb_tuple + ')'
+        raise ValueError("Color passed as tuple, but length of tuple is not 3 or 4, but:", len(color_tuple))
+    rgb_tuple = ",".join([str(int(i * 255)) for i in color_tuple[0:3]])
+    rgb_string = "rgb(" + rgb_tuple + ")"
     return rgb_string
 
 
 def css_color_from_string(color_string):
-    if len(color_string) == 7 and color_string[0] == '#':
+    if len(color_string) == 7 and color_string[0] == "#":
         # We got a hex string, no conversion necessary
         return color_string
-    elif color_string[0:5] == 'rgba':
+    elif color_string[0:5] == "rgba":
         # Convert rgba to rgb and create new string.
         # Replace all non-numbers (and dot) with whitespace.
-        numbers_and_spaces = re.sub('[^0-9.]', " ", color_string)
-        numbers_and_spaces_list = numbers_and_spaces.split(' ')
-        rgba_tuple = [e for e in numbers_and_spaces_list if e != '']
+        numbers_and_spaces = re.sub("[^0-9.]", " ", color_string)
+        numbers_and_spaces_list = numbers_and_spaces.split(" ")
+        rgba_tuple = [e for e in numbers_and_spaces_list if e != ""]
         return css_color_from_tuple(rgba_tuple)
-    elif color_string[0:4] == 'rgb':
+    elif color_string[0:4] == "rgb":
         # Assume we have a valid rgb (not rgba, which was checked before) string. No conversion necessary.
         return color_string
     else:
-        raise ValueError('Color string format not recognised:', color_string)
+        raise ValueError("Color string format not recognised:", color_string)
 
 
 def css_color(color):
     """Create CSS color (rgb string or Hex string) from various inputs.
 
-    Digests: 
+    Digests:
          * tuple(float, float, float)
          * tuple(float, float, float, float)
          * list(float, float, float)
@@ -86,7 +85,7 @@ def css_color(color):
     """
     if isinstance(color, str):
         return css_color_from_string(color)
-    elif isinstance(color, tuple) or isinstance(color, list):
+    elif isinstance(color, (tuple, list)):
         return css_color_from_tuple(color)
     else:
-        raise ValueError('Color definition is neither string, tuple or list:', color)
+        raise ValueError("Color definition is neither string, tuple or list:", color)

@@ -1,4 +1,5 @@
-from pybloqs.block.text import Raw, Pre, Span, Markdown
+from pybloqs.block.text import Markdown, Pre, Raw, Span
+
 from .generation_framework import assert_report_generated
 
 
@@ -9,7 +10,7 @@ def test_raw_plain():
 
 @assert_report_generated
 def test_raw_unicode():
-    return Raw(u"Hello World!")
+    return Raw("Hello World!")
 
 
 @assert_report_generated

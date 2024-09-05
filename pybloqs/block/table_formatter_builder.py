@@ -1,8 +1,9 @@
-from collections import OrderedDict
 import enum
-from typing import Callable, cast, Dict, List, Optional, Tuple, Union
+from collections import OrderedDict
+from typing import Callable, Dict, List, Optional, Tuple, Union, cast
 
 import pandas as pd
+
 import pybloqs.block.table_formatters as pbtf
 from pybloqs.block import colors
 
@@ -311,7 +312,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
                 font_size,
                 unit="pt",
                 rows=[pbtf.HEADER_ROW_NAME],
-                columns=[pbtf.INDEX_COL_NAME] + self._data.columns.tolist(),
+                columns=[pbtf.INDEX_COL_NAME, *self._data.columns.tolist()],
                 apply_to_header_and_index=False,
             )
             if font_size is not None
@@ -322,7 +323,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             FormatterType.header,
             pbtf.FmtAddCellPadding(
                 rows=[pbtf.HEADER_ROW_NAME],
-                columns=[pbtf.INDEX_COL_NAME] + self._data.columns.tolist(),
+                columns=[pbtf.INDEX_COL_NAME, *self._data.columns.tolist()],
                 left=cell_padding,
                 right=cell_padding,
                 top=cell_padding,
@@ -422,7 +423,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             pbtf.FmtAlignCellContents(
                 alignment=align_index,
                 apply_to_header_and_index=False,
-                rows=self._data.index.tolist() + [pbtf.HEADER_ROW_NAME],
+                rows=[*self._data.index.tolist(), pbtf.HEADER_ROW_NAME],
                 columns=[pbtf.INDEX_COL_NAME],
             )
             if align_index is not None
@@ -676,7 +677,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         :returns builder
         """
         return self.highlight(
-            columns=[pbtf.INDEX_COL_NAME] + self._data.columns.tolist(), highlight_column=highlight_column
+            columns=[pbtf.INDEX_COL_NAME, *self._data.columns.tolist()], highlight_column=highlight_column
         )
 
     def color_background(
@@ -840,10 +841,8 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         :returns builder
         """
         self.add_formatter(
-            FormatterType.hide_insignificant, pbtf.FmtHideInsignificant(
-                columns=columns,
-                apply_to_header_and_index=False
-            )
+            FormatterType.hide_insignificant,
+            pbtf.FmtHideInsignificant(columns=columns, apply_to_header_and_index=False),
         )
         return self
 

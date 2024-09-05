@@ -1,11 +1,12 @@
+import pytest
 from numpy import nan
-from pandas import Series, Index
-from pybloqs.plot import Plot
+from pandas import Index, Series
 from six import StringIO
-from pytest import fixture
+
+from pybloqs.plot import Plot
 
 
-@fixture
+@pytest.fixture
 def plot():
     return Plot([1, 2, 3])
 
@@ -50,4 +51,3 @@ def test_PlotBase_write_value_Index(plot):
     chart_buf = StringIO()
     plot._write_value(chart_buf, Index([1, 2, 3]))
     assert chart_buf.getvalue() == "[1,2,3]"
-
