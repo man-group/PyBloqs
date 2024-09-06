@@ -1,6 +1,5 @@
 import builtins
 import os
-from io import open
 
 from pkg_resources import resource_filename
 from six import StringIO
@@ -64,7 +63,7 @@ class JScript(Resource):
         :param name: Unique label used to identify duplicates. Only required with script_string.
         :param encode: Whether to compress and base64 encode the script.
         """
-        super(JScript, self).__init__(file_name, "js", script_string, name)
+        super().__init__(file_name, "js", script_string, name)
         self.encode = encode
 
     def write(self, parent=None):
@@ -104,7 +103,7 @@ class Css(Resource):
         :param css_string: CSS provided as unicode string.
         :param name: Unique label used to identify duplicates. Only required with script_string.
         """
-        super(Css, self).__init__(file_name, "css", css_string, name)
+        super().__init__(file_name, "css", css_string, name)
 
     def write(self, parent=None):
         return css_elem(parent, self.content_string)

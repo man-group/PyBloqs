@@ -3,9 +3,9 @@ import contextlib
 import os
 import uuid
 import webbrowser
+from urllib.parse import urljoin
 
 from six import BytesIO
-from six.moves.urllib.parse import urljoin
 
 import pybloqs.htmlconv as htmlconv
 from pybloqs.config import user_config
@@ -414,7 +414,7 @@ class BaseBlock:
         if self._settings.title is not None and (self._settings.title != ""):
             title = append_to(
                 container,
-                "H%s" % self._settings.title_level,
+                f"H{self._settings.title_level}",
                 style="white-space: %s" % ("normal" if self._settings.title_wrap else "nowrap"),
             )
             title.string = self._settings.title

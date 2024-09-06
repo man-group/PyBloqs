@@ -62,7 +62,7 @@ def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v:
 
     Underscores are replaced with dashes and values are converted to lower case.
     """
-    return separator.join(["%s:%s" % (key_transform(key), value_transform(value)) for key, value in iteritems(cfg)])
+    return separator.join([f"{key_transform(key)}:{value_transform(value)}" for key, value in iteritems(cfg)])
 
 
 def cfg_to_css_string(cfg):

@@ -4,7 +4,7 @@ from pybloqs.plot import Heatmap as HeatmapPlot
 
 class Heatmap(Plot):
     def __init__(self, data, *args, **kwargs):
-        super(Heatmap, self).__init__(data, HeatmapPlot(), flatten=True, *args, **kwargs)
+        super().__init__(data, HeatmapPlot(), flatten=True, *args, **kwargs)
 
         self._chart_cfg = self._chart_cfg.inherit_many(
             YAxis(title=None, reversed=True), XAxis(opposite=True), ColorAxis(min_color="#ffffff", max_color="#3060cf")
@@ -13,7 +13,7 @@ class Heatmap(Plot):
 
 class Corr(Heatmap):
     def __init__(self, data, *args, **kwargs):
-        super(Corr, self).__init__(data, *args, **kwargs)
+        super().__init__(data, *args, **kwargs)
 
         self._chart_cfg = self._chart_cfg.inherit_many(
             ColorAxis(min=0, max=1),
@@ -39,7 +39,7 @@ class Surface(Plot):
             view_distance=kwargs.pop("view_distance", 10),
         )
 
-        super(Surface, self).__init__(data, Scatter(), flatten=True, switch_zy=True, *args, **kwargs)
+        super().__init__(data, Scatter(), flatten=True, switch_zy=True, *args, **kwargs)
 
         self._chart_cfg = self._chart_cfg.inherit_many(
             Chart(options), Legend(enabled=False), YAxis(Title(text=None))

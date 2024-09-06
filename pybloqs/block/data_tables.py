@@ -14,7 +14,7 @@ from pybloqs.static import Css, JScript
 
 class DataTablesCSSClass(TableFormatter):
     def __init__(self, paging=True, searching=True, info=True):
-        super(DataTablesCSSClass, self).__init__()
+        super().__init__()
         self.paging = paging
         self.searching = searching
         self.info = info
@@ -49,4 +49,4 @@ class DataTablesHTMLJinjaTableBlock(HTMLJinjaTableBlock):
                 fmt_page_break,
                 fmt_decimals_2,
             ]
-        super(DataTablesHTMLJinjaTableBlock, self).__init__(df, formatters, use_default_formatters, **kwargs)
+        super().__init__(df, formatters, use_default_formatters, **kwargs)

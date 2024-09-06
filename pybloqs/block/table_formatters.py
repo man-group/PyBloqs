@@ -203,7 +203,7 @@ class FmtToString(TableFormatter):
     """Apply formatting string. Changes cell content to string."""
 
     def __init__(self, fmt_string, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtToString, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.fmt_string = fmt_string
         return
 
@@ -216,13 +216,13 @@ class FmtNumbers(FmtToString):
     """Apply formatting string if cell content is number. Changes cell content from number to string."""
 
     def __init__(self, fmt_string, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtNumbers, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
     def _modify_cell_content(self, data):
         """Change cell value from number to string formatted by fmt_string"""
         if isinstance(data.cell, numbers.Number):
-            return super(FmtNumbers, self)._modify_cell_content(data)
+            return super()._modify_cell_content(data)
         else:
             return data.cell
 
@@ -232,7 +232,7 @@ class FmtDecimals(FmtNumbers):
 
     def __init__(self, n, rows=None, columns=None, apply_to_header_and_index=True):
         fmt_string = "{:." + str(n) + "f}"
-        super(FmtDecimals, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
 
@@ -241,7 +241,7 @@ class FmtPercent(FmtNumbers):
 
     def __init__(self, n_decimals, rows=None, columns=None, apply_to_header_and_index=True):
         fmt_string = "{:." + str(n_decimals) + "%}"
-        super(FmtPercent, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
 
@@ -250,7 +250,7 @@ class FmtThousandSeparator(FmtNumbers):
 
     def __init__(self, n_decimals=0, rows=None, columns=None, apply_to_header_and_index=True):
         fmt_string = "{:,." + str(n_decimals) + "f}"
-        super(FmtThousandSeparator, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
 
@@ -258,13 +258,13 @@ class FmtDates(FmtToString):
     """Apply formatting string if cell content is date. Changes cell content from date to string."""
 
     def __init__(self, fmt_string, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtDates, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
     def _modify_cell_content(self, data):
         """Change cell value from number to string formatted by fmt_string"""
         if isinstance(data.cell, (pd.Timestamp, datetime.datetime)):
-            return super(FmtDates, self)._modify_cell_content(data)
+            return super()._modify_cell_content(data)
         else:
             return data.cell
 
@@ -274,7 +274,7 @@ class FmtYYYYMMDD(FmtDates):
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
         fmt_string = "{:%Y-%m-%d}"
-        super(FmtYYYYMMDD, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
 
@@ -283,7 +283,7 @@ class FmtDDMMMYYYY(FmtDates):
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
         fmt_string = "{:%d-%b-%Y}"
-        super(FmtDDMMMYYYY, self).__init__(fmt_string, rows, columns, apply_to_header_and_index)
+        super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
 
@@ -291,7 +291,7 @@ class FmtMultiplyCellValue(TableFormatter):
     """Base class for dividing cell value by some number and adding suffix to columns"""
 
     def __init__(self, d, suffix, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtMultiplyCellValue, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.d = d
         self.suffix = suffix
 
@@ -314,7 +314,7 @@ class FmtValueToMillion(FmtMultiplyCellValue):
     """Divide cell values by 1e6 and add suffix to column name (if it is a string)."""
 
     def __init__(self, suffix="", rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtValueToMillion, self).__init__(1 / 1e6, suffix, rows, columns, apply_to_header_and_index)
+        super().__init__(1 / 1e6, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
 
@@ -322,7 +322,7 @@ class FmtValueToBps(FmtMultiplyCellValue):
     """Divide cell values by 1e4 and add suffix to column name (if it is a string)."""
 
     def __init__(self, suffix="", rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtValueToBps, self).__init__(1e4, suffix, rows, columns, apply_to_header_and_index)
+        super().__init__(1e4, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
 
@@ -330,7 +330,7 @@ class FmtValueToPercent(FmtMultiplyCellValue):
     """Divide cell values by 1e2 and add suffix to column name (if it is a string)."""
 
     def __init__(self, suffix="", rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtValueToPercent, self).__init__(1e2, suffix, rows, columns, apply_to_header_and_index)
+        super().__init__(1e2, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
 
@@ -338,7 +338,7 @@ class FmtReplaceNaN(TableFormatter):
     """Replace NaN and Inf (if replace_inf is True) values."""
 
     def __init__(self, value="", replace_inf=True, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtReplaceNaN, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.value = value
         self.replace_inf = replace_inf
 
@@ -354,7 +354,7 @@ class FmtFontsize(TableFormatter):
     """Set fontsize in table cells."""
 
     def __init__(self, fontsize, unit="px", rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtFontsize, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.fontsize = fontsize
         self.unit = unit
         return
@@ -370,7 +370,7 @@ class FmtHighlightText(TableFormatter):
     def __init__(
         self, bold=True, italic=True, font_color=colors.BLUE, rows=None, columns=None, apply_to_header_and_index=False
     ):
-        super(FmtHighlightText, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.bold = bold
         self.italic = italic
         self.font_color = font_color
@@ -392,7 +392,7 @@ class FmtHighlightBackground(TableFormatter):
     """Set background color of selected cells"""
 
     def __init__(self, color=colors.RED, rows=None, columns=None, apply_to_header_and_index=False):
-        super(FmtHighlightBackground, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.color = color
         return
 
@@ -405,7 +405,7 @@ class FmtBold(TableFormatter):
     """Set bold font in table cells."""
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtBold, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         return
 
     def _create_cell_level_css(self, data):
@@ -416,7 +416,7 @@ class FmtAlignCellContents(TableFormatter):
     """Align cell contents. Possible alignment values: left, center, right."""
 
     def __init__(self, alignment="center", rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.alignment = alignment
         return
 
@@ -428,7 +428,7 @@ class FmtVerticalAlignCellContents(TableFormatter):
     """Align cell contents. Possible alignment values: top, middle, bottom."""
 
     def __init__(self, alignment="baseline", rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtVerticalAlignCellContents, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.alignment = alignment
         return
 
@@ -450,7 +450,7 @@ class FmtHeader(TableFormatter):
         columns=None,
         color=None,
     ):
-        super(FmtHeader, self).__init__(None, None)
+        super().__init__(None, None)
         self.fixed_width = fixed_width
         self.index_width = index_width
         self.column_width = column_width
@@ -514,7 +514,7 @@ class FmtStripeBackground(TableFormatter):
         columns=None,
         apply_to_header_and_index=True,
     ):
-        super(FmtStripeBackground, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.first_color = colors.css_color(first_color)
         self.second_color = colors.css_color(second_color)
         self.header_color = colors.css_color(header_color)
@@ -540,7 +540,7 @@ class FmtAlignTable(TableFormatter):
     """Set table alignment on page. Possible alignment paramters: left, center, right."""
 
     def __init__(self, alignment, rows=None, columns=None, apply_to_header_and_index=True):
-        super(FmtAlignTable, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
 
         if alignment == "center":
             self.TABLE_CSS = CSS_MARGIN_LEFT + "; " + CSS_MARGIN_RIGHT
@@ -570,7 +570,7 @@ class FmtHeatmap(TableFormatter):
         apply_to_header_and_index=False,
         cache=None,
     ):
-        super(FmtHeatmap, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.axis = axis
         self.min_color = min_color
         self.max_color = max_color
@@ -652,7 +652,7 @@ class FmtAppendTotalsRow(TableFormatter):
     ):
         self.row_name = row_name
         # Operate on all columns: Set self.columns to None
-        super(FmtAppendTotalsRow, self).__init__([row_name], None)
+        super().__init__([row_name], None)
 
         if total_columns is None:
             total_columns = []
@@ -719,7 +719,7 @@ class FmtAppendTotalsColumn(TableFormatter):
     ):
         self.column_name = column_name
         # Operate on all rows: Set self.rows to None
-        super(FmtAppendTotalsColumn, self).__init__(None, [column_name])
+        super().__init__(None, [column_name])
 
         if total_rows is None:
             total_rows = []
@@ -779,7 +779,7 @@ class FmtExpandMultiIndex(TableFormatter):
         level_text_colors=None,
     ):
         # Operate on all columns: Set self.columns to None
-        super(FmtExpandMultiIndex, self).__init__(None, None)
+        super().__init__(None, None)
 
         if total_columns is None:
             total_columns = []
@@ -884,7 +884,7 @@ class FmtAddCellPadding(TableFormatter):
         columns=None,
         apply_to_header_and_index=True,
     ):
-        super(FmtAddCellPadding, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.padding = {"left": left, "right": right, "top": top, "bottom": bottom}
         self.length_unit = length_unit
         return
@@ -914,7 +914,7 @@ class FmtAddCellBorder(TableFormatter):
         columns=None,
         apply_to_header_and_index=False,
     ):
-        super(FmtAddCellBorder, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         if each is not None:
             self.padding = {"left": each, "right": each, "top": each, "bottom": each}
         else:
@@ -955,7 +955,7 @@ class FmtFontFamily(TableFormatter):
     def __init__(
         self, font_family="Arial, Helvetica, sans-serif", rows=None, columns=None, apply_to_header_and_index=True
     ):
-        super(FmtFontFamily, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.font_family = font_family
         return
 
@@ -967,7 +967,7 @@ class FmtHideCells(TableFormatter):
     """Prevents rows and columns from being displayed, but they will still influence e.g. sum operations."""
 
     def __init__(self, rows=None, columns=None, apply_to_header_and_index=True, use_visibility=False):
-        super(FmtHideCells, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.use_visibility = use_visibility
         return
 
@@ -1017,7 +1017,7 @@ class FmtPageBreak(TableFormatter):
     """
 
     def __init__(self, no_break=True, repeat_header=True):
-        super(FmtPageBreak, self).__init__(None, None, False)
+        super().__init__(None, None, False)
         self.no_break = no_break
         self.repeat_header = repeat_header
         return
@@ -1054,7 +1054,7 @@ class FmtColumnMultiIndexBasic(TableFormatter):
     """
 
     def __init__(self, cell_css=None, index_col_css=None):
-        super(FmtColumnMultiIndexBasic, self).__init__([HEADER_ROW_NAME], None, True)
+        super().__init__([HEADER_ROW_NAME], None, True)
         self.cell_css = cell_css
         self.index_col_css = index_col_css
         # We have to use indices as cell values/column headers are not unique
@@ -1085,7 +1085,8 @@ class FmtColumnMultiIndexBasic(TableFormatter):
             n_items_in_df_header_row = self._calc_cells_per_row(data.df, self.row_index)
             if self.cells_per_row != n_items_in_df_header_row:
                 raise ValueError(
-                    f"Mismatch in row {self.row_index} for number of cells in cells_css({self.cells_per_row}) and df({n_items_in_df_header_row})"
+                    f"Mismatch in row {self.row_index} for number of cells in "
+                    f"cells_css({self.cells_per_row}) and df({n_items_in_df_header_row})"
                 )
 
         # Select the right value to return
@@ -1120,7 +1121,7 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
     """
 
     def __init__(self, row_css=None, index_col_css=None):
-        super(FmtColumnMultiIndexRows, self).__init__(cell_css=None, index_col_css=index_col_css)
+        super().__init__(cell_css=None, index_col_css=index_col_css)
         self.row_css = row_css
         return
 
@@ -1137,7 +1138,7 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
     def _create_cell_level_css(self, data):
         if self.cell_css is None:
             self._init_cell_css(data.df)
-        return super(FmtColumnMultiIndexRows, self)._create_cell_level_css(data)
+        return super()._create_cell_level_css(data)
 
 
 class FmtTruncateContentsWithEllipsis(TableFormatter):
@@ -1171,7 +1172,7 @@ class FmtHeatmapWithCenter(TableFormatter):
         apply_to_header_and_index=False,
         cache=None,
     ):
-        super(FmtHeatmapWithCenter, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
         self.axis = axis
         self.min_color = min_color
         self.max_color = max_color
@@ -1245,7 +1246,7 @@ class FmtHideInsignificant(TableFormatter):
     def __init__(
         self, rows: Optional[Any] = None, columns: Optional[Any] = None, apply_to_header_and_index: bool = True
     ) -> None:
-        super(FmtHideInsignificant, self).__init__(rows, columns, apply_to_header_and_index)
+        super().__init__(rows, columns, apply_to_header_and_index)
 
     def _modify_cell_content(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         try:

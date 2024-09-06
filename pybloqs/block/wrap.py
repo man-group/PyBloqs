@@ -14,7 +14,7 @@ class Box(BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        super(Box, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Blockify the content
         self._contents = Block(contents)

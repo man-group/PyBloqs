@@ -2,7 +2,6 @@
 Module for blocks with text-only content
 """
 
-import sys
 import textwrap
 
 import markdown
@@ -23,7 +22,7 @@ class Raw(BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        super(Raw, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         if not isinstance(contents, string_types):
             raise ValueError("Expected string content type but got %s", type(contents))
@@ -65,7 +64,4 @@ class Markdown(Raw):
     encoding = "UTF-8"
 
     def _process_raw_contents(self, contents):
-        if sys.version_info >= (3, 0):
-            return markdown.markdown(contents, output_format="html")
-        else:
-            return markdown.markdown(contents.decode(self.encoding), output_format="html").encode(self.encoding)
+        return markdown.markdown(contents, output_format="html")

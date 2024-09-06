@@ -133,9 +133,9 @@ class ImgBlock(BaseBlock):
             elif mime_type.lower() == "gif":
                 x, y = struct.unpack("<HH", data[6:10])
             else:
-                raise ValueError("Can't determine image dimensions for mime type %s" % mime_type)
+                raise ValueError(f"Can't determine image dimensions for mime type {mime_type}")
 
-            width, height = ("%spx" % x, "%spx" % y)
+            width, height = (f"{x}px", f"{y}px")
 
         if img_style is None:
             img_styles = {}
@@ -149,7 +149,7 @@ class ImgBlock(BaseBlock):
 
         self._img_styles = img_styles
 
-        super(ImgBlock, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _write_contents(self, container, *args, **kwargs):
         src = StringIO()
@@ -242,11 +242,11 @@ class PlotBlock(ImgBlock):
         if close_plot:
             plt.close(figure)
 
-        super(PlotBlock, self).__init__(img_data.getvalue(), _PLOT_MIME_TYPE, width=width, height=height, **kwargs)
+        super().__init__(img_data.getvalue(), _PLOT_MIME_TYPE, width=width, height=height, **kwargs)
 
     def _to_static(self):
         # Convert to a basic image block in case we contain 'dynamic' svg content
-        return ImgBlock(self) if self._mime_type == "svg" else super(PlotBlock, self)._to_static()
+        return ImgBlock(self) if self._mime_type == "svg" else super()._to_static()
 
 
 class PlotlyPlotBlock(BaseBlock):
@@ -264,7 +264,7 @@ class PlotlyPlotBlock(BaseBlock):
         """
         self.resource_deps = [JScript(script_string=po.offline.get_plotlyjs(), name="plotly")]
 
-        super(PlotlyPlotBlock, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         if not isinstance(contents, PlotlyFigure):
             raise ValueError("Expected plotly.graph_objs.graph_objs.Figure type but got %s", type(contents))
@@ -304,7 +304,7 @@ class BokehPlotBlock(BaseBlock):
         self.resource_deps = [JScript(script_string=s, name="bokeh_js") for s in JSResources().js_raw]
         self.resource_deps += [Css(css_string=s, name="bokeh_css") for s in CSSResources().css_raw]
 
-        super(BokehPlotBlock, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         if not isinstance(contents, BokehFigure):
             raise ValueError("Expected bokeh.plotting.figure.Figure type but got %s", type(contents))
