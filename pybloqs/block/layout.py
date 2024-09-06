@@ -9,7 +9,7 @@ from pybloqs.html import append_to
 from pybloqs.util import Cfg
 
 
-class CompositeBlockMixin(object):
+class CompositeBlockMixin:
     """
     Mixin to support composite blocks. Must have a `_contents` attribute!
     """

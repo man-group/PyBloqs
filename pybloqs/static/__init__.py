@@ -1,3 +1,4 @@
+import builtins
 import os
 from io import open
 
@@ -8,7 +9,7 @@ from pybloqs.html import css_elem, js_elem
 from pybloqs.util import encode_string
 
 
-class Resource(object):
+class Resource:
     def __init__(self, file_name=None, extension="", content_string=None, name=None):
         """
         An external script dependency definition.
@@ -26,7 +27,7 @@ class Resource(object):
             self.content_string = content_string
         else:
             self.name = os.path.splitext(file_name)[0]
-            with open(self._local_path(file_name, extension), encoding="utf-8") as f:
+            with builtins.open(self._local_path(file_name, extension), encoding="utf-8") as f:
                 self.content_string = f.read()
 
     @classmethod
@@ -71,7 +72,7 @@ class JScript(Resource):
 
         # Wrapper to make accidental multiple inclusion if the same code (e.g. with different file names) safe to load.
         sentinel_var_name = "_pybloqs_load_sentinel_{}".format(self.name.replace("-", "_"))
-        stream.write("if(typeof({}) == 'undefined'){{".format(sentinel_var_name))
+        stream.write(f"if(typeof({sentinel_var_name}) == 'undefined'){{")
 
         if self.encode:
             self.write_compressed(stream, self.content_string)
@@ -79,7 +80,7 @@ class JScript(Resource):
             stream.write(self.content_string)
 
         # Second part of wrapper
-        stream.write("{} = true;".format(sentinel_var_name))
+        stream.write(f"{sentinel_var_name} = true;")
         stream.write("}")
 
         return js_elem(parent, stream.getvalue())
@@ -109,7 +110,7 @@ class Css(Resource):
         return css_elem(parent, self.content_string)
 
 
-class DependencyTracker(object):
+class DependencyTracker:
     def __init__(self, *args):
         self._deps = list(args)
 

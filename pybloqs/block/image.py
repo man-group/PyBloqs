@@ -153,7 +153,7 @@ class ImgBlock(BaseBlock):
 
     def _write_contents(self, container, *args, **kwargs):
         src = StringIO()
-        mime = "data:image/{};base64,".format(self._mime_type)
+        mime = f"data:image/{self._mime_type};base64,"
         src.write(mime)
         src.write(self._img_data.decode())
 
@@ -236,8 +236,8 @@ class PlotBlock(ImgBlock):
 
         plt_width, plt_height = figure.get_size_inches()
 
-        width = width or "{:0.3f}in".format(plt_width)
-        height = height or "{:0.3f}in".format(plt_height)
+        width = width or f"{plt_width:0.3f}in"
+        height = height or f"{plt_height:0.3f}in"
 
         if close_plot:
             plt.close(figure)

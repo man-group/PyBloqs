@@ -2,8 +2,6 @@
 Common email related functions used by various reports.
 """
 
-from __future__ import absolute_import
-
 import base64
 import getpass
 import logging

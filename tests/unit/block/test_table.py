@@ -1,6 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pandas as pd
-from mock import MagicMock, patch
 
 import pybloqs.block.table as abt
 import pybloqs.block.table_formatters as abtf

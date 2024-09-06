@@ -23,7 +23,7 @@ class DataTablesCSSClass(TableFormatter):
         no_paging = " dt-no-paging" if self.paging is False else ""
         no_info = " dt-no-info" if self.info is False else ""
         no_searching = " dt-no-searching" if self.searching is False else ""
-        css = "blox_table compact row-border order-col stripe nowrap{}{}{}".format(no_paging, no_info, no_searching)
+        css = f"blox_table compact row-border order-col stripe nowrap{no_paging}{no_info}{no_searching}"
         return css
 
 

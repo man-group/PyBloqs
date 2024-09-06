@@ -37,7 +37,7 @@ CSS_FONTSTYLE = "font-style:"
 #
 
 
-class TableFormatter(object):
+class TableFormatter:
     """Base class for table formatters.
 
     Consists of hook functions, which are called by HTMLJinjaTableBlock
@@ -960,7 +960,7 @@ class FmtFontFamily(TableFormatter):
         return
 
     def _create_cell_level_css(self, data):
-        return "font-family: {}".format(self.font_family)
+        return f"font-family: {self.font_family}"
 
 
 class FmtHideCells(TableFormatter):
@@ -1085,9 +1085,7 @@ class FmtColumnMultiIndexBasic(TableFormatter):
             n_items_in_df_header_row = self._calc_cells_per_row(data.df, self.row_index)
             if self.cells_per_row != n_items_in_df_header_row:
                 raise ValueError(
-                    "Mismatch in row {} for number of cells in cells_css({}) and df({})".format(
-                        self.row_index, self.cells_per_row, n_items_in_df_header_row
-                    )
+                    f"Mismatch in row {self.row_index} for number of cells in cells_css({self.cells_per_row}) and df({n_items_in_df_header_row})"
                 )
 
         # Select the right value to return

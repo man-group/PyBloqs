@@ -1,7 +1,7 @@
 import sys
+from unittest.mock import patch
 
 import pytest
-from mock import patch
 
 
 def test_missing_matplotlib_raises_error():

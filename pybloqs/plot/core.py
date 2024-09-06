@@ -27,7 +27,7 @@ HIGHCHARTS_PYBLOQS = "highcharts-pybloqs"
 HIGHCHARTS_ALL = [HIGHCHARTS_MAIN, *HIGHCHARTS_MODULES, HIGHCHARTS_PYBLOQS]
 
 
-class Expr(object):
+class Expr:
     """
     Represents a javascript expression as a string.
     """
@@ -654,7 +654,7 @@ Candlestick = _make_plot_opts("candlestick", 4)
 Ohlc = _make_plot_opts("ohlc", 4)
 
 
-class ChartPeriods(object):
+class ChartPeriods:
     second = 1000
     minute = 60 * second
     hour = 60 * minute

@@ -46,12 +46,12 @@ class ChromeHeadlessConverter(HTMLConverter):
         # For compatibility with wkhtmltopdf handle spacing that is passed as number to be in mm.
         if header_spacing is not None and header_block is not None:
             if isinstance(header_spacing, Number):
-                header_block._settings.height = "{}mm".format(header_spacing)
+                header_block._settings.height = f"{header_spacing}mm"
             else:
                 header_block._settings.height = header_spacing
         if footer_spacing is not None and footer_block is not None:
             if isinstance(footer_spacing, Number):
-                footer_block._settings.height = "{}mm".format(footer_spacing)
+                footer_block._settings.height = f"{footer_spacing}mm"
             else:
                 footer_block._settings.height = footer_spacing
         content = block.render_html(static_output=True, header_block=header_block, footer_block=footer_block)
@@ -67,7 +67,7 @@ class ChromeHeadlessConverter(HTMLConverter):
                 "false" if orientation == PORTRAIT else "true",
                 "--format",
                 pdf_page_size,
-                "file://{}".format(html_filename),
+                f"file://{html_filename}",
                 output_file,
             ]
         )

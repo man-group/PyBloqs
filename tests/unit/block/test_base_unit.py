@@ -1,7 +1,7 @@
 import os
+from unittest.mock import ANY, mock_open, patch
 
 import pytest
-from mock import ANY, mock_open, patch
 
 import pybloqs.block.base as bbase
 import pybloqs.config as config
