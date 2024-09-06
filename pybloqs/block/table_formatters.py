@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import numpy as np
 import pandas as pd
-from six import iteritems, string_types
 
 from pybloqs.block import colors as colors
 
@@ -299,7 +298,7 @@ class FmtMultiplyCellValue(TableFormatter):
         """Divide cell value by number"""
         if (
             data.row_name == HEADER_ROW_NAME
-            and isinstance(data.cell, string_types)
+            and isinstance(data.cell, str)
             and (self.columns is None or data.column_name in self.columns)
         ):
             return data.cell + self.suffix
@@ -891,7 +890,7 @@ class FmtAddCellPadding(TableFormatter):
 
     def _create_cell_level_css(self, data):
         css_substrings = []
-        for side, value in iteritems(self.padding):
+        for side, value in self.padding.items():
             if value is not None:
                 css_substrings.append("padding-" + side + ":" + str(value) + self.length_unit)
         return "; ".join(css_substrings)
@@ -926,7 +925,7 @@ class FmtAddCellBorder(TableFormatter):
 
     def _create_cell_level_css(self, data):
         css_substrings = []
-        for side, value in iteritems(self.padding):
+        for side, value in self.padding.items():
             if value is not None:
                 css_substrings.append(
                     "border-"

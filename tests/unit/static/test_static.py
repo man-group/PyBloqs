@@ -2,7 +2,7 @@ import os
 from unittest.mock import mock_open, patch
 
 import pytest
-from six import StringIO
+from io import StringIO
 
 import pybloqs.static as ps
 

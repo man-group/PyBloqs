@@ -2,7 +2,7 @@ import builtins
 import os
 
 from pkg_resources import resource_filename
-from six import StringIO
+from io import StringIO
 
 from pybloqs.html import css_elem, js_elem
 from pybloqs.util import encode_string

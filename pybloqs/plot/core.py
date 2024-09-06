@@ -1,19 +1,15 @@
 from datetime import datetime
+from io import StringIO
 
 import numpy as np
 import pandas as pd
 from pandas.core.generic import NDFrame
-from six import PY3, StringIO, iteritems, text_type
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.image import ImgBlock
 from pybloqs.html import append_to, js_elem
 from pybloqs.static import JScript
 from pybloqs.util import Cfg, camelcase, dt_epoch_msecs, np_dt_epoch_msec
-
-if PY3:
-    long = int
-
 
 # Sets of plots based on dimensionality
 _univariate_plots = {"area", "areaspline", "column", "flags", "line", "scatter", "spline", "pie", "gauge", "funnel"}
@@ -277,8 +273,8 @@ class Plot(BaseBlock):
         def _decompose_l2(cfg):
             component_series = []
 
-            for k1, v1 in iteritems(data):
-                for k2, v2 in iteritems(v1):
+            for k1, v1 in data.items():
+                for k2, v2 in v1.items():
                     component_series.append(cfg.override_many(data=v2).inherit_many(name=f"{k1} - {k2}"))
 
             return component_series
@@ -410,14 +406,14 @@ class Plot(BaseBlock):
             stream.write(str(dt_epoch_msecs(value)))
         elif isinstance(value, (bool, np.bool_)):
             stream.write("true" if value else "false")
-        elif isinstance(value, (int, long, float, np.number)):
+        elif isinstance(value, (int, int, float, np.number)):
             if np.isnan(value) or np.isinf(value):
                 stream.write("null")
             else:
                 stream.write(str(value))
         elif isinstance(value, str):
             stream.write("'" + value + "'")
-        elif isinstance(value, text_type):
+        elif isinstance(value, str):
             stream.write("'" + str(value) + "'")
         elif isinstance(value, dict):
             self._write_dict(stream, value)
@@ -455,7 +451,7 @@ class Plot(BaseBlock):
         Write out a dictionary.
         """
         stream.write("{")
-        for i, item in enumerate(iteritems(dct)):
+        for i, item in enumerate(dct.items()):
             # If this is not the first item at this level, prepend a comma
             if i > 0:
                 stream.write(",")

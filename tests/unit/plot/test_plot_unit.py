@@ -1,7 +1,8 @@
+from io import StringIO
+
 import pytest
 from numpy import nan
 from pandas import Index, Series
-from six import StringIO
 
 from pybloqs.plot import Plot
 

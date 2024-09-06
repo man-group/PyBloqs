@@ -1,4 +1,4 @@
-from six import StringIO
+from io import StringIO
 
 import pybloqs.static as static
 from pybloqs.plot.core import *  # noqa: F403

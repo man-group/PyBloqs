@@ -1,7 +1,5 @@
 from collections.abc import Iterable
 
-from six import string_types
-
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
 
@@ -55,7 +53,7 @@ def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cf
 
     # Try some additional transformations if no suitable mapping found
     if block_cls is None:
-        if isinstance(contents, string_types):
+        if isinstance(contents, str):
             block_cls = Raw
         elif isinstance(contents, BaseBlock):
             # If there is no title, there is no point to wrap the existing block

@@ -2,11 +2,11 @@ import base64
 import struct
 import tempfile
 from contextlib import contextmanager
+from io import BytesIO, StringIO
 
 import matplotlib.pyplot as plt
 from matplotlib.artist import Artist
 from matplotlib.figure import Figure
-from six import BytesIO, StringIO
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types

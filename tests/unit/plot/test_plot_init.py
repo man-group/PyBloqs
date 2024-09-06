@@ -1,6 +1,5 @@
+from io import StringIO
 from unittest.mock import Mock, patch
-
-from six import StringIO
 
 import pybloqs.plot as pp
 

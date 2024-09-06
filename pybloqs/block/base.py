@@ -3,9 +3,8 @@ import contextlib
 import os
 import uuid
 import webbrowser
+from io import BytesIO
 from urllib.parse import urljoin
-
-from six import BytesIO
 
 import pybloqs.htmlconv as htmlconv
 from pybloqs.config import user_config

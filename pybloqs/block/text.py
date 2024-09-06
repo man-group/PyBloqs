@@ -5,7 +5,6 @@ Module for blocks with text-only content
 import textwrap
 
 import markdown
-from six import string_types
 
 from pybloqs import BaseBlock
 from pybloqs.html import parse
@@ -24,7 +23,7 @@ class Raw(BaseBlock):
         """
         super().__init__(**kwargs)
 
-        if not isinstance(contents, string_types):
+        if not isinstance(contents, str):
             raise ValueError("Expected string content type but got %s", type(contents))
 
         if dedent:

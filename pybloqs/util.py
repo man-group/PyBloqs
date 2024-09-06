@@ -4,24 +4,19 @@ import itertools
 import re
 import zlib
 
-from six import PY3, iteritems, iterkeys
-
-if PY3:
-    long = int
-
 
 def dt_epoch_msecs(value):
     """
     Calculate miliseconds since epoch start for python datetimes.
     """
-    return long(calendar.timegm(value.timetuple())) * 1000
+    return int(calendar.timegm(value.timetuple())) * 1000
 
 
 def np_dt_epoch_msec(value):
     """
     Calculate miliseconds since epoch start for numpy datetimes.
     """
-    return value.astype(long) / 1000
+    return value.astype(int) / 1000
 
 
 def encode_string(string, level=9):
@@ -62,7 +57,7 @@ def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v:
 
     Underscores are replaced with dashes and values are converted to lower case.
     """
-    return separator.join([f"{key_transform(key)}:{value_transform(value)}" for key, value in iteritems(cfg)])
+    return separator.join([f"{key_transform(key)}:{value_transform(value)}" for key, value in cfg.items()])
 
 
 def cfg_to_css_string(cfg):
@@ -113,7 +108,7 @@ class Cfg(dict):
 
     @staticmethod
     def _mergedicts(dict1, dict2, take_second):
-        for k in set(itertools.chain(iterkeys(dict1), iterkeys(dict2))):
+        for k in set(itertools.chain(dict1.keys(), dict2.keys())):
             if k in dict1 and k in dict2:
                 v1 = dict1[k]
                 v2 = dict2[k]
