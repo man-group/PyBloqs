@@ -1,4 +1,3 @@
-import builtins
 import os
 
 from pkg_resources import resource_filename
@@ -26,7 +25,7 @@ class Resource:
             self.content_string = content_string
         else:
             self.name = os.path.splitext(file_name)[0]
-            with builtins.open(self._local_path(file_name, extension), encoding="utf-8") as f:
+            with open(self._local_path(file_name, extension), encoding="utf-8") as f:
                 self.content_string = f.read()
 
     @classmethod
