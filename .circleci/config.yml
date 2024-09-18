@@ -38,6 +38,7 @@ defaults: &defaults
          pip install lxml
          pip install coveralls
          pip install ruff
+         pip install pytest pytest-cov
          pip install -r docs/source/requirements.txt
          python setup.py install  --highcharts=node_modules/highcharts/,node_modules/highcharts/modules/ --wkhtmltopdf=wkhtmltox/bin
          python setup.py load_highcharts  --highcharts=node_modules/highcharts/,node_modules/highcharts/modules
