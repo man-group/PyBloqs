@@ -32,7 +32,6 @@ defaults: &defaults
          virtualenv ci
          . ci/bin/activate
          pip install jsmin
-         pip install six
          pip install numpy
          pip install bokeh
          pip install plotly
