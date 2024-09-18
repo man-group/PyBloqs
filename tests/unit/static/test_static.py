@@ -1,8 +1,8 @@
 import os
+from io import StringIO
 from unittest.mock import mock_open, patch
 
 import pytest
-from io import StringIO
 
 import pybloqs.static as ps
 

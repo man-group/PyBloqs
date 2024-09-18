@@ -1,7 +1,7 @@
 import os
+from io import StringIO
 
 from pkg_resources import resource_filename
-from io import StringIO
 
 from pybloqs.html import css_elem, js_elem
 from pybloqs.util import encode_string
