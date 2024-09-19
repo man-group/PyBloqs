@@ -1,7 +1,7 @@
 [project]
 description = "Data Visualization and Report Building"
 name = "pybloqs"
-version = "1.2.14"
+requires-python = ">= 3.6"
 authors = [{ name = "Man Alpha Technology", email = "ManAlphaTech@man.com" }]
 keywords = ["ahl", "pdf", "html", "visualization", "report"]
 classifiers = [
