@@ -25,7 +25,7 @@ dependencies = [
   "pyyaml",
   "jinja2",
 ]
-dynamic = ['readme']
+dynamic = ['readme', 'version']
 
 [project.optional-dependencies]
 docs_and_notebook = [
@@ -42,7 +42,7 @@ tests = ["mock", "pytest", "pytest-cov"]
 Homepage = "https://github.com/man-group/pybloqs"
 
 [build-system]
-requires = ["setuptools", "pypandoc<1.8", "jsmin"]
+requires = ["setuptools", "pypandoc<1.8", "jsmin", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -53,6 +53,7 @@ packages = ["pybloqs"]
 "pybloqs.jinja" = ["table.html"]
 "pybloqs.htmlconv" = ["*.js"]
 
+[tool.setuptools_scm]
 
 [tool.ruff]
 line-length = 120
