@@ -40,6 +40,9 @@ tests = ["mock", "pytest", "pytest-cov"]
 
 [project.urls]
 Homepage = "https://github.com/man-group/pybloqs"
+Repository = "https://github.com/man-group/pybloqs"
+Documentation = "https://pybloqsmain.readthedocs.io/en/latest/"
+Changelog = "https://github.com/man-group/PyBloqs/blob/master/CHANGES.md"
 
 [build-system]
 requires = ["setuptools", "pypandoc<1.8", "jsmin", "setuptools_scm>=8"]
