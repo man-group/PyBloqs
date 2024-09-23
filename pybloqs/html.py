@@ -2,7 +2,6 @@ import uuid
 from functools import partial
 
 import bs4
-from six import text_type
 
 # Use the default python parser as this is lenient and does not
 # wrap content in extra tags
@@ -46,7 +45,7 @@ def render(item, pretty=True, encoding="utf8"):
     :param pretty: Toggles pretty formatting of the resulting string.
     :return: Rendered content.
     """
-    return item.prettify(encoding=encoding).decode("utf8") if pretty else text_type(item)
+    return item.prettify(encoding=encoding).decode("utf8") if pretty else str(item)
 
 
 def append_to(parent, tag, **kwargs):

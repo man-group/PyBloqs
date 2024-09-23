@@ -1,15 +1,13 @@
 import copy
 import math
 
-from six.moves import range
-
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import Block, add_block_types
 from pybloqs.html import append_to
 from pybloqs.util import Cfg
 
 
-class CompositeBlockMixin(object):
+class CompositeBlockMixin:
     """
     Mixin to support composite blocks. Must have a `_contents` attribute!
     """
@@ -72,7 +70,7 @@ class Flow(CompositeBlockMixin, BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        super(Flow, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self._contents = self._blockify_contents(contents, kwargs, self._settings.title_level)
         self._cascade_cfg = cascade_cfg
@@ -96,7 +94,7 @@ class VStack(CompositeBlockMixin, BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        super(VStack, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self._contents = self._blockify_contents(contents, kwargs, self._settings.title_level)
         self._cascade_cfg = cascade_cfg
@@ -122,7 +120,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        super(Grid, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self._contents = self._blockify_contents(contents, kwargs, self._settings.title_level)
         self._cols = cols
@@ -152,7 +150,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
                     if item_count >= content_count:
                         break
 
-                    cell_el = append_to(row_el, "div", style="width:%f%%;float:left;" % cell_width)
+                    cell_el = append_to(row_el, "div", style=f"width:{cell_width:f}%;float:left;")
                     cell_el["class"] = ["pybloqs-grid-cell"]
 
                     self._contents[item_count]._write_block(
@@ -178,7 +176,7 @@ class HStack(Grid):
                        It is also useful in case a styling parameter name clashes with a standard
                        block parameter.
         """
-        super(HStack, self).__init__(contents, cascade_cfg=cascade_cfg, **kwargs)
+        super().__init__(contents, cascade_cfg=cascade_cfg, **kwargs)
 
         # Set the column count here because the contents can be processed by mixins/superclasses
         self._cols = len(self._contents)

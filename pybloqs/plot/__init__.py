@@ -1,4 +1,4 @@
-from six import StringIO
+from io import StringIO
 
 import pybloqs.static as static
 from pybloqs.plot.core import *  # noqa: F403
@@ -16,19 +16,19 @@ def add_highcharts_shim_to_stream(stream, highcharts_all):
     )
     for lib_name, lib_name_lower in zip(highcharts_all[:-1], highcharts_lower[:-1]):
         stream.write(
-            """
+            f"""
             require.undef("highcharts/{lib_name_lower}");
             define('highcharts/{lib_name_lower}', function(require, exports, module) {{
-                {script}
+                {static.JScript(lib_name).content_string}
             }});
-            """.format(lib_name_lower=lib_name_lower, script=static.JScript(lib_name).content_string)
+            """
         )
     stream.write(
         """
         require([{require_names}], function({param_names}) {{
             Highcharts = {highcharts};
         """.format(
-            require_names=", ".join("'highcharts/{}'".format(m) for m in highcharts_lower[:-1]),
+            require_names=", ".join(f"'highcharts/{m}'" for m in highcharts_lower[:-1]),
             param_names=", ".join(highcharts_lower[:-1]),
             highcharts=highcharts_lower[0],
         )

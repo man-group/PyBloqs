@@ -21,4 +21,4 @@ def get_converter(file_type, **kwargs):
         converter_name = user_config["image_converter"]
         return IMAGE_CONVERTERS[converter_name](**kwargs)
     else:
-        raise ValueError("No converter defined for file type: {}".format(file_type))
+        raise ValueError(f"No converter defined for file type: {file_type}")

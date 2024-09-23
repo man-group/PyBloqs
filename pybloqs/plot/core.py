@@ -1,20 +1,15 @@
 from datetime import datetime
+from io import StringIO
 
 import numpy as np
 import pandas as pd
 from pandas.core.generic import NDFrame
-from six import PY3, StringIO, iteritems, text_type
-from six.moves import range
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.image import ImgBlock
 from pybloqs.html import append_to, js_elem
 from pybloqs.static import JScript
 from pybloqs.util import Cfg, camelcase, dt_epoch_msecs, np_dt_epoch_msec
-
-if PY3:
-    long = int
-
 
 # Sets of plots based on dimensionality
 _univariate_plots = {"area", "areaspline", "column", "flags", "line", "scatter", "spline", "pie", "gauge", "funnel"}
@@ -27,7 +22,7 @@ HIGHCHARTS_PYBLOQS = "highcharts-pybloqs"
 HIGHCHARTS_ALL = [HIGHCHARTS_MAIN, *HIGHCHARTS_MODULES, HIGHCHARTS_PYBLOQS]
 
 
-class Expr(object):
+class Expr:
     """
     Represents a javascript expression as a string.
     """
@@ -39,7 +34,7 @@ class Expr(object):
         stream.write(self.fun_str)
 
     def __repr__(self):
-        return "Expr('''%s''')" % self.fun_str
+        return f"Expr('''{self.fun_str}''')"
 
 
 class _PlotDim(Expr):
@@ -109,7 +104,7 @@ class Plot(BaseBlock):
         flatten = kwargs.pop("flatten", False)
         switch_zy = kwargs.pop("switch_zy", False)
 
-        super(Plot, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         chart_cfg, plot_cfg = self._parse_args(args)
 
@@ -258,7 +253,7 @@ class Plot(BaseBlock):
             elif isinstance(arg, allowed_cfg_types):
                 configs = configs.inherit(arg)
             else:
-                raise ValueError("%s is not recognized as a plot or chart configuration object" % arg)
+                raise ValueError(f"{arg} is not recognized as a plot or chart configuration object")
         return configs, plot_cfg
 
     @staticmethod
@@ -278,9 +273,9 @@ class Plot(BaseBlock):
         def _decompose_l2(cfg):
             component_series = []
 
-            for k1, v1 in iteritems(data):
-                for k2, v2 in iteritems(v1):
-                    component_series.append(cfg.override_many(data=v2).inherit_many(name="%s - %s" % (k1, k2)))
+            for k1, v1 in data.items():
+                for k2, v2 in v1.items():
+                    component_series.append(cfg.override_many(data=v2).inherit_many(name=f"{k1} - {k2}"))
 
             return component_series
 
@@ -362,9 +357,9 @@ class Plot(BaseBlock):
 
         if static_output:
             # Chart load wait handles for static output.
-            stream.write("registerWaitHandle('%s');" % container_id)
+            stream.write(f"registerWaitHandle('{container_id}');")
             overrides = [
-                Chart(Events(load=Expr("function(){setLoaded('%s');}" % container_id))),
+                Chart(Events(load=Expr(f"function(){{setLoaded('{container_id}');}}"))),
                 Exporting(enabled=False),
                 Navigator(enabled=False),
                 Scrollbar(enabled=False),
@@ -375,12 +370,9 @@ class Plot(BaseBlock):
             chart_cfg = chart_cfg.override_many(*overrides)
 
         stream.write(
-            (
-                "var %s=setInterval(function(){"
-                "var container=document.getElementById('%s');"
-                "if(container){clearInterval(%s);"
-            )
-            % (js_timer_var_name, container_id, js_timer_var_name)
+            f"var {js_timer_var_name}=setInterval(function(){{"
+            f"var container=document.getElementById('{container_id}');"
+            f"if(container){{clearInterval({js_timer_var_name});"
         )
 
         # Write out the chart script into a separate buffer before running it through
@@ -414,14 +406,14 @@ class Plot(BaseBlock):
             stream.write(str(dt_epoch_msecs(value)))
         elif isinstance(value, (bool, np.bool_)):
             stream.write("true" if value else "false")
-        elif isinstance(value, (int, long, float, np.number)):
+        elif isinstance(value, (int, int, float, np.number)):
             if np.isnan(value) or np.isinf(value):
                 stream.write("null")
             else:
                 stream.write(str(value))
         elif isinstance(value, str):
             stream.write("'" + value + "'")
-        elif isinstance(value, text_type):
+        elif isinstance(value, str):
             stream.write("'" + str(value) + "'")
         elif isinstance(value, dict):
             self._write_dict(stream, value)
@@ -459,7 +451,7 @@ class Plot(BaseBlock):
         Write out a dictionary.
         """
         stream.write("{")
-        for i, item in enumerate(iteritems(dct)):
+        for i, item in enumerate(dct.items()):
             # If this is not the first item at this level, prepend a comma
             if i > 0:
                 stream.write(",")
@@ -573,7 +565,7 @@ class _PlotOpts(Cfg):
 def _make_plot_opts(plot_type, rank):
     class _SpecPlotOpts(_PlotOpts):
         def __init__(self, *args, **kwargs):
-            super(_SpecPlotOpts, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
             self.type = plot_type
 
         def check_array_shape(self, arr, is_labelled):
@@ -595,8 +587,8 @@ def _make_plot_opts(plot_type, rank):
 
             if minor_axis_length < rank:
                 raise ValueError(
-                    "Supplied array length for plot type %s must be %s on the minor axis (got %s)."
-                    % (self.type, rank, minor_axis_length)
+                    f"Supplied array length for plot type {self.type} must be "
+                    f"{rank} on the minor axis (got {minor_axis_length})."
                 )
 
     return _SpecPlotOpts
@@ -654,7 +646,7 @@ Candlestick = _make_plot_opts("candlestick", 4)
 Ohlc = _make_plot_opts("ohlc", 4)
 
 
-class ChartPeriods(object):
+class ChartPeriods:
     second = 1000
     minute = 60 * second
     hour = 60 * minute

@@ -1,10 +1,9 @@
-# This Python file uses the following encoding: utf-8
 import sys
 from email.message import Message
+from unittest.mock import ANY, MagicMock, call, patch, sentinel
 
 import pytest
 import yaml
-from mock import ANY, MagicMock, call, patch, sentinel
 
 import pybloqs
 

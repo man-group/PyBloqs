@@ -31,7 +31,7 @@ def assert_report_generated(func=None, fmt="html", **kwargs):
         block = func()
         tmp_file = block.save(fmt=fmt, **kwargs)
 
-        assert os.path.getsize(tmp_file) > 1000, "File {} should not be empty.".format(tmp_file)
+        assert os.path.getsize(tmp_file) > 1000, f"File {tmp_file} should not be empty."
 
         if fmt.lower() == "pdf":
             if sys.platform == "darwin":

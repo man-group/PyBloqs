@@ -14,7 +14,7 @@ from pybloqs.static import Css, JScript
 
 class DataTablesCSSClass(TableFormatter):
     def __init__(self, paging=True, searching=True, info=True):
-        super(DataTablesCSSClass, self).__init__()
+        super().__init__()
         self.paging = paging
         self.searching = searching
         self.info = info
@@ -23,7 +23,7 @@ class DataTablesCSSClass(TableFormatter):
         no_paging = " dt-no-paging" if self.paging is False else ""
         no_info = " dt-no-info" if self.info is False else ""
         no_searching = " dt-no-searching" if self.searching is False else ""
-        css = "blox_table compact row-border order-col stripe nowrap{}{}{}".format(no_paging, no_info, no_searching)
+        css = f"blox_table compact row-border order-col stripe nowrap{no_paging}{no_info}{no_searching}"
         return css
 
 
@@ -49,4 +49,4 @@ class DataTablesHTMLJinjaTableBlock(HTMLJinjaTableBlock):
                 fmt_page_break,
                 fmt_decimals_2,
             ]
-        super(DataTablesHTMLJinjaTableBlock, self).__init__(df, formatters, use_default_formatters, **kwargs)
+        super().__init__(df, formatters, use_default_formatters, **kwargs)

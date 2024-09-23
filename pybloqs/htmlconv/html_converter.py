@@ -3,7 +3,6 @@ import os
 import subprocess
 import sys
 from abc import ABCMeta, abstractmethod
-from io import open
 
 from pybloqs.config import user_config
 
@@ -14,7 +13,7 @@ LANDSCAPE = "Landscape"
 A4 = "A4"
 
 
-class HTMLConverter(object):
+class HTMLConverter:
     """
     Definition of interface for HTML to X converters
     """
@@ -41,7 +40,7 @@ class HTMLConverter(object):
 
         if proc.returncode != 0:
             raise ValueError(
-                "{} returned:\n stdout:{}\n stderr:{}".format(cmd, output, errors),
+                f"{cmd} returned:\n stdout:{output}\n stderr:{errors}",
             )
         else:
             logger.info("Returned:\n stdout: %s\n stderr:%s", output, errors)
@@ -62,7 +61,7 @@ class HTMLConverter(object):
             for f in temp_files:
                 try:
                     os.remove(f)
-                except (IOError, OSError):
+                except OSError:
                     logger.exception("Failed to remove a temporary file: %s.", f)
 
     @abstractmethod

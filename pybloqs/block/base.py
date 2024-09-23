@@ -2,10 +2,8 @@ import contextlib
 import os
 import uuid
 import webbrowser
-from io import open
-
-from six import BytesIO
-from six.moves.urllib.parse import urljoin
+from io import BytesIO
+from urllib.parse import urljoin
 
 import pybloqs.htmlconv as htmlconv
 from pybloqs.config import user_config
@@ -18,7 +16,7 @@ default_css_main = Css(os.path.join("css", "pybloqs_default", "main"))
 register_interactive(default_css_main)
 
 
-class BaseBlock(object):
+class BaseBlock:
     """
     Base class for all blocks. Provides infrastructure for rendering the block
     in an IPython Notebook or saving it to disk in HTML, PDF, PNG or JPG format.
@@ -414,7 +412,7 @@ class BaseBlock(object):
         if self._settings.title is not None and (self._settings.title != ""):
             title = append_to(
                 container,
-                "H%s" % self._settings.title_level,
+                f"H{self._settings.title_level}",
                 style="white-space: %s" % ("normal" if self._settings.title_wrap else "nowrap"),
             )
             title.string = self._settings.title

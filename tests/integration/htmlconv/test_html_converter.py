@@ -2,12 +2,10 @@ import logging
 import os
 import subprocess
 import uuid
-from io import open
+from unittest.mock import Mock, patch
 
 import numpy as np
 import pytest
-from mock import Mock, patch
-from six import text_type
 
 import pybloqs as p
 from pybloqs.htmlconv.html_converter import LANDSCAPE, HTMLConverter
@@ -41,10 +39,10 @@ def test_write_html_to_tempfile():
     block._id = "test_id"
     content = "dummy"
 
-    file_name = HTMLConverter.write_html_to_tempfile(block, text_type(content))
+    file_name = HTMLConverter.write_html_to_tempfile(block, str(content))
     assert os.path.split(file_name)[-1].startswith("test_id")
     assert file_name.endswith("html")
-    with open(file_name, "r") as f:
+    with open(file_name) as f:
         assert f.read() == content
 
     # Cleanup

@@ -1,14 +1,13 @@
 import os
-from io import open
+from io import StringIO
 
 from pkg_resources import resource_filename
-from six import StringIO
 
 from pybloqs.html import css_elem, js_elem
 from pybloqs.util import encode_string
 
 
-class Resource(object):
+class Resource:
     def __init__(self, file_name=None, extension="", content_string=None, name=None):
         """
         An external script dependency definition.
@@ -63,7 +62,7 @@ class JScript(Resource):
         :param name: Unique label used to identify duplicates. Only required with script_string.
         :param encode: Whether to compress and base64 encode the script.
         """
-        super(JScript, self).__init__(file_name, "js", script_string, name)
+        super().__init__(file_name, "js", script_string, name)
         self.encode = encode
 
     def write(self, parent=None):
@@ -71,7 +70,7 @@ class JScript(Resource):
 
         # Wrapper to make accidental multiple inclusion if the same code (e.g. with different file names) safe to load.
         sentinel_var_name = "_pybloqs_load_sentinel_{}".format(self.name.replace("-", "_"))
-        stream.write("if(typeof({}) == 'undefined'){{".format(sentinel_var_name))
+        stream.write(f"if(typeof({sentinel_var_name}) == 'undefined'){{")
 
         if self.encode:
             self.write_compressed(stream, self.content_string)
@@ -79,7 +78,7 @@ class JScript(Resource):
             stream.write(self.content_string)
 
         # Second part of wrapper
-        stream.write("{} = true;".format(sentinel_var_name))
+        stream.write(f"{sentinel_var_name} = true;")
         stream.write("}")
 
         return js_elem(parent, stream.getvalue())
@@ -103,13 +102,13 @@ class Css(Resource):
         :param css_string: CSS provided as unicode string.
         :param name: Unique label used to identify duplicates. Only required with script_string.
         """
-        super(Css, self).__init__(file_name, "css", css_string, name)
+        super().__init__(file_name, "css", css_string, name)
 
     def write(self, parent=None):
         return css_elem(parent, self.content_string)
 
 
-class DependencyTracker(object):
+class DependencyTracker:
     def __init__(self, *args):
         self._deps = list(args)
 

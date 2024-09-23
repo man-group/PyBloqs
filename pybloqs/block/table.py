@@ -32,7 +32,7 @@ class HTMLJinjaTableBlock(BaseBlock):
         formatters: 'list'
             List of formatters, which are objects inheriting from TableFormatter class.
         """
-        super(HTMLJinjaTableBlock, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         if formatters is None:
             formatters = []
         if use_default_formatters:

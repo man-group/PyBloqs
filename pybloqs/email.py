@@ -2,8 +2,6 @@
 Common email related functions used by various reports.
 """
 
-from __future__ import absolute_import
-
 import base64
 import getpass
 import logging
@@ -84,7 +82,7 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
         src = img_tag.getAttribute("src")
         # Embedded images need special treatment
         if src.startswith("data:image"):
-            name = "%s_embedded" % idx
+            name = f"{idx}_embedded"
 
             hdr = "data:image/"
             hdr_index = src.index(hdr) + len(hdr)
@@ -99,7 +97,7 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
             img_data = base64.b64decode(imgdef[(imgdef.index("base64,") + 7) :])
         else:
             # get a unique name for the image
-            name = "%s_%s" % (idx, os.path.basename(src))
+            name = f"{idx}_{os.path.basename(src)}"
 
             with open(src, "rb") as fp:
                 img_data = fp.read()
@@ -110,7 +108,7 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
         img_mimes.append(img_mime)
 
         # replace the path with the embedded image
-        img_tag.setAttribute("src", "cid:%s" % name)
+        img_tag.setAttribute("src", f"cid:{name}")
 
         idx += 1
 

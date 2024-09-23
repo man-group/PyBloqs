@@ -77,9 +77,7 @@ class LoadHighcharts(Command):
     def finalize_options(self):
         assert self.highcharts is not None, "Please provide --highcharts parameter"
         self.ensure_string_list("highcharts")
-        self.highcharts = [
-            os.path.abspath(os.path.expanduser(p)) for p in self.highcharts
-        ]
+        self.highcharts = [os.path.abspath(os.path.expanduser(p)) for p in self.highcharts]
 
     def copy_hc_files(self):
         dest_path = os.path.join("pybloqs", "static")
@@ -125,9 +123,7 @@ class PyBloqsInstall(install):
         install.finalize_options(self)
         self.ensure_string_list("highcharts")
         if self.highcharts is not None:
-            self.highcharts = [
-                os.path.abspath(os.path.expanduser(p)) for p in self.highcharts
-            ]
+            self.highcharts = [os.path.abspath(os.path.expanduser(p)) for p in self.highcharts]
 
     def copy_hc_files(self):
         dest_path = os.path.join(self.build_lib, "pybloqs", "static")
@@ -139,9 +135,7 @@ class PyBloqsInstall(install):
             jsmin,
         )  # Lazy load to give setup machinery a chance to download dependency
 
-        for dir_name, _, files in os.walk(
-            os.path.join("build", "lib", "pybloqs", "static")
-        ):
+        for dir_name, _, files in os.walk(os.path.join("build", "lib", "pybloqs", "static")):
             for f in files:
                 if f.lower().endswith(".js"):
                     file_name = os.path.join(dir_name, f)
@@ -174,18 +168,12 @@ class PyTest(TestCommand):
         self.test_suite = True
 
     def run_tests(self):
-        logging.basicConfig(
-            format="%(asctime)s %(levelname)s %(name)s %(message)s", level="DEBUG"
-        )
+        logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level="DEBUG")
 
         # import here, cause outside the eggs aren't loaded
         import pytest
 
-        args = (
-            [self.pytest_args]
-            if isinstance(self.pytest_args, str)
-            else list(self.pytest_args)
-        )
+        args = [self.pytest_args] if isinstance(self.pytest_args, str) else list(self.pytest_args)
         args.extend(
             [
                 "--cov",
