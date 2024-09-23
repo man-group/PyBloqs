@@ -1,4 +1,3 @@
-import builtins
 import logging
 import os
 import subprocess
@@ -43,7 +42,7 @@ def test_write_html_to_tempfile():
     file_name = HTMLConverter.write_html_to_tempfile(block, str(content))
     assert os.path.split(file_name)[-1].startswith("test_id")
     assert file_name.endswith("html")
-    with builtins.open(file_name) as f:
+    with open(file_name) as f:
         assert f.read() == content
 
     # Cleanup
@@ -93,17 +92,17 @@ def test_pdf_converter_output(converter_name):
 def test_image_output():
     block = p.Block("Lorem ipsum")
     png_file = block.save(fmt="png")
-    with builtins.open(png_file, "rb") as f:
+    with open(png_file, "rb") as f:
         raw_data = f.read()
     assert raw_data[1:4] == b"PNG"
 
     jpg_file = block.save(fmt="jpg")
-    with builtins.open(jpg_file, "rb") as f:
+    with open(jpg_file, "rb") as f:
         raw_data = f.read()
     assert raw_data[6:10] == b"JFIF"
 
     svg_file = block.save(fmt="svg")
-    with builtins.open(svg_file, "rb") as f:
+    with open(svg_file, "rb") as f:
         raw_data = f.read()
     assert b"<svg" in raw_data
 

@@ -1,4 +1,3 @@
-import builtins
 import logging
 import os
 import subprocess
@@ -52,7 +51,7 @@ class HTMLConverter:
         name = block._id[: user_config["id_precision"]] + ".html"
         tempdir = user_config["tmp_html_dir"]
         html_filename = os.path.join(tempdir, name)
-        with builtins.open(html_filename, "w", encoding="utf-8") as f:
+        with open(html_filename, "w", encoding="utf-8") as f:
             f.write(content)
         return html_filename
 
