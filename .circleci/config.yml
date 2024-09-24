@@ -69,7 +69,6 @@ defaults: &defaults
          . ci/bin/activate
          mkdir -p /tmp/circleci-test-results
          pytest --cov pybloqs --cov-report xml --cov-report html --junitxml=/tmp/circleci-test-results/junit.xml
-         sphinx-build docs/source build/sphinx/html
     - run: 
        name: Get code coverage
        command: |
@@ -83,6 +82,20 @@ defaults: &defaults
         path: /tmp/circleci-artifacts
     - store_artifacts:
         path: /tmp/circleci-test-results
+    - run:
+       name: Build Sphinx documentation
+       command: |
+         set -e
+         . ci/bin/activate
+         pip install .[docs_and_notebook]
+         sphinx-build docs/source build/sphinx/html
+    - run:
+       name: Build package
+       command: |
+         set -e
+         . ci/bin/activate
+         pip install --upgrade build
+         python -m build
 
 
 version: 2
