@@ -90,6 +90,8 @@ defaults: &defaults
          . ci/bin/activate
          pip install --upgrade build
          python -m build
+    - store_artifacts:
+        path: dist
 
 
 version: 2
