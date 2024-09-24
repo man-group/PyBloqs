@@ -27,19 +27,13 @@ defaults: &defaults
     # Phantomjs is required to Bokeh static output
     - run: npm install phantomjs-prebuilt
     - run:
-       name: Create and activate virtualenv
+       name: Create virtualenv and install
        command: |
          virtualenv ci
          . ci/bin/activate
-         pip install bokeh
-         pip install plotly
-         pip install coveralls
-         pip install ruff
-         pip install pytest pytest-cov
-         pip install -r docs/source/requirements.txt
          python setup.py load_highcharts --highcharts=node_modules/highcharts/,node_modules/highcharts/modules
          python setup.py load_wkhtmltopdf --wkhtmltopdf=wkhtmltox/bin
-         pip install .
+         pip install .[docs_and_notebook,plotly,bokeh,tests]
     # Save dependency cache
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
@@ -52,6 +46,7 @@ defaults: &defaults
        command: |
          set -e
          . ci/bin/activate
+         pip install ruff
          ruff format --check pybloqs tests
     - run:
        name: Run lints
@@ -65,6 +60,7 @@ defaults: &defaults
        command: |
          set -e
          . ci/bin/activate
+         pip install coveralls pytest pytest-cov
          mkdir -p /tmp/circleci-test-results
          pytest --cov pybloqs --cov-report xml --cov-report html --junitxml=/tmp/circleci-test-results/junit.xml
     - run: 
@@ -85,7 +81,7 @@ defaults: &defaults
        command: |
          set -e
          . ci/bin/activate
-         pip install .[docs_and_notebook]
+         pip install -r docs/source/requirements.txt
          sphinx-build docs/source build/sphinx/html
     - run:
        name: Build package
