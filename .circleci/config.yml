@@ -54,13 +54,13 @@ defaults: &defaults
        command: |
          set -e
          . ci/bin/activate
-         ruff format --check pybloqs tests
+         ruff format --check pybloqs tests docs
     - run:
        name: Run lints
        command: |
          set -e
          . ci/bin/activate
-         ruff check pybloqs tests
+         ruff check pybloqs tests docs
     # Test
     - run:
        name: Run all tests
