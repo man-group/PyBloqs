@@ -7,6 +7,14 @@ from pybloqs.block.text import Markdown, Pre, Raw, Span
 from pybloqs.block.wrap import Box, Paragraph
 from pybloqs.util import Cfg
 
+from pkg_resources import get_distribution, DistributionNotFound
+
+try:
+    __version__ = get_distribution(__name__).version
+except DistributionNotFound:
+    # package is not installed
+    __version__ = "<unknown>"
+
 __all__ = [
     # Core PyBloqs
     "set_plot_format",
