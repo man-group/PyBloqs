@@ -43,6 +43,17 @@ Local configuration of features like email sending and PDF backend.
 
   configuration.ipynb
 
+API
+---
+
+The api reference can be found here.
+
+.. toctree::
+  :maxdepth: 1
+
+  api
+
+
 Indices and tables
 ==================
 
