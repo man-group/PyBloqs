@@ -29,6 +29,7 @@ docs/source/pybloqs.htmlconv.rst
 docs/source/pybloqs.plot.rst
 docs/source/pybloqs.rst
 docs/source/pybloqs.static.rst
+docs/source/generated
 .vscode
 .idea
 .pytest_cache
