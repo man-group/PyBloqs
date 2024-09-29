@@ -1,10 +1,10 @@
 Getting Started
 ===============
 
-Table of contents
------------------
+Here you can find pages to help you get started with using pybloqs.
+
 .. toctree::
   :maxdepth: 1
 
   installation.md
-  first_steps.rst
+  first_steps.md
