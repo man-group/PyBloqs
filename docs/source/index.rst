@@ -1,5 +1,5 @@
-Welcome to PyBloqs's documentation!
-===================================
+PyBloqs documentation!
+======================
 
 
 Table of contents

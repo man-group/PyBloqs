@@ -6,5 +6,5 @@ Table of contents
 .. toctree::
   :maxdepth: 1
 
-  installation.rst
+  installation.md
   first_steps.rst

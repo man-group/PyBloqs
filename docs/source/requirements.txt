@@ -13,3 +13,4 @@ html5lib
 plotly
 bokeh
 sphinx-book-theme
+myst-parser
