@@ -1,6 +1,4 @@
-nbconvert
 sphinx
-nbsphinx
 matplotlib
 ipython[notebook]
 pyyaml
@@ -13,4 +11,4 @@ html5lib
 plotly
 bokeh
 sphinx-book-theme
-myst-parser
+myst-nb
