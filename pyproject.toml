@@ -1,3 +1,63 @@
+[project]
+description = "Data Visualization and Report Building"
+name = "pybloqs"
+requires-python = ">= 3.6"
+authors = [{ name = "Man Alpha Technology", email = "ManAlphaTech@man.com" }]
+keywords = ["ahl", "pdf", "html", "visualization", "report"]
+classifiers = [
+  "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python",
+  "Topic :: Scientific/Engineering",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+  "beautifulsoup4",
+  "matplotlib",
+  "markdown",
+  "html5lib",
+  "pandas",
+  "docutils",
+  "lxml",
+  "pyyaml",
+  "jinja2",
+]
+dynamic = ['readme', 'version']
+
+[project.optional-dependencies]
+docs_and_notebook = [
+  "sphinx",
+  "nbsphinx",
+  "ipython[notebook]",
+  "sphinxcontrib-apidoc",
+]
+plotly = ["plotly", "kaleido"]
+bokeh = ["bokeh", "selenium"]
+tests = ["mock", "pytest", "pytest-cov"]
+
+[project.urls]
+Homepage = "https://github.com/man-group/pybloqs"
+Repository = "https://github.com/man-group/pybloqs"
+Documentation = "https://pybloqsmain.readthedocs.io/en/latest/"
+Changelog = "https://github.com/man-group/PyBloqs/blob/master/CHANGES.md"
+
+[build-system]
+requires = ["setuptools", "pypandoc<1.8", "jsmin", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["pybloqs"]
+
+[tool.setuptools.package-data]
+"pybloqs.static" = ["*.js", "css/*.css", "css/pybloqs_default/main.css"]
+"pybloqs.jinja" = ["table.html"]
+"pybloqs.htmlconv" = ["*.js"]
+
+[tool.setuptools_scm]
+
 [tool.ruff]
 line-length = 120
 

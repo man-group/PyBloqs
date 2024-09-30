@@ -1,14 +1,13 @@
 #!/bin/env python
-from distutils.dir_util import mkpath
-from distutils.file_util import copy_file
 import glob
 import logging
 import os
-from setuptools import setup, find_packages, Command
-from setuptools.command.install import install
-from setuptools.command.test import test as TestCommand
 import sys
+from distutils.dir_util import mkpath
+from distutils.file_util import copy_file
 
+from setuptools import Command, setup
+from setuptools.command.install import install
 
 # Convert Markdown to RST for PyPI
 # http://stackoverflow.com/a/26737672
@@ -17,37 +16,27 @@ try:
 
     long_description = pypandoc.convert("README.md", "rst")
     changelog = pypandoc.convert("CHANGES.md", "rst")
-except (IOError, ImportError, OSError):
-    long_description = open("README.md").read()
-    changelog = open("CHANGES.md").read()
+except (ImportError, OSError):
+    with open("README.md") as fd:
+        long_description = fd.read()
+    with open("CHANGES.md") as fd:
+        changelog = fd.read()
 
 
 def _copy_hc_files(source_paths, dest_path):
     """Copies all .js files (excluding .src.js) from source_path into dest_path."""
     if source_paths is None:
-        logging.warn(
-            "***** Option --highcharts not specified. Highcharts blocks will not work! ******"
-        )
+        logging.warning("***** Option --highcharts not specified. Highcharts blocks will not work! ******")
         return
 
     hc_files = []
     for source_path in source_paths:
-        hc_files += set(
-            [
-                i
-                for i in glob.glob(os.path.join(source_path, "*.js"))
-                if not i.endswith(".src.js")
-            ]
-        )
+        hc_files += {i for i in glob.glob(os.path.join(source_path, "*.js")) if not i.endswith(".src.js")}
     if len(hc_files) > 0:
         for f in hc_files:
             copy_file(f, dest_path)
     else:
-        logging.error(
-            " No *.js files (excluding *.src.js) found in highcharts-paths: {}".format(
-                source_paths
-            )
-        )
+        logging.error(" No *.js files (excluding *.src.js) found in highcharts-paths: %s", source_paths)
         sys.exit(1)
 
 
@@ -63,7 +52,7 @@ def _copy_wkhtmltopdf(src_path):
 
 
 class LoadHighcharts(Command):
-    user_options = [
+    user_options = [  # noqa: RUF012
         (
             "highcharts=",
             None,
@@ -88,7 +77,7 @@ class LoadHighcharts(Command):
 
 
 class LoadWkhtmltopdf(Command):
-    user_options = [
+    user_options = [  # noqa: RUF012
         ("wkhtmltopdf=", None, "Path for wkhtmltopdf and wkhtmltoimage."),
     ]
 
@@ -105,7 +94,8 @@ class LoadWkhtmltopdf(Command):
 
 class PyBloqsInstall(install):
     # Options tuples: long name, short name and help string
-    user_options = install.user_options + [
+    user_options = [  # noqa: RUF012
+        *install.user_options,
         (
             "highcharts=",
             None,
@@ -139,8 +129,8 @@ class PyBloqsInstall(install):
             for f in files:
                 if f.lower().endswith(".js"):
                     file_name = os.path.join(dir_name, f)
-                    logging.info("Minimizing file: {}".format(file_name))
-                    with open(file_name, "r") as f_js:
+                    logging.info("Minimizing file: %s", file_name)
+                    with open(file_name) as f_js:
                         content = f_js.read()
                     with open(file_name, "w") as f_js:
                         f_js.write(jsmin(content))
@@ -155,95 +145,11 @@ class PyBloqsInstall(install):
         install.run(self)
 
 
-class PyTest(TestCommand):
-    user_options = [("pytest-args=", "a", "Arguments to pass to py.test")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level="DEBUG")
-
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-
-        args = [self.pytest_args] if isinstance(self.pytest_args, str) else list(self.pytest_args)
-        args.extend(
-            [
-                "--cov",
-                "pybloqs",
-                "--cov-report",
-                "xml",
-                "--cov-report",
-                "html",
-            ]
-        )
-        errno = pytest.main(args)
-        sys.exit(errno)
-
-
 setup(
-    name="pybloqs",
-    version="1.2.14",
-    author="Man Alpha Technology",
-    author_email="ManAlphaTech@man.com",
-    description="Data Visualization and Report Building",
     long_description="\n".join((long_description, changelog)),
-    keywords=["ahl", "pdf", "html", "visualization", "report"],
-    url="https://github.com/man-group/pybloqs",
-    setup_requires=["jsmin"],
-    install_requires=[
-        "beautifulsoup4",
-        "matplotlib",
-        "markdown",
-        "html5lib",
-        "pandas",
-        "docutils",
-        "lxml",
-        "pyyaml",
-        "jinja2",
-    ],
-    extras_require={
-        "docs_and_notebook": [
-            "sphinx",
-            "nbsphinx",
-            "ipython[notebook]",
-            "sphinxcontrib-apidoc",
-        ],
-        "plotly": ["plotly", "kaleido"],
-        "bokeh": ["bokeh", "selenium"],
-    },
-    tests_require=[
-        "mock",
-        "pytest",
-        "pytest-cov",
-    ],
-    classifiers=[
-        "Operating System :: OS Independent",
-        "Intended Audience :: Science/Research",
-        "Programming Language :: Python",
-        "Topic :: Scientific/Engineering",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-    ],
     cmdclass={
         "install": PyBloqsInstall,
         "load_highcharts": LoadHighcharts,
         "load_wkhtmltopdf": LoadWkhtmltopdf,
-        "test": PyTest,
-    },
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    package_data={
-        "pybloqs.static": ["*.js", "css/*.css", "css/pybloqs_default/main.css"],
-        "pybloqs.jinja": ["table.html"],
-        "pybloqs.htmlconv": ["*.js"],
     },
 )
