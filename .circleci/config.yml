@@ -92,6 +92,13 @@ defaults: &defaults
          python -m build
     - store_artifacts:
         path: dist
+    - run:
+       name: Run publish checks
+       command: |
+         set -e
+         . ci/bin/activate
+         pip install build twine
+         twine check dist/*
 
 
 version: 2
@@ -111,6 +118,40 @@ jobs:
     docker:
       - image: cimg/python:3.11-browsers
     <<: *defaults
+  publish:
+    working_directory: ~/manahl/PyBloqs_publish
+    docker:
+      - image: cimg/python:3.11.0
+    parallelism: 1
+    shell: /bin/bash --login
+    steps:
+    - checkout
+    - run:
+       name: Create virtualenv and install required packages
+       command: |
+         sudo apt-get update
+         sudo apt-get install pandoc
+         virtualenv ci
+         . ci/bin/activate
+         pip install build twine
+    - run:
+       name: Build package
+       command: |
+         set -e
+         . ci/bin/activate
+         python -m build
+    - run:
+       name: Publish package
+       command: |
+         set -e
+         . ci/bin/activate
+         export TWINE_USERNAME='__token__'
+         export TWINE_PASSWORD=$PYPI_TOKEN
+         if git describe --exact-match --tags; then
+           twine upload --repository=testpypi dist/*
+         else
+           echo "Not on an exact tag: refusing to publish"
+         fi
 workflows:
   version: 2
   build_all:
@@ -118,3 +159,12 @@ workflows:
       - build_3_8
       - build_3_10
       - build_3_11
+      - publish:
+          requires:
+            - build_3_8
+            - build_3_10
+            - build_3_11
+          filters:
+            branches:
+              only:
+                - master
