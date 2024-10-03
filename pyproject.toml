@@ -48,8 +48,8 @@ Changelog = "https://github.com/man-group/PyBloqs/blob/master/CHANGES.md"
 requires = ["setuptools", "pypandoc<1.8", "jsmin", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["pybloqs"]
+[tool.setuptools.packages.find]
+exclude = ["node_modules", "logo", "wkhtmltox"]
 
 [tool.setuptools.package-data]
 "pybloqs.static" = ["*.js", "css/*.css", "css/pybloqs_default/main.css"]
