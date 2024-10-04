@@ -1,3 +1,5 @@
+from pkg_resources import DistributionNotFound, get_distribution
+
 from pybloqs.block.base import BaseBlock, HRule
 from pybloqs.block.convenience import Block
 from pybloqs.block.image import ImgBlock, PlotBlock, set_plot_format
@@ -6,8 +8,6 @@ from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.text import Markdown, Pre, Raw, Span
 from pybloqs.block.wrap import Box, Paragraph
 from pybloqs.util import Cfg
-
-from pkg_resources import get_distribution, DistributionNotFound
 
 try:
     __version__ = get_distribution(__name__).version
