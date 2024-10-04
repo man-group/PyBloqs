@@ -48,6 +48,8 @@ source_suffix = {".rst": "restructuredtext", ".md": "myst-nb", ".ipynb": "myst-n
 
 myst_enable_extensions = ["colon_fence", "attrs_inline"]
 
+nb_execution_mode = "off"
+
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
