@@ -148,7 +148,7 @@ jobs:
          export TWINE_USERNAME='__token__'
          export TWINE_PASSWORD=$PYPI_TOKEN
          if git describe --exact-match --tags; then
-           twine upload --repository=testpypi dist/*
+           twine upload --verbose --repository=testpypi dist/*
          else
            echo "Not on an exact tag: refusing to publish"
          fi
