@@ -4,6 +4,7 @@ name = "pybloqs"
 requires-python = ">= 3.6"
 authors = [{ name = "Man Alpha Technology", email = "ManAlphaTech@man.com" }]
 keywords = ["ahl", "pdf", "html", "visualization", "report"]
+license = { file = "LICENSE" }
 classifiers = [
   "Operating System :: OS Independent",
   "Intended Audience :: Science/Research",
