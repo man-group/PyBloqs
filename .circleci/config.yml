@@ -145,12 +145,23 @@ jobs:
        command: |
          set -e
          . ci/bin/activate
-         export TWINE_USERNAME='__token__'
-         export TWINE_PASSWORD=$PYPI_TOKEN
-         if git describe --exact-match --tags; then
+         if [[ $PYPI_INSTANCE == "test" ]]; then
+           echo "Publishing to test PyPI"
+           export TWINE_USERNAME='__token__'
+           export TWINE_PASSWORD=$TEST_PYPI_TOKEN
            twine upload --verbose --repository=testpypi dist/*
+         elif [[ $PYPI_INSTANCE == "live" ]]; then
+           echo "Publishing to live PyPI"
+           export TWINE_USERNAME='__token__'
+           export TWINE_PASSWORD=$PYPI_TOKEN
+           if git describe --exact-match --tags; then
+             twine upload --verbose dist/*
+           else
+             echo "Not on an exact tag: refusing to publish"
+           fi
          else
-           echo "Not on an exact tag: refusing to publish"
+           echo "Variable PYPI_INSTANCE must be set to either `live` or `test`."
+           exit 1
          fi
 workflows:
   version: 2
