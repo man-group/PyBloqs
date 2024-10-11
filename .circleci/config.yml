@@ -159,8 +159,10 @@ jobs:
            else
              echo "Not on an exact tag: refusing to publish"
            fi
+         elif [[ $PYPI_INSTANCE == "none" ]]; then
+           echo "Not uploading"
          else
-           echo "Variable PYPI_INSTANCE must be set to either `live` or `test`."
+           echo "Variable PYPI_INSTANCE must be set to either \"live\" or \"test\" or \"none\"."
            exit 1
          fi
 workflows:
