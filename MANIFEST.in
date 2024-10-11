@@ -1,4 +1,5 @@
 prune .circleci
 prune docs
 prune logo
+prune pybloqs/static/uncompressed
 prune tests
