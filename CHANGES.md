@@ -143,3 +143,22 @@ Changelog
 
   * Bugfix: Fix output of Plotly blocks no longer showing in newer versions of Jupyter
   * Bugfix: Add static output to Bokeh and Plotly to enable sending within email body
+
+### 1.3.0 (2024-09-10)
+  * Add requirements and configuration change to allow doc build by @skristof in #89
+  * Install pybloqs in readthedocs pipeline by @skristof in #91
+  * build on python 3.11 by @morotti in #95
+  * fix: numpy 1.24 compatibility, have to pass axis argument in aggregat… by @morotti in #97
+  * Fix tests for build by @rspencer01 in #98
+  * Unpin packages by @rspencer01 in #103
+  * Format and lint codebase by @rspencer01 in #111
+  * Upgrade code from python 2 by @rspencer01 in #112
+  * Set new sphinx theme by @rspencer01 in #115
+  * Use version control for package versioning by @rspencer01 in #114
+  * Setup automated PyPI publishing by @rspencer01 in #117
+  * Touch up documentation by @rspencer01 in #118
+  * ci: Add verbose flag to circleci publishing by @rspencer01 in #119
+  * Add logic to circleci to conditionally publish package to test or live PyPI by @rspencer01 in #120
+
+### 1.3.1 (2024-09-15)
+  * [docs, ci]: Fix readthedocs and remove cruft from built distributions by @rspencer01 in #122
