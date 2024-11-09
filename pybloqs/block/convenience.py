@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from typing import Optional
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
@@ -14,7 +15,14 @@ def add_block_types(objects, block_cls):
 
 
 # noinspection PyPep8Naming
-def Block(contents=None, title=None, title_level=3, title_wrap=False, inherit_cfg=True, **kwargs):
+def Block(
+    contents=None,
+    title: Optional[str] = None,
+    title_level: int = 3,
+    title_wrap: bool = False,
+    inherit_cfg: bool = True,
+    **kwargs,
+):
     """
     Constructs a composable layout element that will be rendered automatically by
     IPython Notebooks. It can also be saved in HTML, PDF, PNG or JPEG formats.

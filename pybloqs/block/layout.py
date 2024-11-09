@@ -56,7 +56,7 @@ class CompositeBlockMixin:
 
 
 class Flow(CompositeBlockMixin, BaseBlock):
-    def __init__(self, contents, cascade_cfg=True, **kwargs):
+    def __init__(self, contents, cascade_cfg: bool = True, **kwargs):
         """
         Create a block that lays out its contents in a free-flow, element-after-element
         fashion.
@@ -81,7 +81,7 @@ class Flow(CompositeBlockMixin, BaseBlock):
 
 
 class VStack(CompositeBlockMixin, BaseBlock):
-    def __init__(self, contents, cascade_cfg=True, **kwargs):
+    def __init__(self, contents, cascade_cfg: bool = True, **kwargs):
         """
         Create vertical stack layout.
 
@@ -106,7 +106,7 @@ class VStack(CompositeBlockMixin, BaseBlock):
 
 
 class Grid(CompositeBlockMixin, BaseBlock):
-    def __init__(self, contents, cols=1, cascade_cfg=True, **kwargs):
+    def __init__(self, contents, cols: int = 1, cascade_cfg: bool = True, **kwargs):
         """
         Create a block that lays out its contents in a grid.
 
@@ -162,7 +162,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
 
 
 class HStack(Grid):
-    def __init__(self, contents, cascade_cfg=True, **kwargs):
+    def __init__(self, contents, cascade_cfg: bool = True, **kwargs):
         """
         Create a horizontal stack layout that puts contents side by side.
 

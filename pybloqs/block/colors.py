@@ -1,4 +1,5 @@
 import re
+from typing import List, Tuple, Union
 
 import numpy as np
 
@@ -29,7 +30,7 @@ GREEN = (0.275, 0.471, 0.129)
 DEFAULT_COLOR_SCHEME = [ORANGE, PURPLE, BLUE, TURQUOISE, RED, PINK, GREEN]
 
 
-def rgb_tuple_from_rgba(color_tuple):
+def rgb_tuple_from_rgba(color_tuple: Tuple[float, ...]) -> Tuple[float, float, float]:
     """Convert rgba tuple to rgb tuple by converting color value explicitly."""
     assert len(color_tuple) == 4
 
@@ -40,7 +41,7 @@ def rgb_tuple_from_rgba(color_tuple):
     return tuple(blended_color)
 
 
-def css_color_from_tuple(color_tuple):
+def css_color_from_tuple(color_tuple: Tuple[float, ...]) -> str:
     if len(color_tuple) == 4:
         color_tuple = rgb_tuple_from_rgba(color_tuple)
     if len(color_tuple) != 3:
@@ -50,7 +51,7 @@ def css_color_from_tuple(color_tuple):
     return rgb_string
 
 
-def css_color_from_string(color_string):
+def css_color_from_string(color_string: str) -> str:
     if len(color_string) == 7 and color_string[0] == "#":
         # We got a hex string, no conversion necessary
         return color_string
@@ -68,7 +69,7 @@ def css_color_from_string(color_string):
         raise ValueError("Color string format not recognised:", color_string)
 
 
-def css_color(color):
+def css_color(color: Union[Tuple[float, float, float], Tuple[float, float, float, float], List[float], str]) -> str:
     """Create CSS color (rgb string or Hex string) from various inputs.
 
     Digests:

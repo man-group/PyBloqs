@@ -1,5 +1,6 @@
 import uuid
 from functools import partial
+from typing import Callable, Generator, Iterator, Optional
 
 import bs4
 
@@ -9,7 +10,7 @@ PYBLOQS_ID_PREFIX = "pybloqs_id_"
 DEFAULT_PARSER = "html.parser"
 
 
-def parse(string):
+def parse(string: str) -> bs4.BeautifulSoup:
     """
     Parses the string into a beautiful soup tree.
 
@@ -19,7 +20,7 @@ def parse(string):
     return bs4.BeautifulSoup(string, DEFAULT_PARSER)
 
 
-def root(tag_name="html", doctype=None, **kwargs):
+def root(tag_name: str = "html", doctype: Optional[str] = None, **kwargs) -> bs4.Tag:
     """
     Creates a new soup with the given root element.
 
@@ -37,7 +38,7 @@ def root(tag_name="html", doctype=None, **kwargs):
     return tag
 
 
-def render(item, pretty=True, encoding="utf8"):
+def render(item: bs4.Tag, pretty: bool = True, encoding: str = "utf8") -> str:
     """
     Renders the given element into a string.
 
@@ -48,7 +49,7 @@ def render(item, pretty=True, encoding="utf8"):
     return item.prettify(encoding=encoding).decode("utf8") if pretty else str(item)
 
 
-def append_to(parent, tag, **kwargs):
+def append_to(parent: bs4.PageElement, tag, **kwargs) -> bs4.Tag:
     """
     Append an element to the supplied parent.
 
@@ -72,7 +73,12 @@ def append_to(parent, tag, **kwargs):
     return new_tag
 
 
-def construct_element(container=None, content=None, tag=None, element_type=None):
+def construct_element(
+    container: Optional[bs4.Tag] = None,
+    content: Optional[str] = None,
+    tag: Optional[str] = None,
+    element_type: Optional[str] = None,
+) -> bs4.Tag:
     """
     Constructs an element and appends it to the container.
 
@@ -83,6 +89,8 @@ def construct_element(container=None, content=None, tag=None, element_type=None)
     :return: New element.
     """
     if container is None:
+        if tag is None:
+            raise ValueError("One of `container` or `tag` must be set when constructing elements")
         el = root(tag, type=element_type)
     else:
         el = append_to(container, tag, type=element_type)
@@ -95,7 +103,7 @@ js_elem = partial(construct_element, tag="script", element_type="text/javascript
 css_elem = partial(construct_element, tag="style", element_type="text/css")
 
 
-def set_id_generator(generator):
+def set_id_generator(generator: Callable[[], Generator[str, None, None]]):
     """
     Sets the global id generator function (must be a python generator function)
 
@@ -105,7 +113,7 @@ def set_id_generator(generator):
     _id_generator = generator
 
 
-def id_generator_uuid():
+def id_generator_uuid() -> Iterator[str]:
     """
     Generates unique identifiers using the `uuid` package.
     """
@@ -113,7 +121,7 @@ def id_generator_uuid():
         yield str(uuid.uuid4()).replace("-", "")
 
 
-def id_generator_sequential():
+def id_generator_sequential() -> Generator[str, None, None]:
     """
     Generatres unique identifiers sequentially from a known constant seed.
     """
