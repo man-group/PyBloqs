@@ -8,5 +8,6 @@ Table of contents
 
 getting_started
 user_guide
+developer_guide
 api
 :::

@@ -1,7 +1,9 @@
-from pathlib import Path
-import sys
-import pytest
 import os
+import sys
+from pathlib import Path
+
+import pytest
+
 import pybloqs
 
 ROOT_DIR = Path(__file__).parent
