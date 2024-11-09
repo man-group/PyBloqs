@@ -11,4 +11,5 @@ examples.ipynb
 table_formatting.ipynb
 interactive_plots.ipynb
 configuration.ipynb
+vega_altair.ipynb
 ```

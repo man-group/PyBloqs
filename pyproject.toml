@@ -38,6 +38,7 @@ docs_and_notebook = [
 plotly = ["plotly", "kaleido"]
 bokeh = ["bokeh", "selenium"]
 tests = ["mock", "pytest", "pytest-cov"]
+altair = ["altair"]
 
 [project.urls]
 Homepage = "https://github.com/man-group/pybloqs"
