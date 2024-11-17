@@ -1,6 +1,7 @@
+import altair as alt
+
 from pybloqs.block.base import BaseBlock
 from pybloqs.html import parse
-import altair as alt
 
 
 class VegaAltairBlock(BaseBlock):
