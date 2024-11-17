@@ -47,6 +47,12 @@ To install the requirements to display [Plotly graphs](https://plotly.com/), you
 ```
 pip install pybloqs[plotly]
 ```
+
+#### Vega-Altair
+To install the requirements to display [Vega-Altair graphs](https://altair-viz.github.io/), you can use:
+```
+pip install pybloqs[altair]
+```
  
 #### Highcharts
 [Highcharts](https://www.highcharts.com/) (proprietary license) is not bundled with PyBloqs. To create blocks with Highcharts plots, you need to download Highcharts 
