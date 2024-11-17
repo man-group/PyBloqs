@@ -1,6 +1,13 @@
-import altair as alt
+try:
+    import altair as alt
+    from altair.vegalite.api import Chart as AltairChart
+
+    _ALTAIR_AVAILABLE = True
+except ImportError:
+    _ALTAIR_AVAILABLE = False
 
 from pybloqs.block.base import BaseBlock
+from pybloqs.block.convenience import add_block_types
 from pybloqs.html import parse
 
 
@@ -17,3 +24,7 @@ class VegaAltairBlock(BaseBlock):
 
     def _write_contents(self, container, *args, **kwargs):
         container.append(parse(self._fig.to_html(fullhtml=False)))
+
+
+if _ALTAIR_AVAILABLE:
+    add_block_types(AltairChart, VegaAltairBlock)
