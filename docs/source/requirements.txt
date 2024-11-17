@@ -10,6 +10,5 @@ future
 html5lib
 plotly
 bokeh
-altair
 sphinx-book-theme
 myst-nb
