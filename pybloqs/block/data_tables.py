@@ -1,3 +1,7 @@
+from typing import List, Optional
+
+import pandas as pd
+
 from pybloqs.block.table import HTMLJinjaTableBlock
 from pybloqs.block.table_formatters import (
     TableFormatter,
@@ -13,13 +17,13 @@ from pybloqs.static import Css, JScript
 
 
 class DataTablesCSSClass(TableFormatter):
-    def __init__(self, paging=True, searching=True, info=True):
+    def __init__(self, paging: bool = True, searching: bool = True, info: bool = True) -> None:
         super().__init__()
         self.paging = paging
         self.searching = searching
         self.info = info
 
-    def create_table_level_css_class(self):
+    def create_table_level_css_class(self) -> str:
         no_paging = " dt-no-paging" if self.paging is False else ""
         no_info = " dt-no-info" if self.info is False else ""
         no_searching = " dt-no-searching" if self.searching is False else ""
@@ -36,8 +40,15 @@ class DataTablesHTMLJinjaTableBlock(HTMLJinjaTableBlock):
     )
 
     def __init__(
-        self, df, formatters=None, use_default_formatters=False, paging=True, searching=True, info=True, **kwargs
-    ):
+        self,
+        df: pd.DataFrame,
+        formatters: Optional[List[TableFormatter]] = None,
+        use_default_formatters: bool = False,
+        paging: bool = True,
+        searching: bool = True,
+        info: bool = True,
+        **kwargs,
+    ) -> None:
         if formatters is None and use_default_formatters is False:
             formatters = [
                 DataTablesCSSClass(paging, searching, info),

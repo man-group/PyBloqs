@@ -103,7 +103,7 @@ js_elem = partial(construct_element, tag="script", element_type="text/javascript
 css_elem = partial(construct_element, tag="style", element_type="text/css")
 
 
-def set_id_generator(generator: Callable[[], Generator[str, None, None]]):
+def set_id_generator(generator: Callable[[], Generator[str, None, None]]) -> None:
     """
     Sets the global id generator function (must be a python generator function)
 
@@ -113,7 +113,7 @@ def set_id_generator(generator: Callable[[], Generator[str, None, None]]):
     _id_generator = generator
 
 
-def id_generator_uuid() -> Iterator[str]:
+def id_generator_uuid() -> Generator[str, None, None]:
     """
     Generates unique identifiers using the `uuid` package.
     """
@@ -132,7 +132,7 @@ def id_generator_sequential() -> Generator[str, None, None]:
         counter += 1
 
 
-def id_generator():
+def id_generator() -> Iterator[str]:
     return _id_generator()
 
 

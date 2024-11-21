@@ -7,6 +7,7 @@ import getpass
 import os
 import smtplib
 import tempfile
+import xml
 from email import encoders
 from email.message import Message
 from email.mime.base import MIMEBase
@@ -21,7 +22,7 @@ from html5lib import treebuilders
 from pybloqs.config import user_config
 
 
-def send(message: Message, recipients: Union[List[str], Tuple[str, ...]]):
+def send(message: Message, recipients: Union[List[str], Tuple[str, ...]]) -> None:
     """
     Send an email to a list of recipients.
 
@@ -55,7 +56,9 @@ def send(message: Message, recipients: Union[List[str], Tuple[str, ...]]):
     s.quit()
 
 
-def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
+def _set_email_mime_types(
+    dom: "xml.dom.minidom.Document", message: Optional[MIMEMultipart] = None, convert_to_ascii: bool = False
+) -> MIMEMultipart:
     """
     Takes HTML dom object and constructs email object (MIMEMultipart)
     images referenced in html <img src=c:/test.png /> are attached as MIMEImage and
@@ -136,7 +139,7 @@ def send_html_report(
     Cc: Optional[Iterable[str]] = None,
     Bcc: Optional[Iterable[str]] = None,
     convert_to_ascii: bool = True,
-):
+) -> MIMEMultipart:
     """
     Email html report and embed any images.
     Extract html title to email subject.
@@ -153,6 +156,7 @@ def send_html_report(
     """
     # create the dom for querying/modifying the html document
     parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
+    html_str = "<a>foo</a>"
     dom = parser.parse(html_str)
 
     if not subject:

@@ -1,5 +1,6 @@
 import copy
 import math
+from typing import List
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import Block, add_block_types
@@ -12,7 +13,7 @@ class CompositeBlockMixin:
     Mixin to support composite blocks. Must have a `_contents` attribute!
     """
 
-    def _visit(self, visitor):
+    def _visit(self, visitor) -> "CompositeBlockMixin":
         """
         Applies a visitor to child items of this container. In case
         the visitor returns a new object, a new container containing the new item(s)
@@ -48,7 +49,7 @@ class CompositeBlockMixin:
             return self
 
     @staticmethod
-    def _blockify_contents(contents, kwargs, parent_title_level):
+    def _blockify_contents(contents, kwargs, parent_title_level) -> List[BaseBlock]:
         """
         Blockify the contents
         """
@@ -56,7 +57,7 @@ class CompositeBlockMixin:
 
 
 class Flow(CompositeBlockMixin, BaseBlock):
-    def __init__(self, contents, cascade_cfg: bool = True, **kwargs):
+    def __init__(self, contents, cascade_cfg: bool = True, **kwargs) -> None:
         """
         Create a block that lays out its contents in a free-flow, element-after-element
         fashion.
@@ -75,13 +76,13 @@ class Flow(CompositeBlockMixin, BaseBlock):
         self._contents = self._blockify_contents(contents, kwargs, self._settings.title_level)
         self._cascade_cfg = cascade_cfg
 
-    def _write_contents(self, container, actual_cfg, *args, **kwargs):
+    def _write_contents(self, container, actual_cfg, *args, **kwargs) -> None:
         for content in self._contents:
             content._write_block(container, actual_cfg if self._cascade_cfg else Cfg(), *args, **kwargs)
 
 
 class VStack(CompositeBlockMixin, BaseBlock):
-    def __init__(self, contents, cascade_cfg: bool = True, **kwargs):
+    def __init__(self, contents, cascade_cfg: bool = True, **kwargs) -> None:
         """
         Create vertical stack layout.
 
@@ -99,14 +100,14 @@ class VStack(CompositeBlockMixin, BaseBlock):
         self._contents = self._blockify_contents(contents, kwargs, self._settings.title_level)
         self._cascade_cfg = cascade_cfg
 
-    def _write_contents(self, container, actual_cfg, *args, **kwargs):
+    def _write_contents(self, container, actual_cfg, *args, **kwargs) -> None:
         for content in self._contents:
             cell = append_to(container, "div")
             content._write_block(cell, actual_cfg if self._cascade_cfg else Cfg(), *args, **kwargs)
 
 
 class Grid(CompositeBlockMixin, BaseBlock):
-    def __init__(self, contents, cols: int = 1, cascade_cfg: bool = True, **kwargs):
+    def __init__(self, contents, cols: int = 1, cascade_cfg: bool = True, **kwargs) -> None:
         """
         Create a block that lays out its contents in a grid.
 
@@ -126,7 +127,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
         self._cols = cols
         self._cascade_cfg = cascade_cfg
 
-    def _write_contents(self, container, actual_cfg, *args, **kwargs):
+    def _write_contents(self, container, actual_cfg, *args, **kwargs) -> None:
         # The width of one column in percentage
         content_count = len(self._contents)
 
@@ -162,7 +163,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
 
 
 class HStack(Grid):
-    def __init__(self, contents, cascade_cfg: bool = True, **kwargs):
+    def __init__(self, contents, cascade_cfg: bool = True, **kwargs) -> None:
         """
         Create a horizontal stack layout that puts contents side by side.
 

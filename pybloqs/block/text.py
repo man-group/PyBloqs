@@ -4,6 +4,7 @@ Module for blocks with text-only content
 
 import textwrap
 
+import bs4
 import markdown
 
 from pybloqs import BaseBlock
@@ -11,7 +12,7 @@ from pybloqs.html import parse
 
 
 class Raw(BaseBlock):
-    def __init__(self, contents, dedent=True, **kwargs):
+    def __init__(self, contents: str, dedent: bool = True, **kwargs) -> None:
         """
         Writes out the content as raw text or HTML.
 
@@ -31,10 +32,10 @@ class Raw(BaseBlock):
 
         self._contents = self._process_raw_contents(contents)
 
-    def _process_raw_contents(self, contents):
+    def _process_raw_contents(self, contents: str) -> str:
         return contents
 
-    def _write_contents(self, container, *args, **kwargs):
+    def _write_contents(self, container: bs4.Tag, *_args, **_kwargs) -> None:
         for child in list(parse(self._contents).children):
             container.append(child)
 
@@ -62,5 +63,5 @@ class Markdown(Raw):
 
     encoding = "UTF-8"
 
-    def _process_raw_contents(self, contents):
+    def _process_raw_contents(self, contents: str) -> str:
         return markdown.markdown(contents, output_format="html")

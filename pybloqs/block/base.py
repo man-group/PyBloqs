@@ -3,7 +3,7 @@ import os
 import uuid
 import webbrowser
 from io import BytesIO
-from typing import Iterable, Optional, Tuple, Union
+from typing import Any, Iterable, Iterator, Optional, Tuple, Union
 from urllib.parse import urljoin
 
 import pybloqs.htmlconv as htmlconv
@@ -38,7 +38,7 @@ class BaseBlock:
         classes: Union[str, Iterable[str]] = (),
         anchor=None,
         **kwargs,
-    ):
+    ) -> None:
         self._settings = Cfg(
             title=title,
             title_level=title_level,
@@ -60,7 +60,7 @@ class BaseBlock:
         static_output: bool = False,
         header_block: Optional["BaseBlock"] = None,
         footer_block: Optional["BaseBlock"] = None,
-    ):
+    ) -> str:
         """
         Returns html output of the block
 
@@ -142,7 +142,7 @@ class BaseBlock:
         footer_block: Optional["BaseBlock"] = None,
         footer_spacing: Union[str, float] = 5,
         **kwargs,
-    ):
+    ) -> str:
         """
         Render and save the block. Depending on whether the filename or the format is
         provided, the content will either be written out to a file or returned as a string.
@@ -212,7 +212,7 @@ class BaseBlock:
             )
         return filename
 
-    def publish(self, name, *args, **kwargs):
+    def publish(self, name: str, *args, **kwargs) -> str:
         """
         Publish the block so that others can access it.
 
@@ -235,7 +235,7 @@ class BaseBlock:
 
     def show(
         self, fmt: str = "html", header_block: Optional["BaseBlock"] = None, footer_block: Optional["BaseBlock"] = None
-    ):
+    ) -> str:
         """
         Show the block in a browser.
 
@@ -272,7 +272,7 @@ class BaseBlock:
         attachments=None,
         convert_to_ascii: bool = True,
         **kwargs,
-    ):
+    ) -> None:
         """
         Send the rendered blocks as email. Each output format chosen will be added as an
         attachment.
@@ -311,16 +311,16 @@ class BaseBlock:
             convert_to_ascii=convert_to_ascii,
         )
 
-    def to_static(self):
+    def to_static(self) -> "BaseBlock":
         return self._visit(lambda block: block._to_static())
 
-    def _to_static(self):
+    def _to_static(self) -> "BaseBlock":
         """
         Subclasses can override this method to provide a static content version.
         """
         return self
 
-    def _visit(self, visitor):
+    def _visit(self, visitor) -> Any:
         """
         Calls the supplied visitor function on this block and any sub-blocks
         :param visitor: Visitor function
@@ -328,14 +328,14 @@ class BaseBlock:
         """
         return visitor(self)
 
-    def _provide_default_cfg(self, defaults):
+    def _provide_default_cfg(self, defaults) -> None:
         """
         Makes the supplied config to be part of the defaults for the block.
         :param defaults: The default parameters that should be inherited.
         """
         self._settings.default_cfg = self._settings.default_cfg.inherit(defaults)
 
-    def _combine_parent_cfg(self, parent_cfg):
+    def _combine_parent_cfg(self, parent_cfg) -> Cfg:
         """from pybloqs.config import user_config
         Combine the supplied parent and the current Block's config.
 
@@ -353,7 +353,7 @@ class BaseBlock:
 
         return actual_cfg
 
-    def _get_styles_string(self, styles_cfg):
+    def _get_styles_string(self, styles_cfg) -> str:
         """
         Converts the styles configuration to a CSS styles string.
 
@@ -371,7 +371,7 @@ class BaseBlock:
         # Replace `_` with `-` and make values lowercase to get valid CSS names
         return cfg_to_css_string(styles_cfg.override(sizing_cfg))
 
-    def _write_block(self, parent, parent_cfg, id_gen, resource_deps=None, static_output=False):
+    def _write_block(self, parent, parent_cfg, id_gen, resource_deps=None, static_output: bool = False) -> None:
         """
         Writes out the block into the supplied stream, inheriting the parent_parameters.
 
@@ -400,7 +400,7 @@ class BaseBlock:
         self._write_title(container)
         self._write_contents(container, actual_cfg, id_gen, resource_deps=resource_deps, static_output=static_output)
 
-    def _write_container_attrs(self, container, actual_cfg):
+    def _write_container_attrs(self, container, actual_cfg) -> None:
         """
         Writes out the container attributes (styles, class, etc...).
         Note that this method will only be called if the container tag is not `None`.
@@ -414,7 +414,7 @@ class BaseBlock:
 
         container["class"] = self._settings.classes
 
-    def _write_title(self, container):
+    def _write_title(self, container) -> None:
         """
         Write out the title (if there is any).
 
@@ -428,7 +428,7 @@ class BaseBlock:
             )
             title.string = self._settings.title
 
-    def _write_anchor(self, container):
+    def _write_anchor(self, container) -> None:
         """
         Write HTML anchor for linking within page
 
@@ -437,7 +437,9 @@ class BaseBlock:
         if self._anchor is not None:
             append_to(container, "a", name=self._anchor)
 
-    def _write_contents(self, container, actual_cfg, id_gen, resource_deps=None, static_output=None):
+    def _write_contents(
+        self, container, actual_cfg, id_gen: Iterator[str], resource_deps=None, static_output: Optional[bool] = None
+    ) -> None:
         """
         Write out the actual contents of the block. Deriving classes must override
         this method.
@@ -488,6 +490,6 @@ class HRule(BaseBlock):
     Draws a horizontal divider line.
     """
 
-    def _write_block(self, parent, *args, **kwargs):
+    def _write_block(self, parent, *_args, **_kwargs) -> None:
         # Add a `hr` element to the parent
         append_to(parent, "hr")
