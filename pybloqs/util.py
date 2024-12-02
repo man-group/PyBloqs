@@ -128,3 +128,10 @@ class Cfg(dict):
 
     def __setattr__(self, name, value):
         self[name] = value
+
+    def __setstate__(self, state):
+        for key in state:
+            self[key] = state[key]
+
+    def __getstate__(self):
+        return {key: self[key] for key in self}
