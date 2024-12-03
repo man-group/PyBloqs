@@ -95,6 +95,10 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
                 img_tag.parentNode.removeChild(img_tag)
                 continue
             img_data = base64.b64decode(imgdef[(imgdef.index("base64,") + 7) :])
+        elif src.startswith("http"):
+            # Web hosted images aren't on the filesystem
+            # and don't need to be changed
+            continue
         else:
             # get a unique name for the image
             name = f"{idx}_{os.path.basename(src)}"
