@@ -82,3 +82,6 @@ select = [
   "W",
 ]
 ignore = ["COM812", "E731", "PT011", "SIM108"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/regression/pybloqs_input/*" = ["F821"]
