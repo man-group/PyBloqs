@@ -96,7 +96,7 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
                 continue
             img_data = base64.b64decode(imgdef[(imgdef.index("base64,") + 7) :])
         elif src.startswith("http"):
-            # Web hosted images arn't on the filesystem
+            # Web hosted images aren't on the filesystem
             # and don't need to be changed
             continue
         else:
