@@ -1,27 +1,32 @@
 import base64
 import calendar
+import datetime
 import itertools
 import re
 import zlib
+from typing import Dict, Iterator, Tuple, Union
+
+import numpy as np
 
 
-def dt_epoch_msecs(value):
+def dt_epoch_msecs(value: Union[datetime.date, datetime.datetime]) -> float:
     """
     Calculate miliseconds since epoch start for python datetimes.
     """
     return int(calendar.timegm(value.timetuple())) * 1000
 
 
-def np_dt_epoch_msec(value):
+def np_dt_epoch_msec(value: np.datetime64) -> float:
     """
     Calculate miliseconds since epoch start for numpy datetimes.
     """
     return value.astype(int) / 1000
 
 
-def encode_string(string, level=9):
+def encode_string(string: str, level=9) -> bytes:
     """
     Compresses and base64 encodes the supplied string
+
     :param string: String to encode and compress
     :param level: Compression level
     :return: Compressed and encoded string
@@ -29,7 +34,7 @@ def encode_string(string, level=9):
     return base64.b64encode(zlib.compress(string.encode("utf8"), level)[2:-4])
 
 
-def camelcase(value):
+def camelcase(value: str) -> str:
     """
     Converts 'under_score_string' -> 'underScoreString'
 
@@ -40,7 +45,7 @@ def camelcase(value):
     return rest[0] + "".join(word.title() for word in rest[1:])
 
 
-def underscorecase(camelcased):
+def underscorecase(camelcased: str) -> str:
     """
     Converts 'underScoreString' -> 'under_score_string'
 
@@ -50,7 +55,7 @@ def underscorecase(camelcased):
     return re.sub("([A-Z]+)", r"_\1", camelcased).lower()
 
 
-def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v: v, separator=";"):
+def cfg_to_prop_string(cfg: "Cfg", key_transform=lambda k: k, value_transform=lambda v: v, separator: str = ";") -> str:
     """
     Convert the config object to a property string. Useful for constructing CSS and javascript
     object init strings.
@@ -60,35 +65,35 @@ def cfg_to_prop_string(cfg, key_transform=lambda k: k, value_transform=lambda v:
     return separator.join([f"{key_transform(key)}:{value_transform(value)}" for key, value in cfg.items()])
 
 
-def cfg_to_css_string(cfg):
+def cfg_to_css_string(cfg: "Cfg"):
     return cfg_to_prop_string(cfg, lambda k: k.replace("_", "-"), lambda v: str(v).lower())
 
 
 class Cfg(dict):
     """
-    Provides plumbing for inheritable block parameters.
+    A dict-like mapping for inheritable block parameters.
     """
 
-    def inherit(self, parent):
+    def inherit(self, parent: Union[dict, "Cfg"]) -> "Cfg":
         """
         Inherit all parent settings that the current config does not define.
         """
         return self.__class__(Cfg._mergedicts(self, parent, False))
 
-    def inherit_many(self, *args, **kwargs):
+    def inherit_many(self, *args: "Cfg", **kwargs) -> "Cfg":
         """
         Inherit many settings at once.
         """
         inherit_collapsed = self._collapse_args(args, kwargs)
         return self.inherit(inherit_collapsed)
 
-    def override(self, parent):
+    def override(self, parent: Union[Dict, "Cfg"]) -> "Cfg":
         """
         Override all settings specified in the overrides.
         """
         return self.__class__(Cfg._mergedicts(self, parent, True))
 
-    def override_many(self, *args, **kwargs):
+    def override_many(self, *args: "Cfg", **kwargs) -> "Cfg":
         """
         Override many settings at once.
         """
@@ -96,7 +101,7 @@ class Cfg(dict):
         return self.override(override_collapsed)
 
     @staticmethod
-    def _collapse_args(args, kwargs):
+    def _collapse_args(args: Tuple["Cfg", ...], kwargs) -> "Cfg":
         inherit_agg = Cfg(kwargs)
         for arg in args:
             # If we got a type as configuration, instantiate it
@@ -107,7 +112,7 @@ class Cfg(dict):
         return inherit_agg
 
     @staticmethod
-    def _mergedicts(dict1, dict2, take_second):
+    def _mergedicts(dict1: Dict, dict2: Dict, take_second: bool) -> Iterator:
         for k in set(itertools.chain(dict1.keys(), dict2.keys())):
             if k in dict1 and k in dict2:
                 v1 = dict1[k]
@@ -123,10 +128,10 @@ class Cfg(dict):
             else:
                 yield (k, dict2[k])
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str):
         return self[item]
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value):
         self[name] = value
 
     def __setstate__(self, state):

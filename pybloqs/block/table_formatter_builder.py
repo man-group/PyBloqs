@@ -35,14 +35,14 @@ class FormatterBuilder:
     def __init__(self) -> None:
         self._formatters: Dict[FormatterType, List[pbtf.TableFormatter]] = OrderedDict()
 
-    def add_formatter(self, name: FormatterType, formatter: pbtf.TableFormatter):
+    def add_formatter(self, name: FormatterType, formatter: pbtf.TableFormatter) -> "FormatterBuilder":
         if name not in self._formatters:
             self._formatters[name] = [formatter]
         else:
             self._formatters[name].append(formatter)
         return self
 
-    def remove_formatter(self, name: FormatterType):
+    def remove_formatter(self, name: FormatterType) -> "FormatterBuilder":
         if name in self._formatters:
             del self._formatters[name]
         return self

@@ -1,4 +1,5 @@
 import os
+from typing import Optional, Union
 
 from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
 
@@ -11,15 +12,15 @@ class WkhtmltopdfConverter(HTMLConverter):
     def htmlconv(
         self,
         block,
-        output_file,
+        output_file: str,
         header_block=None,
-        header_spacing=None,
+        header_spacing: Optional[Union[str, float]] = None,
         footer_block=None,
-        footer_spacing=None,
-        pdf_zoom=1,
-        pdf_page_size=A4,
-        orientation=PORTRAIT,
-        pdf_auto_shrink=True,
+        footer_spacing: Optional[Union[str, float]] = None,
+        pdf_zoom: float = 1,
+        pdf_page_size: str = A4,
+        orientation: str = PORTRAIT,
+        pdf_auto_shrink: bool = True,
         **kwargs,
     ):
         """
@@ -79,7 +80,7 @@ class WkhtmltopdfConverter(HTMLConverter):
 
 
 class WkhtmltoimageConverter(HTMLConverter):
-    def htmlconv(self, block, output_file, pdf_zoom=1, **kwargs):
+    def htmlconv(self, block, output_file: str, pdf_zoom: float = 1, **kwargs):
         """
         Use the wkhtmltoimage tool to convert the supplied HTML content to an image file.
 

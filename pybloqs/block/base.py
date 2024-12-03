@@ -3,6 +3,7 @@ import os
 import uuid
 import webbrowser
 from io import BytesIO
+from typing import Iterable, Optional, Tuple, Union
 from urllib.parse import urljoin
 
 import pybloqs.htmlconv as htmlconv
@@ -27,14 +28,14 @@ class BaseBlock:
 
     def __init__(
         self,
-        title=None,
-        title_level=3,
-        title_wrap=False,
+        title: Optional[str] = None,
+        title_level: int = 3,
+        title_wrap: bool = False,
         width=None,
         height=None,
-        inherit_cfg=True,
+        inherit_cfg: bool = True,
         styles=None,
-        classes=(),
+        classes: Union[str, Iterable[str]] = (),
         anchor=None,
         **kwargs,
     ):
@@ -53,12 +54,20 @@ class BaseBlock:
         self._anchor = anchor
         self._id = uuid.uuid4().hex
 
-    def render_html(self, pretty=True, static_output=False, header_block=None, footer_block=None):
-        """Returns html output of the block
+    def render_html(
+        self,
+        pretty: bool = True,
+        static_output: bool = False,
+        header_block: Optional["BaseBlock"] = None,
+        footer_block: Optional["BaseBlock"] = None,
+    ):
+        """
+        Returns html output of the block
+
         :param pretty: Toggles pretty printing of the resulting HTML. Not applicable for non-HTML output.
         :param static_output: Passed down to _write_block. Will render static version of blocks which support this.
-        :param header_block: If not None, header is inlined into a HTML body as table.
-        :param footer_block: If not None, header is inlined into a HTML body as table.
+        :param header_block: If not None, header_block is inlined into a HTML body as table.
+        :param footer_block: If not None, footer_block is inlined into a HTML body as table.
         :return html-code of the block
         """
         # Render the contents
@@ -122,16 +131,16 @@ class BaseBlock:
 
     def save(
         self,
-        filename=None,
-        fmt=None,
-        pdf_zoom=1,
-        pdf_page_size=htmlconv.html_converter.A4,
-        pdf_auto_shrink=True,
-        orientation=htmlconv.html_converter.PORTRAIT,
-        header_block=None,
-        header_spacing=5,
-        footer_block=None,
-        footer_spacing=5,
+        filename: Optional[str] = None,
+        fmt: Optional[str] = None,
+        pdf_zoom: float = 1,
+        pdf_page_size: str = htmlconv.html_converter.A4,
+        pdf_auto_shrink: bool = True,
+        orientation: str = htmlconv.html_converter.PORTRAIT,
+        header_block: Optional["BaseBlock"] = None,
+        header_spacing: Union[str, float] = 5,
+        footer_block: Optional["BaseBlock"] = None,
+        footer_spacing: Union[str, float] = 5,
         **kwargs,
     ):
         """
@@ -224,7 +233,9 @@ class BaseBlock:
 
         return full_path
 
-    def show(self, fmt="html", header_block=None, footer_block=None):
+    def show(
+        self, fmt: str = "html", header_block: Optional["BaseBlock"] = None, footer_block: Optional["BaseBlock"] = None
+    ):
         """
         Show the block in a browser.
 
@@ -251,15 +262,15 @@ class BaseBlock:
 
     def email(
         self,
-        title="",
-        recipients=(user_config["user_email_address"],),
-        header_block=None,
-        footer_block=None,
-        from_address=None,
-        cc=None,
-        bcc=None,
+        title: str = "",
+        recipients: Tuple[str, ...] = (user_config["user_email_address"],),
+        header_block: Optional["BaseBlock"] = None,
+        footer_block: Optional["BaseBlock"] = None,
+        from_address: Optional[str] = None,
+        cc: Optional[str] = None,
+        bcc: Optional[str] = None,
         attachments=None,
-        convert_to_ascii=True,
+        convert_to_ascii: bool = True,
         **kwargs,
     ):
         """
@@ -441,7 +452,7 @@ class BaseBlock:
         """
         raise NotImplementedError("_write_contents")
 
-    def _repr_html_(self, *_):
+    def _repr_html_(self, *_) -> str:
         """
         Function required to support interactive IPython plopping and plotting.
 
@@ -452,7 +463,7 @@ class BaseBlock:
         return self.data.decode()
 
     @property
-    def data(self):
+    def data(self) -> bytes:
         """
         Function required to support interactive IPython plotting.
 

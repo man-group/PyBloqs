@@ -1,11 +1,12 @@
 from collections import namedtuple
+from typing import List, Optional, Tuple
 
 import pandas as pd
 from jinja2 import Environment, PackageLoader
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.convenience import add_block_types
-from pybloqs.block.table_formatters import DEFAULT_DECIMALS_FORMATTER, DEFAULT_FORMATTERS, ORG_ROW_NAMES
+from pybloqs.block.table_formatters import DEFAULT_DECIMALS_FORMATTER, DEFAULT_FORMATTERS, ORG_ROW_NAMES, TableFormatter
 from pybloqs.html import parse
 
 _jinja_env = Environment(loader=PackageLoader("pybloqs", "jinja"))
@@ -22,7 +23,14 @@ IndexCell = namedtuple("IndexCell", ["value", "names", "span", "depth"])
 class HTMLJinjaTableBlock(BaseBlock):
     FormatterData = namedtuple("FormatterData", ["cell", "row_name", "column_name", "df"])
 
-    def __init__(self, df, formatters=None, use_default_formatters=True, merge_vertical=False, **kwargs):
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        formatters: Optional[List[TableFormatter]] = None,
+        use_default_formatters: bool = True,
+        merge_vertical: bool = False,
+        **kwargs,
+    ):
         """Create table from Jinja framework. Apply formatters to customise table formatting.
 
         Parameters()
@@ -142,7 +150,7 @@ class HTMLJinjaTableBlock(BaseBlock):
         return
 
 
-def multiindex_to_tuples(index):
+def multiindex_to_tuples(index) -> List[Tuple]:
     return [tuple(col) for col in index]
 
 

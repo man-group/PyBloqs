@@ -4,7 +4,6 @@ Common email related functions used by various reports.
 
 import base64
 import getpass
-import logging
 import os
 import smtplib
 import tempfile
@@ -14,16 +13,15 @@ from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Iterable, List, Optional, Tuple, Union
 
 import html5lib
 from html5lib import treebuilders
 
 from pybloqs.config import user_config
 
-_log = logging.getLogger(__name__)
 
-
-def send(message, recipients):
+def send(message: Message, recipients: Union[List[str], Tuple[str, ...]]):
     """
     Send an email to a list of recipients.
 
@@ -129,7 +127,16 @@ def _set_email_mime_types(dom, message=None, convert_to_ascii=False):
     return message
 
 
-def send_html_report(html_str, to, subject=None, attachments=None, From=None, Cc=None, Bcc=None, convert_to_ascii=True):
+def send_html_report(
+    html_str: str,
+    to: Iterable[str],
+    subject: Optional[str] = None,
+    attachments: Optional[Iterable[Union[str, Tuple[str, str]]]] = None,
+    From: Optional[str] = None,
+    Cc: Optional[Iterable[str]] = None,
+    Bcc: Optional[Iterable[str]] = None,
+    convert_to_ascii: bool = True,
+):
     """
     Email html report and embed any images.
     Extract html title to email subject.
