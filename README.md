@@ -1,4 +1,4 @@
-<div style="text-align:center;">
+<div align="center">
 
 ![pybloqs](https://github.com/man-group/PyBloqs/raw/master/logo/logo50.png)
 
