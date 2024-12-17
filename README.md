@@ -2,7 +2,7 @@
 
 ![pybloqs](https://github.com/man-group/PyBloqs/raw/master/logo/logo50.png)
 
-_PyBloqs is a flexible framework for visualizing data and automated creation of "good enmough" reports._
+_PyBloqs is a flexible framework for visualizing data and automated creation of "good enough" reports._
 
 [![CircleCI](https://circleci.com/gh/man-group/PyBloqs.svg?style=shield)](https://circleci.com/gh/man-group/PyBloqs)
 [![PyPI](https://img.shields.io/pypi/pyversions/pybloqs.svg)](https://pypi.python.org/pypi/pybloqs/)
