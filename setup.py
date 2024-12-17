@@ -9,19 +9,6 @@ from distutils.file_util import copy_file
 from setuptools import Command, setup
 from setuptools.command.install import install
 
-# Convert Markdown to RST for PyPI
-# http://stackoverflow.com/a/26737672
-try:
-    import pypandoc
-
-    long_description = pypandoc.convert("README.md", "rst")
-    changelog = pypandoc.convert("CHANGES.md", "rst")
-except (ImportError, OSError):
-    with open("README.md") as fd:
-        long_description = fd.read()
-    with open("CHANGES.md") as fd:
-        changelog = fd.read()
-
 
 def _copy_hc_files(source_paths, dest_path):
     """Copies all .js files (excluding .src.js) from source_path into dest_path."""
@@ -146,7 +133,6 @@ class PyBloqsInstall(install):
 
 
 setup(
-    long_description="\n".join((long_description, changelog)),
     cmdclass={
         "install": PyBloqsInstall,
         "load_highcharts": LoadHighcharts,

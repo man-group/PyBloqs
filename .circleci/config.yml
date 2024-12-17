@@ -21,7 +21,6 @@ defaults: &defaults
     - run: tar Jxvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
     - run: sudo apt-get update
     - run: sudo apt-get install poppler-utils
-    - run: sudo apt-get install pandoc
     - run: npm install
     - run: npm install highcharts@10.0.0
     # Phantomjs is required to Bokeh static output
@@ -129,8 +128,6 @@ jobs:
     - run:
        name: Create virtualenv and install required packages
        command: |
-         sudo apt-get update
-         sudo apt-get install pandoc
          virtualenv ci
          . ci/bin/activate
          pip install build twine
