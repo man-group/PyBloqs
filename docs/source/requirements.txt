@@ -12,3 +12,5 @@ plotly
 bokeh
 sphinx-book-theme
 myst-nb
+sphinx-copybutton
+sphinx-togglebutton
