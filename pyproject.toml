@@ -5,6 +5,7 @@ requires-python = ">= 3.6"
 authors = [{ name = "Man Alpha Technology", email = "ManAlphaTech@man.com" }]
 keywords = ["ahl", "pdf", "html", "visualization", "report"]
 license = { file = "LICENSE" }
+readme = "README.md"
 classifiers = [
   "Operating System :: OS Independent",
   "Intended Audience :: Science/Research",
@@ -26,7 +27,7 @@ dependencies = [
   "pyyaml",
   "jinja2",
 ]
-dynamic = ['readme', 'version']
+dynamic = ['version']
 
 [project.optional-dependencies]
 docs_and_notebook = [
@@ -47,7 +48,7 @@ Documentation = "https://pybloqsmain.readthedocs.io/en/latest/"
 Changelog = "https://github.com/man-group/PyBloqs/blob/master/CHANGES.md"
 
 [build-system]
-requires = ["setuptools", "pypandoc<1.8", "jsmin", "setuptools_scm>=8"]
+requires = ["setuptools", "jsmin", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
