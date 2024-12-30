@@ -4,7 +4,7 @@ import datetime
 import itertools
 import re
 import zlib
-from typing import Dict, Iterator, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, Tuple, Union
 
 import numpy as np
 
@@ -23,7 +23,7 @@ def np_dt_epoch_msec(value: np.datetime64) -> float:
     return value.astype(int) / 1000
 
 
-def encode_string(string: str, level=9) -> bytes:
+def encode_string(string: str, level: int = 9) -> bytes:
     """
     Compresses and base64 encodes the supplied string
 
@@ -55,7 +55,12 @@ def underscorecase(camelcased: str) -> str:
     return re.sub("([A-Z]+)", r"_\1", camelcased).lower()
 
 
-def cfg_to_prop_string(cfg: "Cfg", key_transform=lambda k: k, value_transform=lambda v: v, separator: str = ";") -> str:
+def cfg_to_prop_string(
+    cfg: "Cfg",
+    key_transform: Callable[[str], str] = lambda k: k,
+    value_transform: Callable[[str], str] = lambda v: v,
+    separator: str = ";",
+) -> str:
     """
     Convert the config object to a property string. Useful for constructing CSS and javascript
     object init strings.
@@ -65,7 +70,7 @@ def cfg_to_prop_string(cfg: "Cfg", key_transform=lambda k: k, value_transform=la
     return separator.join([f"{key_transform(key)}:{value_transform(value)}" for key, value in cfg.items()])
 
 
-def cfg_to_css_string(cfg: "Cfg"):
+def cfg_to_css_string(cfg: "Cfg") -> str:
     return cfg_to_prop_string(cfg, lambda k: k.replace("_", "-"), lambda v: str(v).lower())
 
 
@@ -80,7 +85,7 @@ class Cfg(dict):
         """
         return self.__class__(Cfg._mergedicts(self, parent, False))
 
-    def inherit_many(self, *args: "Cfg", **kwargs) -> "Cfg":
+    def inherit_many(self, *args: "Cfg", **kwargs: Any) -> "Cfg":
         """
         Inherit many settings at once.
         """
@@ -93,7 +98,7 @@ class Cfg(dict):
         """
         return self.__class__(Cfg._mergedicts(self, parent, True))
 
-    def override_many(self, *args: "Cfg", **kwargs) -> "Cfg":
+    def override_many(self, *args: "Cfg", **kwargs: Any) -> "Cfg":
         """
         Override many settings at once.
         """
@@ -101,7 +106,7 @@ class Cfg(dict):
         return self.override(override_collapsed)
 
     @staticmethod
-    def _collapse_args(args: Tuple["Cfg", ...], kwargs) -> "Cfg":
+    def _collapse_args(args: Tuple["Cfg", ...], kwargs: Any) -> "Cfg":
         inherit_agg = Cfg(kwargs)
         for arg in args:
             # If we got a type as configuration, instantiate it
@@ -128,18 +133,18 @@ class Cfg(dict):
             else:
                 yield (k, dict2[k])
 
-    def __getattr__(self, item: str):
+    def __getattr__(self, item: str) -> Any:
         try:
             return self[item]
         except KeyError:
             raise AttributeError(f"'Cfg' object has no attribute '{item}'")
 
-    def __setattr__(self, name: str, value):
+    def __setattr__(self, name: str, value: Any) -> None:
         self[name] = value
 
-    def __setstate__(self, state):
+    def __setstate__(self, state) -> None:
         for key in state:
             self[key] = state[key]
 
-    def __getstate__(self):
+    def __getstate__(self) -> Dict[str, Any]:
         return {key: self[key] for key in self}

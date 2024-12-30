@@ -1,6 +1,22 @@
 from datetime import datetime
 from io import StringIO
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    TextIO,
+    Tuple,
+    Type,
+    Union,
+)
 
+import bs4
 import numpy as np
 import pandas as pd
 from pandas.core.generic import NDFrame
@@ -27,13 +43,13 @@ class Expr:
     Represents a javascript expression as a string.
     """
 
-    def __init__(self, fun_str):
+    def __init__(self, fun_str: str) -> None:
         self.fun_str = fun_str
 
-    def write_jscript(self, stream):
+    def write_jscript(self, stream: TextIO) -> None:
         stream.write(self.fun_str)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Expr('''{self.fun_str}''')"
 
 
@@ -44,32 +60,36 @@ class _PlotDim(Expr):
     TODO: Replace current eager evaluation with a simple lazy tree.
     """
 
-    def __add__(self, other):
+    def __add__(self, other: Any) -> "_PlotDim":
         return self._construct_arith("+", other)
 
-    def __sub__(self, other):
+    def __sub__(self, other: Any) -> "_PlotDim":
         return self._construct_arith("-", other)
 
-    def __mul__(self, other):
+    def __mul__(self, other: Any) -> "_PlotDim":
         return self._construct_arith("*", other)
 
-    def __div__(self, other):
+    def __div__(self, other: Any) -> "_PlotDim":
         return self._construct_arith("/", other)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: Any) -> "_PlotDim":
         return self.__div__(other)
 
-    def __mod__(self, other):
+    def __mod__(self, other: Any) -> "_PlotDim":
         return self._construct_arith("%", other)
 
-    def __pow__(self, power, modulo=None):
+    def __pow__(self, power, modulo=None) -> "_PlotDim":
         if modulo is not None:
             raise NotImplementedError
 
         return self._construct_arith("^", power)
 
-    def _construct_arith(self, op, other):
+    def _construct_arith(self, op: str, other: Any) -> "_PlotDim":
         return _PlotDim(self.fun_str + op + str(other))
+
+
+class _PlotOpts(Cfg):
+    pass
 
 
 class Plot(BaseBlock):
@@ -80,7 +100,7 @@ class Plot(BaseBlock):
 
     resource_deps = tuple(JScript(m) for m in HIGHCHARTS_ALL)
 
-    def __init__(self, data, *args, **kwargs):
+    def __init__(self, data: Union[List, Tuple, pd.Series, pd.DataFrame], *args, **kwargs) -> None:
         """
         Create a chart or composite chart from the supplied data.
 
@@ -137,7 +157,7 @@ class Plot(BaseBlock):
                 subchart_series = subchart_cfg.series
 
                 # Check for axis definitions.
-                def _set_axis(axis_name):
+                def _set_axis(axis_name) -> None:
                     # Get a custom axis, or use/create a default one.
                     axis = subchart_cfg.setdefault(axis_name, None) or axis_defaults.setdefault(axis_name, Cfg())
                     if isinstance(axis, (list, tuple)):
@@ -176,11 +196,13 @@ class Plot(BaseBlock):
         self._chart_cfg = chart_cfg
         self._chart_cls = chart_cls
 
-    def inherit(self, *args):
+    def inherit(self, *args: Cfg) -> None:
         self._chart_cfg = self._chart_cfg.inherit_many(*args)
 
     @staticmethod
-    def _flatten_data(data, chart_cfg, switch_zy=False):
+    def _flatten_data(
+        data: Union[Sequence, NDFrame], chart_cfg: Cfg, switch_zy: bool = False
+    ) -> Tuple[Union[Sequence, NDFrame], Cfg]:
         plot_axes_def = [(0, XAxis), (1, YAxis)]
 
         # Inject categories into the axis definitions of the plot
@@ -202,7 +224,7 @@ class Plot(BaseBlock):
         return data, chart_cfg
 
     @staticmethod
-    def _set_chart_defaults(chart_cfg, chart_cls):
+    def _set_chart_defaults(chart_cfg: Cfg, chart_cls: Literal["StockChart", "Chart"]) -> Cfg:
         if chart_cls == "StockChart":
             chart_cfg = chart_cfg.inherit_many(
                 Chart(zoom_type="x"), PlotOptions(Series(States(Hover(enabled=False, halo=False))))
@@ -230,7 +252,9 @@ class Plot(BaseBlock):
             return chart_cfg
 
     @staticmethod
-    def _parse_args(args, allowed_cfg_types=(Cfg,)):
+    def _parse_args(
+        args: Iterable[Union[Type, _PlotOpts, Any]], allowed_cfg_types: Tuple[Type, ...] = (Cfg,)
+    ) -> Tuple[Cfg, Union[None, Cfg, _PlotOpts]]:
         """
         Parse the supplied argument list into a configuration object.
 
@@ -257,7 +281,7 @@ class Plot(BaseBlock):
         return configs, plot_cfg
 
     @staticmethod
-    def _construct_plot_series(data, plot_cfg=None):
+    def _construct_plot_series(data, plot_cfg: Optional[Cfg] = None) -> List[Cfg]:
         """
         Construct a list of series configurations.
 
@@ -267,10 +291,10 @@ class Plot(BaseBlock):
         :return: List of chart series.
         """
 
-        def _decompose_l1(cfg):
+        def _decompose_l1(cfg: Cfg) -> List[Cfg]:
             return [cfg.override_many(data=value).inherit_many(name=key) for key, value in data.items()]
 
-        def _decompose_l2(cfg):
+        def _decompose_l2(cfg: Cfg) -> List[Cfg]:
             component_series = []
 
             for k1, v1 in data.items():
@@ -279,7 +303,7 @@ class Plot(BaseBlock):
 
             return component_series
 
-        def _wrap(cfg, name):
+        def _wrap(cfg: Cfg, name: str) -> List[Cfg]:
             cfg = cfg.override(Cfg(data=data))
             if "name" not in cfg and name is not None:
                 cfg.name = name
@@ -307,7 +331,7 @@ class Plot(BaseBlock):
         return series
 
     @staticmethod
-    def _choose_chart_class(data):
+    def _choose_chart_class(data: Union[pd.Series, NDFrame, Sequence]) -> Literal["StockChart", "Chart"]:
         """
         Tries to guess the appropriate chart class based on the data.
         """
@@ -335,7 +359,9 @@ class Plot(BaseBlock):
 
         return "Chart"
 
-    def _write_contents(self, container, actual_cfg, id_gen, static_output=False, **kwargs):
+    def _write_contents(
+        self, container, actual_cfg, id_gen: Iterator[str], static_output: bool = False, **kwargs
+    ) -> None:
         plot_container = append_to(container, "div")
         plot_container["id"] = plot_container_id = next(id_gen)
 
@@ -344,7 +370,7 @@ class Plot(BaseBlock):
 
         self._write_plot(plot_container, plot_container_id, id_gen, static_output)
 
-    def _write_plot(self, container, container_id, id_gen, static_output):
+    def _write_plot(self, container: bs4.Tag, container_id: str, id_gen: Iterator[str], static_output: bool) -> None:
         """
         Write out the chart construction machinery.
         """
@@ -392,10 +418,10 @@ class Plot(BaseBlock):
 
         js_elem(container, stream.getvalue())
 
-    def _write_plot_postprocess(self, chart_buf):
+    def _write_plot_postprocess(self, chart_buf: StringIO) -> None:
         pass
 
-    def _write_value(self, stream, value):
+    def _write_value(self, stream, value) -> None:
         """
         Write the supplied value to the stream.
         """
@@ -446,7 +472,7 @@ class Plot(BaseBlock):
         else:
             raise ValueError("Unhandled config item type " + str(type(value)))
 
-    def _write_dict(self, stream, dct):
+    def _write_dict(self, stream, dct) -> None:
         """
         Write out a dictionary.
         """
@@ -462,7 +488,7 @@ class Plot(BaseBlock):
             self._write_value(stream, value)
         stream.write("}")
 
-    def _write_iterable(self, stream, iterable):
+    def _write_iterable(self, stream, iterable) -> None:
         """
         Write out an iterable.
         """
@@ -476,17 +502,17 @@ class Plot(BaseBlock):
 
         stream.write("]")
 
-    def _to_static(self):
+    def _to_static(self) -> ImgBlock:
         return ImgBlock(self)
 
 
-def _make_chart_cfg(name, *def_args, **def_kwargs):
+def _make_chart_cfg(name: str, *def_args, **def_kwargs) -> Callable:
     """
     Creates a chart configuration group. Uniqueness is ensured by attaching an UUID
     base __id keyword.
     """
 
-    def _builder(*args, **kwargs):
+    def _builder(*args: Dict, **kwargs) -> Cfg:
         for arg in args:
             kwargs.update(arg)
 
@@ -558,17 +584,13 @@ PlotLines = lambda items: Cfg({"plot_lines": items})  # PlotLines is an array an
 StackLabels = _make_chart_cfg("stack_labels")
 
 
-class _PlotOpts(Cfg):
-    pass
-
-
-def _make_plot_opts(plot_type, rank):
+def _make_plot_opts(plot_type: str, rank: int) -> Type[_PlotOpts]:
     class _SpecPlotOpts(_PlotOpts):
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs) -> None:
             super().__init__(*args, **kwargs)
             self.type = plot_type
 
-        def check_array_shape(self, arr, is_labelled):
+        def check_array_shape(self, arr: Union[Sequence, NDFrame], is_labelled: bool) -> None:
             ndim, shape = _sniff_data_dim(arr)
 
             if ndim == 1:
@@ -594,7 +616,7 @@ def _make_plot_opts(plot_type, rank):
     return _SpecPlotOpts
 
 
-def _sniff_data_dim(data):
+def _sniff_data_dim(data: Union[Sequence, NDFrame]) -> Tuple[int, List[int]]:
     try:
         return data.ndim, data.shape
     except AttributeError:
@@ -602,10 +624,10 @@ def _sniff_data_dim(data):
         return _sniff_list_dim(data)
 
 
-def _sniff_list_dim(data):
+def _sniff_list_dim(data: Sequence) -> Tuple[int, List[int]]:
     dim = []
 
-    def _sniff_rec(item):
+    def _sniff_rec(item: Sequence) -> None:
         # noinspection PyBroadException
         try:
             dim.append(len(item))

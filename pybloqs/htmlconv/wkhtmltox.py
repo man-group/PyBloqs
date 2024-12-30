@@ -1,7 +1,11 @@
 import os
-from typing import Optional, Union
+from numbers import Number
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
+
+if TYPE_CHECKING:
+    from pybloqs import BaseBlock
 
 
 class WkhtmltopdfConverter(HTMLConverter):
@@ -11,18 +15,18 @@ class WkhtmltopdfConverter(HTMLConverter):
 
     def htmlconv(
         self,
-        block,
+        block: "BaseBlock",
         output_file: str,
-        header_block=None,
+        header_block: Optional["BaseBlock"] = None,
         header_spacing: Optional[Union[str, float]] = None,
-        footer_block=None,
+        footer_block: Optional["BaseBlock"] = None,
         footer_spacing: Optional[Union[str, float]] = None,
-        pdf_zoom: float = 1,
+        pdf_zoom: Number = 1,
         pdf_page_size: str = A4,
         orientation: str = PORTRAIT,
         pdf_auto_shrink: bool = True,
-        **kwargs,
-    ):
+        **kwargs: str,
+    ) -> Tuple[bytes, bytes]:
         """
         Use the wkhtmltohtml tool to convert the supplied HTML content to a PDF file.
 
@@ -80,7 +84,7 @@ class WkhtmltopdfConverter(HTMLConverter):
 
 
 class WkhtmltoimageConverter(HTMLConverter):
-    def htmlconv(self, block, output_file: str, pdf_zoom: float = 1, **kwargs):
+    def htmlconv(self, block: "BaseBlock", output_file: str, pdf_zoom: float = 1, **kwargs) -> Tuple[bytes, bytes]:
         """
         Use the wkhtmltoimage tool to convert the supplied HTML content to an image file.
 

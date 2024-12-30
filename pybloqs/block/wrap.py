@@ -3,7 +3,7 @@ from pybloqs.block.convenience import Block
 
 
 class Box(BaseBlock):
-    def __init__(self, contents, **kwargs):
+    def __init__(self, contents, **kwargs) -> None:
         """
         Wrap the supplied content (can be anything that is supported by the basic blocks)
         in a container.
@@ -19,7 +19,7 @@ class Box(BaseBlock):
         # Blockify the content
         self._contents = Block(contents)
 
-    def _write_contents(self, *args, **kwargs):
+    def _write_contents(self, *args, **kwargs) -> None:
         self._contents._write_block(*args, **kwargs)
 
 

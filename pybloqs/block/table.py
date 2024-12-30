@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import List, Optional, Tuple
+from typing import Any, Iterable, List, Optional, Tuple
 
 import pandas as pd
 from jinja2 import Environment, PackageLoader
@@ -30,7 +30,7 @@ class HTMLJinjaTableBlock(BaseBlock):
         use_default_formatters: bool = True,
         merge_vertical: bool = False,
         **kwargs,
-    ):
+    ) -> None:
         """Create table from Jinja framework. Apply formatters to customise table formatting.
 
         Parameters()
@@ -57,7 +57,7 @@ class HTMLJinjaTableBlock(BaseBlock):
         self.n_header_rows = len(df.columns.names)
         self.merge_vertical = merge_vertical
 
-    def modify_cell_content(self, cell, row_name, column_name):
+    def modify_cell_content(self, cell, row_name, column_name) -> Any:
         if ORG_ROW_NAMES in self.df.columns and self.row_index > 0:
             row_name = self.df[ORG_ROW_NAMES].iloc[self.row_index]
         for formatter in self.formatters:
@@ -68,7 +68,7 @@ class HTMLJinjaTableBlock(BaseBlock):
                 continue
         return cell
 
-    def insert_additional_html(self):
+    def insert_additional_html(self) -> str:
         html_string = ""
         for formatter in self.formatters:
             try:
@@ -77,10 +77,12 @@ class HTMLJinjaTableBlock(BaseBlock):
                 continue
         return html_string
 
-    def _join_css_substrings(self, css_substrings, prefix):
+    def _join_css_substrings(self, css_substrings: Iterable[str], prefix: str) -> str:
         return prefix + '="' + "; ".join(css_substrings) + '"'
 
-    def _aggregate_css_formatters(self, function_name, fmt_args=None, prefix="style"):
+    def _aggregate_css_formatters(
+        self, function_name: str, fmt_args: Optional[List[Any]] = None, prefix: str = "style"
+    ) -> str:
         css_substrings = []
         fmt_args = fmt_args if fmt_args else []
         for formatter in self.formatters:
@@ -93,41 +95,41 @@ class HTMLJinjaTableBlock(BaseBlock):
                 css_substrings.append(css_substring)
         return self._join_css_substrings(css_substrings, prefix)
 
-    def create_table_level_css(self):
+    def create_table_level_css(self) -> str:
         self.row_index = -self.n_header_rows - 1
         return self._aggregate_css_formatters("create_table_level_css")
 
-    def create_table_level_css_class(self):
+    def create_table_level_css_class(self) -> str:
         return self._aggregate_css_formatters("create_table_level_css_class", prefix="class")
 
-    def create_thead_level_css(self):
+    def create_thead_level_css(self) -> str:
         return self._aggregate_css_formatters("create_thead_level_css")
 
-    def create_row_level_css(self, row_name, row):
+    def create_row_level_css(self, row_name: str, row) -> str:
         self.row_index += 1
         if ORG_ROW_NAMES in self.df.columns and self.row_index >= 0:
             row_name = self.df[ORG_ROW_NAMES].iloc[self.row_index]
         data = pd.Series(row, name=row_name)
         return self._aggregate_css_formatters("create_row_level_css", fmt_args=[data])
 
-    def create_column_level_css(self, column_name, series):
+    def create_column_level_css(self, column_name: str, series) -> str:
         data = self.FormatterData(None, None, column_name, series)
         return self._aggregate_css_formatters("create_column_level_css", fmt_args=[data])
 
-    def create_cell_level_css(self, cell, row_name, column_name):
+    def create_cell_level_css(self, cell, row_name: str, column_name: str) -> str:
         if ORG_ROW_NAMES in self.df.columns and self.row_index >= 0:
             row_name = self.df[ORG_ROW_NAMES].iloc[self.row_index]
         data = self.FormatterData(cell, row_name, column_name, self.df)
         return self._aggregate_css_formatters("create_cell_level_css", fmt_args=[data])
 
-    def _get_header_iterable(self):
+    def _get_header_iterable(self) -> List[List[IndexCell]]:
         df_clean = self.df.loc[:, self.df.columns.get_level_values(0) != ORG_ROW_NAMES]
         return columns_to_iterable(df_clean.columns, merge_depth=self.merge_vertical)
 
-    def _get_index_iterable(self):
+    def _get_index_iterable(self) -> List[List[IndexCell]]:
         return index_to_iterable(self.df.index)
 
-    def _write_contents(self, container, actual_cfg, *args, **kwargs):
+    def _write_contents(self, container, actual_cfg, *args, **kwargs) -> None:
         # table boilerplate
         model = {
             "df": self.df,
@@ -147,14 +149,13 @@ class HTMLJinjaTableBlock(BaseBlock):
         soup = parse(table_html)
         table = soup.find("table")
         container.append(table)
-        return
 
 
-def multiindex_to_tuples(index) -> List[Tuple]:
+def multiindex_to_tuples(index: pd.Index) -> List[Tuple]:
     return [tuple(col) for col in index]
 
 
-def index_to_iterable(index, merge_depth=False):
+def index_to_iterable(index: pd.Index, merge_depth: bool = False) -> List[List[IndexCell]]:
     """
     Return the given index as a list of lists of (potentially merged) cells
     suitable for rendering as HTML, in span-major order. i.e. suited for
@@ -227,7 +228,7 @@ def index_to_iterable(index, merge_depth=False):
         return [[IndexCell(value, [value], 1, 1)] for value in index.tolist()]
 
 
-def columns_to_iterable(column_index, merge_depth=False):
+def columns_to_iterable(column_index: pd.Index, merge_depth: bool = False) -> List[List[IndexCell]]:
     """
     Return the given index as a list of lists of (potentially merged) cells
     suitable for rendering as HTML, in depth-major order. i.e. suited for

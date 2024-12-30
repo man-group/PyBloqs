@@ -1,6 +1,8 @@
 import os
 from io import StringIO
+from typing import Any, Iterator, Optional
 
+import bs4
 from pkg_resources import resource_filename
 
 from pybloqs.html import css_elem, js_elem
@@ -8,7 +10,13 @@ from pybloqs.util import encode_string
 
 
 class Resource:
-    def __init__(self, file_name=None, extension="", content_string=None, name=None):
+    def __init__(
+        self,
+        file_name: Optional[str] = None,
+        extension: str = "",
+        content_string: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> None:
         """
         An external script dependency definition.
 
@@ -29,17 +37,17 @@ class Resource:
                 self.content_string = f.read()
 
     @classmethod
-    def _local_path(cls, file_name, extension):
+    def _local_path(cls, file_name: str, extension: str) -> str:
         """Generate the local path to the script using pkg_resources."""
         return resource_filename(__name__, file_name if file_name.endswith(extension) else file_name + "." + extension)
 
-    def write(self, parent):
-        pass
+    def write(self, parent: Optional[bs4.Tag]) -> bs4.Tag:
+        raise NotImplementedError("write")
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.name)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Resource):
             return False
         return self.name == other.name
@@ -53,7 +61,13 @@ class JScript(Resource):
     # Global flag to turn off script encoding/compression everywhere
     global_encode = True
 
-    def __init__(self, file_name=None, script_string=None, name=None, encode=True):
+    def __init__(
+        self,
+        file_name: Optional[str] = None,
+        script_string: Optional[str] = None,
+        name: Optional[str] = None,
+        encode: bool = True,
+    ) -> None:
         """
         A JavaScript dependency definition. Ensures that multiple inclusions of the same function are handled safely.
 
@@ -65,7 +79,7 @@ class JScript(Resource):
         super().__init__(file_name, "js", script_string, name)
         self.encode = encode
 
-    def write(self, parent=None):
+    def write(self, parent: Optional[bs4.Tag] = None) -> bs4.Tag:
         stream = StringIO()
 
         # Wrapper to make accidental multiple inclusion if the same code (e.g. with different file names) safe to load.
@@ -84,7 +98,7 @@ class JScript(Resource):
         return js_elem(parent, stream.getvalue())
 
     @classmethod
-    def write_compressed(cls, stream, data):
+    def write_compressed(cls, stream: StringIO, data: str) -> None:
         if cls.global_encode:
             stream.write('blocksEval(RawDeflate.inflate(atob("')
             stream.write(encode_string(data).decode())
@@ -94,7 +108,9 @@ class JScript(Resource):
 
 
 class Css(Resource):
-    def __init__(self, file_name=None, css_string=None, name=None):
+    def __init__(
+        self, file_name: Optional[str] = None, css_string: Optional[str] = None, name: Optional[str] = None
+    ) -> None:
         """
         A CSS dependency definition. Will prevent adding resource with same name/file_name twice.
 
@@ -104,18 +120,18 @@ class Css(Resource):
         """
         super().__init__(file_name, "css", css_string, name)
 
-    def write(self, parent=None):
+    def write(self, parent: Optional[bs4.Tag] = None) -> bs4.Tag:
         return css_elem(parent, self.content_string)
 
 
 class DependencyTracker:
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         self._deps = list(args)
 
-    def add(self, *resources):
+    def add(self, *resources: Resource) -> None:
         self._deps += [r for r in resources if r not in self._deps]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Resource]:
         return iter(self._deps)
 
 
@@ -126,5 +142,5 @@ script_inflate = JScript("jsinflate", encode=False)
 _registered_resources = DependencyTracker(script_block_core, script_inflate)
 
 
-def register_interactive(*scripts):
+def register_interactive(*scripts: Resource) -> None:
     _registered_resources.add(*scripts)

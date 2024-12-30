@@ -47,7 +47,7 @@ class FormatterBuilder:
             del self._formatters[name]
         return self
 
-    def replace_formatter(self, name: FormatterType, formatter: pbtf.TableFormatter):
+    def replace_formatter(self, name: FormatterType, formatter: pbtf.TableFormatter) -> None:
         self.remove_formatter(name)
         self.add_formatter(name, formatter)
 
@@ -181,7 +181,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             if truncate_index:
                 self.truncate_contents_with_ellipsis(columns=[pbtf.INDEX_COL_NAME])
 
-    def set_page_break(self, page_break: bool = True):
+    def set_page_break(self, page_break: bool = True) -> "CommonTableFormatterBuilder":
         """
         Set page break behaviour to either split the table across pages and repeat the header or force
         the table onto a single page.
@@ -206,7 +206,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         font_style: Optional[str],
         font_size: Optional[int],
         cell_padding: Optional[int],
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Set formatters for content of table
 
@@ -281,7 +281,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         font_style: Optional[str],
         font_size: Optional[int],
         cell_padding: Optional[int],
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Set formatters for the header of the table
 
@@ -359,7 +359,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         font_size: Optional[int],
         cell_padding: Optional[int],
         table_width: Optional[str],
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Set formatters for the header of the table
 
@@ -436,7 +436,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             )
         return self
 
-    def truncate_contents_with_ellipsis(self, columns: Optional[List[str]] = None):
+    def truncate_contents_with_ellipsis(self, columns: Optional[List[str]] = None) -> "CommonTableFormatterBuilder":
         """
         Shorten values in specified columns to fit, if done then there will be a trailing ellipses
 
@@ -450,7 +450,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def replace_nans(self, value: str = "", columns: Optional[List[str]] = None):
+    def replace_nans(self, value: str = "", columns: Optional[List[str]] = None) -> "CommonTableFormatterBuilder":
         """
         Replace NaNs in table
 
@@ -464,7 +464,9 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         self.add_formatter(FormatterType.replace_nans, pbtf.FmtReplaceNaN(value=value, columns=columns))
         return self
 
-    def decimal_columns(self, columns: Optional[List[str]], num_decimal_places: int = 2):
+    def decimal_columns(
+        self, columns: Optional[List[str]], num_decimal_places: int = 2
+    ) -> "CommonTableFormatterBuilder":
         """
         Apply decimal formatting to column values
 
@@ -481,7 +483,9 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def bps_columns(self, columns: Optional[List[str]], num_decimal_places: int = 0, suffix: Optional[str] = " bps"):
+    def bps_columns(
+        self, columns: Optional[List[str]], num_decimal_places: int = 0, suffix: Optional[str] = " bps"
+    ) -> "CommonTableFormatterBuilder":
         """
         Apply basis point formatting to column values
 
@@ -509,7 +513,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         num_decimal_places: int = 2,
         already_pct: bool = False,
         append_pct_sign: bool = False,
-    ):  #:
+    ) -> "CommonTableFormatterBuilder":
         """
         Apply percentage formatting to column values
 
@@ -540,7 +544,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
             )
         return self
 
-    def int_columns(self, columns: Optional[List[str]]):
+    def int_columns(self, columns: Optional[List[str]]) -> "CommonTableFormatterBuilder":
         """
         Apply integer formatting to column values
 
@@ -552,7 +556,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         self.add_formatter(FormatterType.int, pbtf.FmtDecimals(0, columns=columns, apply_to_header_and_index=False))
         return self
 
-    def dollar_columns(self, columns: Optional[List[str]]):
+    def dollar_columns(self, columns: Optional[List[str]]) -> "CommonTableFormatterBuilder":
         """
         Apply dollar formatting to column values
 
@@ -566,7 +570,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def date_columns(self, columns: Optional[List[str]], dt_fmt: str = "{:%Y-%m-%d}"):
+    def date_columns(self, columns: Optional[List[str]], dt_fmt: str = "{:%Y-%m-%d}") -> "CommonTableFormatterBuilder":
         """
         Apply date formatting to column values
 
@@ -592,7 +596,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         max_color: Tuple[float, float, float] = colors.HEATMAP_RED,
         min_color: Tuple[float, float, float] = colors.HEATMAP_GREEN,
         center_color: Tuple[float, float, float] = colors.WHITE,
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Apply a heatmap over the values in the rows and columns specified - to apply row or columnwise specify axis
 
@@ -626,7 +630,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def threshold(self, column: str, threshold_column: str):
+    def threshold(self, column: str, threshold_column: str) -> "CommonTableFormatterBuilder":
         """
         Highlight values in bold and italic if value exceeds threshold
 
@@ -648,7 +652,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def highlight(self, columns: Optional[List[str]], highlight_column: str):
+    def highlight(self, columns: Optional[List[str]], highlight_column: str) -> "CommonTableFormatterBuilder":
         """
         Highlight values in bold and italic if highlight column is True
 
@@ -667,7 +671,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def highlight_row(self, highlight_column: str):
+    def highlight_row(self, highlight_column: str) -> "CommonTableFormatterBuilder":
         """
         Highlight row in bold and italic if highlight column is True
 
@@ -685,7 +689,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         color: Tuple[float, float, float] = colors.RED,
         rows: Optional[List[str]] = None,
         columns: Optional[List[str]] = None,
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Colour the cell background
 
@@ -710,7 +714,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         color: Tuple[float, float, float] = colors.RED,
         rows: Optional[List[str]] = None,
         columns: Optional[List[str]] = None,
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Colour the cell background conditionally
 
@@ -739,7 +743,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         color: Tuple[float, float, float] = colors.RED,
         rows: Optional[List[str]] = None,
         columns: Optional[List[str]] = None,
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Colour the cell background if value matches
 
@@ -759,7 +763,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
 
     def divider_line_vertical(
         self, column: str, include_header: bool = False, color: Tuple[float, float, float] = colors.BLUE
-    ):
+    ) -> "CommonTableFormatterBuilder":
         """
         Insert a vertical line into table
 
@@ -784,7 +788,9 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def divider_line_horizontal(self, row: str, include_index: bool = False, color=colors.BLUE):
+    def divider_line_horizontal(
+        self, row: str, include_index: bool = False, color=colors.BLUE
+    ) -> "CommonTableFormatterBuilder":
         """
         Insert a horizontal line into table
 
@@ -809,7 +815,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def hide_columns(self, columns: List[str]):
+    def hide_columns(self, columns: List[str]) -> "CommonTableFormatterBuilder":
         """
         Hide specified columns from the rendered table - they are still available for conditional formatters
             such as  highlight, threshold and heatmap
@@ -822,7 +828,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         self.add_formatter(FormatterType.hide_cells, pbtf.FmtHideCells(columns=columns))
         return self
 
-    def hide_index(self):
+    def hide_index(self) -> "CommonTableFormatterBuilder":
         """
         Hide index from the rendered table
 
@@ -831,7 +837,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         self.hide_columns(columns=[pbtf.INDEX_COL_NAME])
         return self
 
-    def hide_insignificant(self, columns: Optional[List[str]] = None):
+    def hide_insignificant(self, columns: Optional[List[str]] = None) -> "CommonTableFormatterBuilder":
         """
         Replace zero values with blank strings in columns specified
 
@@ -846,7 +852,7 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         )
         return self
 
-    def stripe_background(self):
+    def stripe_background(self) -> "CommonTableFormatterBuilder":
         """
         Stripe background of table rows in grey and white
 
@@ -855,7 +861,9 @@ class CommonTableFormatterBuilder(FormatterBuilder):
         self.add_formatter(FormatterType.stripe_background, pbtf.FmtStripeBackground())
         return self
 
-    def total(self, columns: Optional[List[str]], total_row_name="Total", total_divider: bool = True):
+    def total(
+        self, columns: Optional[List[str]], total_row_name="Total", total_divider: bool = True
+    ) -> "CommonTableFormatterBuilder":
         """
         Add a total row to the bottom of the table, performing a simple sum of values in column.
 

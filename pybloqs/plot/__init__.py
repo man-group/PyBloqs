@@ -1,11 +1,12 @@
-from io import StringIO
+from io import IOBase, StringIO
+from typing import Sequence
 
 import pybloqs.static as static
 from pybloqs.plot.core import *  # noqa: F403
 from pybloqs.plot.core import HIGHCHARTS_ALL, JScript
 
 
-def add_highcharts_shim_to_stream(stream, highcharts_all):
+def add_highcharts_shim_to_stream(stream: IOBase, highcharts_all: Sequence[str]) -> None:
     """Generates JS to load Highcharts into Jupyter notebook. For human-readable sample output, see unit test."""
     highcharts_lower = [m.replace("-", "_") for m in highcharts_all]
     stream.write(
@@ -39,7 +40,7 @@ def add_highcharts_shim_to_stream(stream, highcharts_all):
     stream.writelines("\n".join(["window.Highcharts = Highcharts;", "});", "}", "</script>"]))
 
 
-def interactive(verbose=True):
+def interactive(verbose: bool = True) -> None:
     """Inject Highcharts JS into Jupyter notebook to use pybloqs.plot functions inside notebooks."""
     from IPython.core.display import display_html
 
