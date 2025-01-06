@@ -1,9 +1,12 @@
 from numbers import Number
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 from pkg_resources import resource_filename
 
 from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
 
+if TYPE_CHECKING:
+    from pybloqs import BaseBlock
 _NODE_SCRIPT_LOC = resource_filename(__name__, "puppeteer.js")
 
 
@@ -18,17 +21,17 @@ class ChromeHeadlessConverter(HTMLConverter):
 
     def htmlconv(
         self,
-        block,
-        output_file,
-        header_block=None,
-        header_spacing=None,
-        footer_block=None,
-        footer_spacing=None,
-        pdf_zoom=1,
-        pdf_page_size=A4,
-        orientation=PORTRAIT,
+        block: "BaseBlock",
+        output_file: str,
+        header_block: Optional["BaseBlock"] = None,
+        header_spacing: Union[None, str, Number] = None,
+        footer_block: Optional["BaseBlock"] = None,
+        footer_spacing: Union[None, str, Number] = None,
+        pdf_zoom: Number = 1,
+        pdf_page_size: str = A4,
+        orientation: str = PORTRAIT,
         **kwargs,
-    ):
+    ) -> Tuple[bytes, bytes]:
         """
         Use headless chrome to convert the supplied html content to a PDF file.
 

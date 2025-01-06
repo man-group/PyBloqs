@@ -1,13 +1,12 @@
-from collections.abc import Iterable
-from typing import Optional
+from typing import Any, Dict, Iterable, Optional, Type, Union
 
 from pybloqs.block.base import BaseBlock
 from pybloqs.block.text import Raw
 
-_block_types = {}
+_block_types: Dict[Type, Type[BaseBlock]] = {}
 
 
-def add_block_types(objects, block_cls):
+def add_block_types(objects: Union[Type, Iterable[Type]], block_cls: Type[BaseBlock]) -> None:
     if not isinstance(objects, Iterable):
         objects = [objects]
     for o in objects:
@@ -16,13 +15,13 @@ def add_block_types(objects, block_cls):
 
 # noinspection PyPep8Naming
 def Block(
-    contents=None,
+    contents: Any = None,
     title: Optional[str] = None,
     title_level: int = 3,
     title_wrap: bool = False,
     inherit_cfg: bool = True,
     **kwargs,
-):
+) -> BaseBlock:
     """
     Constructs a composable layout element that will be rendered automatically by
     IPython Notebooks. It can also be saved in HTML, PDF, PNG or JPEG formats.
@@ -71,15 +70,15 @@ def Block(
             class _NestedBlock(BaseBlock):
                 container_tag = None
 
-                def __init__(self):
+                def __init__(self) -> None:
                     super().__init__(
                         title=title, title_level=title_level, title_wrap=title_wrap, inherit_cfg=inherit_cfg, **kwargs
                     )
 
-                def _to_static(self):
+                def _to_static(self) -> BaseBlock:
                     return contents._to_static()
 
-                def _write_contents(self, *sub_args, **sub_kwargs):
+                def _write_contents(self, *sub_args, **sub_kwargs) -> None:
                     contents._write_block(*sub_args, **sub_kwargs)
 
             return _NestedBlock()

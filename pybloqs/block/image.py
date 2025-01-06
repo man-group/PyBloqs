@@ -3,6 +3,7 @@ import struct
 import tempfile
 from contextlib import contextmanager
 from io import BytesIO, StringIO
+from typing import Any, BinaryIO, Dict, Generator, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 from matplotlib.artist import Artist
@@ -48,13 +49,13 @@ except ImportError:
 
 _MIME_TYPES = {"png": "png", "svg": "svg+xml"}
 
-_PLOT_FORMAT = "png"
+_PLOT_FORMAT: str = "png"
 _PLOT_MIME_TYPE = _MIME_TYPES[_PLOT_FORMAT]
-_PLOT_DPI = 100
+_PLOT_DPI: int = 100
 
 
 @contextmanager
-def plot_format(plot_format=None, dpi=None):
+def plot_format(plot_format: Optional[str] = None, dpi: Optional[int] = None) -> Generator[None, None, None]:
     """
     Temporarily set the plot formatting settings
 
@@ -69,7 +70,7 @@ def plot_format(plot_format=None, dpi=None):
     set_plot_format(*old)
 
 
-def get_plot_format():
+def get_plot_format() -> Tuple[str, int]:
     """
     Get the current plot format parameters
 
@@ -78,7 +79,7 @@ def get_plot_format():
     return _PLOT_FORMAT, _PLOT_DPI
 
 
-def set_plot_format(plot_format=None, plot_dpi=None):
+def set_plot_format(plot_format: Optional[str] = None, plot_dpi: Optional[int] = None) -> None:
     """
     Overwrite the current plot format settings
 
@@ -99,7 +100,15 @@ def set_plot_format(plot_format=None, plot_dpi=None):
 
 
 class ImgBlock(BaseBlock):
-    def __init__(self, data, mime_type="png", width=None, height=None, img_style=None, **kwargs):
+    def __init__(
+        self,
+        data: Union[BaseBlock, bytes],
+        mime_type: str = "png",
+        width: Optional[str] = None,
+        height: Optional[str] = None,
+        img_style: Optional[Dict] = None,
+        **kwargs,
+    ) -> None:
         """
         Create a block containing an image. The dimensions can be sniffed from GIF
         and PNG data, for other formats, the `width` and `height` parameters can be
@@ -151,7 +160,7 @@ class ImgBlock(BaseBlock):
 
         super().__init__(**kwargs)
 
-    def _write_contents(self, container, *args, **kwargs):
+    def _write_contents(self, container, *args, **kwargs) -> None:
         src = StringIO()
         mime = f"data:image/{self._mime_type};base64,"
         src.write(mime)
@@ -163,7 +172,7 @@ class ImgBlock(BaseBlock):
             img["style"] = cfg_to_css_string(self._img_styles)
 
     @staticmethod
-    def from_file(img_file, **kwargs):
+    def from_file(img_file: Union[str, BinaryIO], **kwargs) -> "ImgBlock":
         """
         Load an image block from a file.
 
@@ -186,7 +195,15 @@ class ImgBlock(BaseBlock):
 
 
 class PlotBlock(ImgBlock):
-    def __init__(self, plot, close_plot=True, bbox_inches="tight", width=None, height=None, **kwargs):
+    def __init__(
+        self,
+        plot,
+        close_plot: bool = True,
+        bbox_inches="tight",
+        width: Optional[str] = None,
+        height: Optional[str] = None,
+        **kwargs,
+    ) -> None:
         """
         Create a block containing a matplotlib figure
 
@@ -220,7 +237,7 @@ class PlotBlock(ImgBlock):
                 # it is passed an unexpected renderer instance.
                 _orig_get_window_extent = legend.get_window_extent
 
-                def _patched_get_window_extent(*_):
+                def _patched_get_window_extent(*_) -> Any:
                     return _orig_get_window_extent()
 
                 legend.get_window_extent = _patched_get_window_extent
@@ -244,13 +261,13 @@ class PlotBlock(ImgBlock):
 
         super().__init__(img_data.getvalue(), _PLOT_MIME_TYPE, width=width, height=height, **kwargs)
 
-    def _to_static(self):
+    def _to_static(self) -> BaseBlock:
         # Convert to a basic image block in case we contain 'dynamic' svg content
         return ImgBlock(self) if self._mime_type == "svg" else super()._to_static()
 
 
 class PlotlyPlotBlock(BaseBlock):
-    def __init__(self, contents, plotly_kwargs=None, static_kwargs=None, **kwargs):
+    def __init__(self, contents, plotly_kwargs: Optional[Dict[str, Any]] = None, static_kwargs=None, **kwargs) -> None:
         """
         Writes out the content as raw text or HTML.
 
@@ -275,13 +292,13 @@ class PlotlyPlotBlock(BaseBlock):
         self._fig = contents
         self._contents = prefix + po.plot(contents, include_plotlyjs=False, output_type="div", **plotly_kwargs)
 
-    def _write_contents(self, container, *args, **kwargs):
+    def _write_contents(self, container, *args, **kwargs) -> None:
         container.append(parse(self._contents))
 
-    def _repr_html_(self):
+    def _repr_html_(self) -> str:
         return self.render_html()
 
-    def _to_static(self):
+    def _to_static(self) -> ImgBlock:
         # Create a static png image for use e.g. in an email body
         with tempfile.NamedTemporaryFile(suffix=".png") as f:
             self._fig.write_image(f.name, **self.static_kwargs)
@@ -290,7 +307,7 @@ class PlotlyPlotBlock(BaseBlock):
 
 
 class BokehPlotBlock(BaseBlock):
-    def __init__(self, contents, static_kwargs=None, **kwargs):
+    def __init__(self, contents, static_kwargs=None, **kwargs) -> None:
         """
         Writes out the content as raw text or HTML.
 
@@ -314,10 +331,10 @@ class BokehPlotBlock(BaseBlock):
         script, div = components(contents)
         self._contents = script + div
 
-    def _write_contents(self, container, *args, **kwargs):
+    def _write_contents(self, container, *args, **kwargs) -> None:
         container.append(parse(self._contents))
 
-    def _to_static(self):
+    def _to_static(self) -> ImgBlock:
         # Create a static png image for use e.g. in an email body
         with tempfile.NamedTemporaryFile(suffix=".png") as f:
             export_png(self._fig, filename=f.name, **self.static_kwargs)

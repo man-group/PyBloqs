@@ -2,7 +2,8 @@ import datetime
 import itertools
 import numbers
 from collections import namedtuple
-from typing import TYPE_CHECKING, Any, List, Optional
+from numbers import Number
+from typing import TYPE_CHECKING, Any, Collection, List, Literal, NoReturn, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -31,6 +32,7 @@ CSS_MARGIN_RIGHT = "margin-right:auto"
 CSS_WIDTH = "width:"
 CSS_FONTSTYLE = "font-style:"
 
+Row_col_index = namedtuple("row_col_index", ["row", "column"])
 #
 # Formatter base class
 #
@@ -60,7 +62,12 @@ class TableFormatter:
         Provides CSS styles to all <col> HTML tags.
     """
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=(True, True)):
+    def __init__(
+        self,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = (True, True),
+    ) -> None:
         """Initialise formatter and specify which rows and columns it is applied to. Default None applies to all.
         boolean or 2-tuple of booleans can be supplied to apply_to_header_and_index.
         """
@@ -73,9 +80,8 @@ class TableFormatter:
         self.apply_to_index = apply_to_header_and_index[1]
         return
 
-    def _get_row_and_column_index(self, row_name, column_name, df):
+    def _get_row_and_column_index(self, row_name: str, column_name: str, df: pd.DataFrame) -> Row_col_index:
         "Return row index and column index of given row_name and column name. Requires unique index and column names."
-        Row_col_index = namedtuple("row_col_index", ["row", "column"])
         if row_name == HEADER_ROW_NAME:
             row_index = -1
         else:
@@ -86,7 +92,7 @@ class TableFormatter:
             column_index = df.columns.get_loc(column_name)
         return Row_col_index(row_index, column_index)
 
-    def _is_selected_cell(self, row_name, column_name):
+    def _is_selected_cell(self, row_name: str, column_name: str) -> bool:
         if (
             (row_name == HEADER_ROW_NAME)
             and self.apply_to_header
@@ -114,81 +120,81 @@ class TableFormatter:
             is_selected_cell = False
         return is_selected_cell
 
-    def _insert_additional_html(self):
+    def _insert_additional_html(self) -> str:
         """Insert HTML string before table."""
         raise NotImplementedError("_insert_additional_html")
 
-    def _modify_dataframe(self, df):
+    def _modify_dataframe(self, df) -> pd.DataFrame:
         """Changes the underlying dataframe."""
         raise NotImplementedError("format_dataframe")
 
-    def _modify_cell_content(self, data):
+    def _modify_cell_content(self, data) -> Any:
         """Formatting for cell values, e.g. number formats"""
         raise NotImplementedError("format_value")
 
-    def _create_table_level_css(self):
+    def _create_table_level_css(self) -> NoReturn:
         """Formatting on html-table level"""
         raise NotImplementedError("format_table_css")
 
-    def _create_thead_level_css(self):
+    def _create_thead_level_css(self) -> NoReturn:
         """Formatting on CSS level for the table header."""
         raise NotImplementedError("format_thead_css")
 
-    def _create_row_level_css(self, data):
+    def _create_row_level_css(self, data) -> Optional[str]:
         """Formatting on CSS level, e.g. colors, borders, etc. on table row level"""
         raise NotImplementedError("format_row_css")
 
-    def _create_column_level_css(self, data):
+    def _create_column_level_css(self, data) -> str:
         """Formatting on CSS level, e.g. widths"""
         raise NotImplementedError("format_column_css")
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Formatting on CSS level, e.g. colors, borders, etc."""
         raise NotImplementedError("format_cell_css")
 
-    def _create_table_level_css_class(self):
+    def _create_table_level_css_class(self) -> str:
         """CSS class of table"""
         raise NotImplementedError("create_table_level_css_class")
 
-    def insert_additional_html(self):
+    def insert_additional_html(self) -> str:
         """Inserts additional html (or java-script) before <table>."""
         return self._insert_additional_html()
 
-    def modify_dataframe(self, df):
+    def modify_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """Changes the underlying dataframe."""
         return self._modify_dataframe(df)
 
-    def modify_cell_content(self, data):
+    def modify_cell_content(self, data) -> Any:
         """Formatting for cell values, e.g. number formats"""
         if self._is_selected_cell(data.row_name, data.column_name):
             return self._modify_cell_content(data)
         else:
             return data.cell
 
-    def create_table_level_css(self):
+    def create_table_level_css(self) -> str:
         """Formatting on html-table level"""
         return self._create_table_level_css()
 
-    def create_thead_level_css(self):
+    def create_thead_level_css(self) -> str:
         """Formatting on html-thead level"""
         return self._create_thead_level_css()
 
-    def create_row_level_css(self, data):
+    def create_row_level_css(self, data) -> Optional[str]:
         """Formatting on CSS level, e.g. colors, borders, etc."""
         return self._create_row_level_css(data)
 
-    def create_column_level_css(self, data):
+    def create_column_level_css(self, data) -> str:
         """Formatting on CSS level, e.g. widths"""
         return self._create_column_level_css(data)
 
-    def create_cell_level_css(self, data):
+    def create_cell_level_css(self, data) -> Optional[str]:
         """Formatting on CSS level, e.g. colors, borders, etc."""
         if self._is_selected_cell(data.row_name, data.column_name):
             return self._create_cell_level_css(data)
         else:
             return None
 
-    def create_table_level_css_class(self):
+    def create_table_level_css_class(self) -> str:
         """CSS class of table"""
         return self._create_table_level_css_class()
 
@@ -201,12 +207,18 @@ class TableFormatter:
 class FmtToString(TableFormatter):
     """Apply formatting string. Changes cell content to string."""
 
-    def __init__(self, fmt_string, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        fmt_string,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.fmt_string = fmt_string
         return
 
-    def _modify_cell_content(self, data):
+    def _modify_cell_content(self, data) -> str:
         """Change cell value to string formatted by fmt_string"""
         return self.fmt_string.format(data.cell)
 
@@ -214,11 +226,17 @@ class FmtToString(TableFormatter):
 class FmtNumbers(FmtToString):
     """Apply formatting string if cell content is number. Changes cell content from number to string."""
 
-    def __init__(self, fmt_string, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        fmt_string,
+        rows: Optional[Collection[str]] = None,
+        columns=None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
-    def _modify_cell_content(self, data):
+    def _modify_cell_content(self, data) -> Any:
         """Change cell value from number to string formatted by fmt_string"""
         if isinstance(data.cell, numbers.Number):
             return super()._modify_cell_content(data)
@@ -229,16 +247,27 @@ class FmtNumbers(FmtToString):
 class FmtDecimals(FmtNumbers):
     """Change cell value from float to string and apply number format to n decimals. Uses FmtNumbers."""
 
-    def __init__(self, n, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        n: int,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         fmt_string = "{:." + str(n) + "f}"
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
-        return
 
 
 class FmtPercent(FmtNumbers):
     """Change cell value from float to string and apply number format to percent with n decimals. Uses FmtNumbers."""
 
-    def __init__(self, n_decimals, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        n_decimals: int,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         fmt_string = "{:." + str(n_decimals) + "%}"
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
@@ -247,7 +276,13 @@ class FmtPercent(FmtNumbers):
 class FmtThousandSeparator(FmtNumbers):
     """Change cell value from float to string, format to n-decimals and separate thousands iwth ','. Uses FmtNumbers."""
 
-    def __init__(self, n_decimals=0, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        n_decimals: int = 0,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         fmt_string = "{:,." + str(n_decimals) + "f}"
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
@@ -256,11 +291,17 @@ class FmtThousandSeparator(FmtNumbers):
 class FmtDates(FmtToString):
     """Apply formatting string if cell content is date. Changes cell content from date to string."""
 
-    def __init__(self, fmt_string, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        fmt_string: str,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
 
-    def _modify_cell_content(self, data):
+    def _modify_cell_content(self, data) -> Any:
         """Change cell value from number to string formatted by fmt_string"""
         if isinstance(data.cell, (pd.Timestamp, datetime.datetime)):
             return super()._modify_cell_content(data)
@@ -271,7 +312,12 @@ class FmtDates(FmtToString):
 class FmtYYYYMMDD(FmtDates):
     """Change cell value from date formats to string, format as e.g. 2001-12-01. Uses FmtDates."""
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         fmt_string = "{:%Y-%m-%d}"
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
@@ -280,7 +326,12 @@ class FmtYYYYMMDD(FmtDates):
 class FmtDDMMMYYYY(FmtDates):
     """Change cell value from date formats to string, format as e.g. 01-Dec-2001. Uses FmtDates."""
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         fmt_string = "{:%d-%b-%Y}"
         super().__init__(fmt_string, rows, columns, apply_to_header_and_index)
         return
@@ -289,12 +340,19 @@ class FmtDDMMMYYYY(FmtDates):
 class FmtMultiplyCellValue(TableFormatter):
     """Base class for dividing cell value by some number and adding suffix to columns"""
 
-    def __init__(self, d, suffix, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        d,
+        suffix: str,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.d = d
         self.suffix = suffix
 
-    def _modify_cell_content(self, data):
+    def _modify_cell_content(self, data) -> Any:
         """Divide cell value by number"""
         if (
             data.row_name == HEADER_ROW_NAME
@@ -312,7 +370,13 @@ class FmtMultiplyCellValue(TableFormatter):
 class FmtValueToMillion(FmtMultiplyCellValue):
     """Divide cell values by 1e6 and add suffix to column name (if it is a string)."""
 
-    def __init__(self, suffix="", rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        suffix: str = "",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(1 / 1e6, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
@@ -320,7 +384,13 @@ class FmtValueToMillion(FmtMultiplyCellValue):
 class FmtValueToBps(FmtMultiplyCellValue):
     """Divide cell values by 1e4 and add suffix to column name (if it is a string)."""
 
-    def __init__(self, suffix="", rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        suffix: str = "",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(1e4, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
@@ -328,7 +398,13 @@ class FmtValueToBps(FmtMultiplyCellValue):
 class FmtValueToPercent(FmtMultiplyCellValue):
     """Divide cell values by 1e2 and add suffix to column name (if it is a string)."""
 
-    def __init__(self, suffix="", rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        suffix: str = "",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(1e2, suffix, rows, columns, apply_to_header_and_index)
         self.suffix = suffix
 
@@ -336,12 +412,19 @@ class FmtValueToPercent(FmtMultiplyCellValue):
 class FmtReplaceNaN(TableFormatter):
     """Replace NaN and Inf (if replace_inf is True) values."""
 
-    def __init__(self, value="", replace_inf=True, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        value="",
+        replace_inf: bool = True,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.value = value
         self.replace_inf = replace_inf
 
-    def _modify_dataframe(self, df):
+    def _modify_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """Check if value is NaN and replace with self.value"""
         if self.replace_inf:
             return df.replace([np.inf, -np.inf], np.nan).fillna(self.value)
@@ -352,13 +435,20 @@ class FmtReplaceNaN(TableFormatter):
 class FmtFontsize(TableFormatter):
     """Set fontsize in table cells."""
 
-    def __init__(self, fontsize, unit="px", rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        fontsize: Union[int, float],
+        unit: str = "px",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.fontsize = fontsize
         self.unit = unit
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         """Set fontsize for cell as CSS format."""
         return "font-size:" + str(self.fontsize) + self.unit
 
@@ -367,15 +457,21 @@ class FmtHighlightText(TableFormatter):
     """Change font formatting to highlight text in cell."""
 
     def __init__(
-        self, bold=True, italic=True, font_color=colors.BLUE, rows=None, columns=None, apply_to_header_and_index=False
-    ):
+        self,
+        bold: bool = True,
+        italic: bool = True,
+        font_color=colors.BLUE,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = False,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.bold = bold
         self.italic = italic
         self.font_color = font_color
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         """Font style and color"""
         css_substrings = [CSS_COLOR + colors.css_color(self.font_color)]
         if self.bold:
@@ -390,12 +486,18 @@ class FmtHighlightText(TableFormatter):
 class FmtHighlightBackground(TableFormatter):
     """Set background color of selected cells"""
 
-    def __init__(self, color=colors.RED, rows=None, columns=None, apply_to_header_and_index=False):
+    def __init__(
+        self,
+        color=colors.RED,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = False,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.color = color
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         """Set background color"""
         return CSS_BACKGROUND_COLOR + colors.css_color(self.color)
 
@@ -403,35 +505,52 @@ class FmtHighlightBackground(TableFormatter):
 class FmtBold(TableFormatter):
     """Set bold font in table cells."""
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         return CSS_BOLD
 
 
 class FmtAlignCellContents(TableFormatter):
     """Align cell contents. Possible alignment values: left, center, right."""
 
-    def __init__(self, alignment="center", rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        alignment="center",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.alignment = alignment
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         return "text-align:" + self.alignment
 
 
 class FmtVerticalAlignCellContents(TableFormatter):
     """Align cell contents. Possible alignment values: top, middle, bottom."""
 
-    def __init__(self, alignment="baseline", rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        alignment: str = "baseline",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.alignment = alignment
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         return "vertical-align:" + self.alignment
 
 
@@ -448,7 +567,7 @@ class FmtHeader(TableFormatter):
         no_wrap=True,
         columns=None,
         color=None,
-    ):
+    ) -> None:
         super().__init__(None, None)
         self.fixed_width = fixed_width
         self.index_width = index_width
@@ -460,7 +579,7 @@ class FmtHeader(TableFormatter):
         self.color = color
         return
 
-    def _create_table_level_css(self):
+    def _create_table_level_css(self) -> str:
         """Make space on top of table."""
         css_substrings = []
         if self.top_padding is not None:
@@ -470,7 +589,7 @@ class FmtHeader(TableFormatter):
             css_substrings.append("table-layout:fixed;")
         return "; ".join(css_substrings)
 
-    def _create_column_level_css(self, data):
+    def _create_column_level_css(self, data) -> str:
         if self.columns is None or data.column_name in self.columns:
             css_substrings = []
             if data.column_name == INDEX_COL_NAME and self.index_width is not None:
@@ -479,7 +598,7 @@ class FmtHeader(TableFormatter):
                 css_substrings.append(CSS_WIDTH + self.column_width)
             return "; ".join(css_substrings)
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Set a lot of css tags to rotate the text in the table header."""
         if data.row_name == HEADER_ROW_NAME and (self.columns is None or data.column_name in self.columns):
             css_substrings = []
@@ -509,10 +628,10 @@ class FmtStripeBackground(TableFormatter):
         first_color=colors.LIGHT_GREY,
         second_color=colors.WHITE,
         header_color=colors.WHITE,
-        rows=None,
-        columns=None,
-        apply_to_header_and_index=True,
-    ):
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.first_color = colors.css_color(first_color)
         self.second_color = colors.css_color(second_color)
@@ -520,7 +639,7 @@ class FmtStripeBackground(TableFormatter):
         self.current_color = self.second_color
         return
 
-    def _create_row_level_css(self, data):
+    def _create_row_level_css(self, data) -> None:
         if data.name == HEADER_ROW_NAME:
             return
         if self.current_color == self.first_color:
@@ -528,7 +647,7 @@ class FmtStripeBackground(TableFormatter):
         else:
             self.current_color = self.first_color
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         color = self.current_color
         if data.row_name == HEADER_ROW_NAME:
             color = self.header_color
@@ -538,7 +657,13 @@ class FmtStripeBackground(TableFormatter):
 class FmtAlignTable(TableFormatter):
     """Set table alignment on page. Possible alignment paramters: left, center, right."""
 
-    def __init__(self, alignment, rows=None, columns=None, apply_to_header_and_index=True):
+    def __init__(
+        self,
+        alignment: Literal["left", "center", "right"],
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
 
         if alignment == "center":
@@ -551,7 +676,7 @@ class FmtAlignTable(TableFormatter):
             raise ValueError('Please specify alignment from as "center", "left" or "right". Specified now:', alignment)
         return
 
-    def _create_table_level_css(self):
+    def _create_table_level_css(self) -> str:
         return self.TABLE_CSS
 
 
@@ -562,13 +687,13 @@ class FmtHeatmap(TableFormatter):
         self,
         min_color=colors.HEATMAP_RED,
         max_color=colors.HEATMAP_GREEN,
-        threshold=0.0,
-        axis=None,
-        rows=None,
+        threshold: Number = 0.0,
+        axis: Optional[Collection[str]] = None,
+        rows: Optional[Collection[str]] = None,
         columns=None,
-        apply_to_header_and_index=False,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = False,
         cache=None,
-    ):
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.axis = axis
         self.min_color = min_color
@@ -577,7 +702,7 @@ class FmtHeatmap(TableFormatter):
         self.cache = cache
         return
 
-    def _get_selected_cell_values(self, rows, columns, df):
+    def _get_selected_cell_values(self, rows, columns, df) -> Any:
         """Return all cell values within selected rows/columns range."""
         if rows is None:
             rows = df.index.tolist()
@@ -594,7 +719,7 @@ class FmtHeatmap(TableFormatter):
 
         return selection
 
-    def _get_min_max_from_selected_cell_values(self, rows, columns, df):
+    def _get_min_max_from_selected_cell_values(self, rows, columns, df) -> Tuple[float, float]:
         """Returns the min and max from the selected cell values, possibly using a cache to store the results."""
 
         if self.cache is None:
@@ -607,7 +732,7 @@ class FmtHeatmap(TableFormatter):
                 self.cache[cache_key] = (np.nanmin(cell_values), np.nanmax(cell_values))
             return self.cache[cache_key]
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Create heatmap with ranges from min to (-threshold) and from threshold to max."""
         if isinstance(data.cell, numbers.Number):
             # Get selected cells. If axis is specified, get only data from the same row (axis=0) or column (axis=1)
@@ -642,13 +767,13 @@ class FmtAppendTotalsRow(TableFormatter):
         self,
         row_name="Total",
         operator=OP_SUM,
-        bold=True,
+        bold: bool = True,
         background_color=colors.LIGHT_GREY,
-        font_color=None,
+        font_color: Optional[str] = None,
         total_columns=None,
         hline_color=colors.DARK_BLUE,
-        hline_style="1px solid",
-    ):
+        hline_style: str = "1px solid",
+    ) -> None:
         self.row_name = row_name
         # Operate on all columns: Set self.columns to None
         super().__init__([row_name], None)
@@ -664,7 +789,7 @@ class FmtAppendTotalsRow(TableFormatter):
         self.hline_style = hline_style
         return
 
-    def _modify_dataframe(self, df):
+    def _modify_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """Add row to dataframe, containing numbers aggregated with self.operator."""
         if self.total_columns == []:
             columns = df.columns
@@ -684,7 +809,7 @@ class FmtAppendTotalsRow(TableFormatter):
         df.index.name = index_name
         return df
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data) -> str:
         """Set fontsize for cell as CSS format."""
         if data.row_name != self.row_name:
             return None
@@ -715,7 +840,7 @@ class FmtAppendTotalsColumn(TableFormatter):
         background_color=colors.LIGHT_GREY,
         font_color=None,
         total_rows=None,
-    ):
+    ) -> None:
         self.column_name = column_name
         # Operate on all rows: Set self.rows to None
         super().__init__(None, [column_name])
@@ -729,7 +854,7 @@ class FmtAppendTotalsColumn(TableFormatter):
         self.font_color = font_color
         return
 
-    def _modify_dataframe(self, df):
+    def _modify_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """Add row to dataframe, containing numbers aggregated with self.operator."""
         if self.total_rows == []:
             rows = df.index.tolist()
@@ -745,7 +870,7 @@ class FmtAppendTotalsColumn(TableFormatter):
         df_mod[self.column_name] = new_column
         return df_mod
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Set fontsize for cell as CSS format."""
         if data.column_name != self.column_name:
             return None
@@ -776,7 +901,7 @@ class FmtExpandMultiIndex(TableFormatter):
         hline_color=colors.DARK_BLUE,
         level_background_colors=None,
         level_text_colors=None,
-    ):
+    ) -> None:
         # Operate on all columns: Set self.columns to None
         super().__init__(None, None)
 
@@ -793,7 +918,7 @@ class FmtExpandMultiIndex(TableFormatter):
         self.level_text_colors = level_text_colors
         return
 
-    def _modify_dataframe(self, df):
+    def _modify_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """Create single index dataframe inserting grouping rows for higher levels."""
         if self.total_columns == []:
             columns = df.columns
@@ -832,7 +957,7 @@ class FmtExpandMultiIndex(TableFormatter):
         flat_df.index.name = ""
         return flat_df
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         if data.row_name == HEADER_ROW_NAME:
             return None
 
@@ -879,16 +1004,16 @@ class FmtAddCellPadding(TableFormatter):
         top=None,
         bottom=None,
         length_unit="px",
-        rows=None,
-        columns=None,
-        apply_to_header_and_index=True,
-    ):
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.padding = {"left": left, "right": right, "top": top, "bottom": bottom}
         self.length_unit = length_unit
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         css_substrings = []
         for side, value in self.padding.items():
             if value is not None:
@@ -909,10 +1034,10 @@ class FmtAddCellBorder(TableFormatter):
         length_unit="px",
         style="solid",
         color=colors.DARK_BLUE,
-        rows=None,
-        columns=None,
-        apply_to_header_and_index=False,
-    ):
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = False,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         if each is not None:
             self.padding = {"left": each, "right": each, "top": each, "bottom": each}
@@ -923,7 +1048,7 @@ class FmtAddCellBorder(TableFormatter):
         self.color = color
         return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         css_substrings = []
         for side, value in self.padding.items():
             if value is not None:
@@ -952,25 +1077,34 @@ class FmtFontFamily(TableFormatter):
     """
 
     def __init__(
-        self, font_family="Arial, Helvetica, sans-serif", rows=None, columns=None, apply_to_header_and_index=True
-    ):
+        self,
+        font_family: str = "Arial, Helvetica, sans-serif",
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.font_family = font_family
-        return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         return f"font-family: {self.font_family}"
 
 
 class FmtHideCells(TableFormatter):
     """Prevents rows and columns from being displayed, but they will still influence e.g. sum operations."""
 
-    def __init__(self, rows=None, columns=None, apply_to_header_and_index=True, use_visibility=False):
+    def __init__(
+        self,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
+        use_visibility: bool = False,
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.use_visibility = use_visibility
         return
 
-    def _apply_formatter(self, data):
+    def _apply_formatter(self, data: "HTMLJinjaTableBlock.FormatterData") -> bool:
         return not (
             (data.row_name == HEADER_ROW_NAME or data.column_name == INDEX_COL_NAME)
             and (
@@ -985,7 +1119,7 @@ class FmtHideCells(TableFormatter):
             )
         )
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Set to hidden if row_name matches."""
         if self._apply_formatter(data):
             if self.use_visibility:
@@ -996,7 +1130,7 @@ class FmtHideCells(TableFormatter):
             css = None
         return css
 
-    def _modify_cell_content(self, data):
+    def _modify_cell_content(self, data: "HTMLJinjaTableBlock.FormatterData") -> str:
         """Divide cell value by number"""
         if self._apply_formatter(data):
             return "REMOVED"
@@ -1015,26 +1149,25 @@ class FmtPageBreak(TableFormatter):
     expected.
     """
 
-    def __init__(self, no_break=True, repeat_header=True):
+    def __init__(self, no_break: bool = True, repeat_header: bool = True) -> None:
         super().__init__(None, None, False)
         self.no_break = no_break
         self.repeat_header = repeat_header
-        return
 
-    def _create_table_level_css(self):
+    def _create_table_level_css(self) -> str:
         if self.no_break:
             return "page-break-inside:avoid;"
         else:
             return "page-break-inside:auto;"
 
-    def _create_thead_level_css(self):
+    def _create_thead_level_css(self) -> str:
         """Set repeating of headers"""
         if self.repeat_header:
             return "display:table-header-group;"
         else:
             return "display:table-row-group;"
 
-    def _create_row_level_css(self, data):
+    def _create_row_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Set to hidden if row_name matches"""
         if self.no_break:
             return "page-break-inside:avoid;"
@@ -1052,7 +1185,7 @@ class FmtColumnMultiIndexBasic(TableFormatter):
         Per cell CSS tags for each cell in index column.
     """
 
-    def __init__(self, cell_css=None, index_col_css=None):
+    def __init__(self, cell_css=None, index_col_css=None) -> None:
         super().__init__([HEADER_ROW_NAME], None, True)
         self.cell_css = cell_css
         self.index_col_css = index_col_css
@@ -1062,7 +1195,7 @@ class FmtColumnMultiIndexBasic(TableFormatter):
         self.cells_per_row = None
         return
 
-    def _calc_cells_per_row(self, df, row_index):
+    def _calc_cells_per_row(self, df, row_index) -> int:
         header_items_in_df_row = df.columns.get_level_values(row_index)
         if row_index < len(df.columns.levels) - 1:
             n_items_in_df_header_row = len([list(g) for _, g in itertools.groupby(header_items_in_df_row)])
@@ -1074,7 +1207,7 @@ class FmtColumnMultiIndexBasic(TableFormatter):
             n_items_in_df_header_row -= 1
         return n_items_in_df_header_row
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data) -> Optional[str]:
         if self.cell_css is None or data.row_name != HEADER_ROW_NAME:
             return None
 
@@ -1119,22 +1252,21 @@ class FmtColumnMultiIndexRows(FmtColumnMultiIndexBasic):
         Per cell CSS tags for each cell in index column.
     """
 
-    def __init__(self, row_css=None, index_col_css=None):
+    def __init__(self, row_css=None, index_col_css=None) -> None:
         super().__init__(cell_css=None, index_col_css=index_col_css)
         self.row_css = row_css
         return
 
     # We have to do a sort of lazy evaluation here, as we do not have the dataframe at creation time.
-    def _init_cell_css(self, df):
+    def _init_cell_css(self, df: pd.DataFrame) -> None:
         n_rows = len(df.columns.levels)
         cells_per_row = [self._calc_cells_per_row(df, i) for i in range(n_rows)]
         if self.row_css is None:
             self.row_css = ["text-align:center"] * (n_rows - 1)
             self.row_css.append("text-align:right")
         self.cell_css = [[self.row_css[i]] * cells_per_row[i] for i in range(n_rows)]
-        return
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         if self.cell_css is None:
             self._init_cell_css(data.df)
         return super()._create_cell_level_css(data)
@@ -1163,14 +1295,14 @@ class FmtHeatmapWithCenter(TableFormatter):
         min_color=colors.HEATMAP_RED,
         max_color=colors.HEATMAP_GREEN,
         center_color=colors.WHITE,
-        threshold=0.0,
-        center=0.0,
+        threshold: Union[float, int] = 0.0,
+        center: Union[float, int] = 0.0,
         axis=None,
-        rows=None,
-        columns=None,
-        apply_to_header_and_index=False,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = False,
         cache=None,
-    ):
+    ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
         self.axis = axis
         self.min_color = min_color
@@ -1181,7 +1313,9 @@ class FmtHeatmapWithCenter(TableFormatter):
         self.center = center
         return
 
-    def _get_selected_cell_values(self, rows, columns, df):
+    def _get_selected_cell_values(
+        self, rows: Optional[List[str]], columns: Optional[List[str]], df: pd.DataFrame
+    ) -> Any:
         """Return all cell values within selected rows/columns range."""
         if rows is None:
             rows = df.index.tolist()
@@ -1198,7 +1332,9 @@ class FmtHeatmapWithCenter(TableFormatter):
 
         return selection
 
-    def _get_min_max_from_selected_cell_values(self, rows, columns, df):
+    def _get_min_max_from_selected_cell_values(
+        self, rows: Optional[List[str]], columns: Optional[List[str]], df: pd.DataFrame
+    ) -> Tuple[float, float]:
         """Returns the min and max from the selected cell values, possibly using a cache to store the results."""
 
         if self.cache is None:
@@ -1211,7 +1347,7 @@ class FmtHeatmapWithCenter(TableFormatter):
                 self.cache[cache_key] = (np.nanmin(cell_values), np.nanmax(cell_values))
             return self.cache[cache_key]
 
-    def _create_cell_level_css(self, data):
+    def _create_cell_level_css(self, data: "HTMLJinjaTableBlock.FormatterData") -> Optional[str]:
         """Create heatmap with ranges from min to (center-threshold) and from (center+threshold) to max."""
         if isinstance(data.cell, numbers.Number):
             # Get selected cells. If axis is specified, get only data from the same row (axis=0) or column (axis=1)
@@ -1243,7 +1379,10 @@ class FmtHideInsignificant(TableFormatter):
     """Replace zero values with blank strings in columns specified"""
 
     def __init__(
-        self, rows: Optional[Any] = None, columns: Optional[Any] = None, apply_to_header_and_index: bool = True
+        self,
+        rows: Optional[Collection[str]] = None,
+        columns: Optional[Collection[str]] = None,
+        apply_to_header_and_index: Union[bool, Tuple[bool, bool]] = True,
     ) -> None:
         super().__init__(rows, columns, apply_to_header_and_index)
 
