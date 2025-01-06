@@ -97,6 +97,8 @@ PyBloqs has been under active development at [Man AHL](http://www.ahl.com/) sinc
 [![jamesoliverh](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/46758370?v=4&w=50&h=50&mask=circle)](https://github.com/jamesoliverh)
 [![Romain Morotti](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/13528994?v=4&w=50&h=50&mask=circle)](https://github.com/morotti)
 [![Robert Spencer](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/2918499?v=4&w=50&h=50&mask=circle)](https://github.com/rspencer01)
+[![Radu Andra](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/39206284?v=4&w=50&h=50&mask=circle)](https://github.com/rspencer01)
+[![James Hylands](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/2422610?v=4&w=50&h=50&mask=circle)](https://github.com/rspencer01)
 and many others at [Man Group](https://www.man.com/) and elsewhere...
 
 **Contributions welcome!**
