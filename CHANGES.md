@@ -1,4 +1,4 @@
-Changelog
+# Changelog
 
 ### 1.0.0 (2017-04-07)
 
@@ -162,3 +162,12 @@ Changelog
 
 ### 1.3.1 (2024-09-15)
   * [docs, ci]: Fix readthedocs and remove cruft from built distributions by @rspencer01 in #122
+
+### 1.3.2 (2025-01-06)
+  * Feature: Implement VegaAltairBlock to handle altair charts
+  * Bugfix: Make Cfg objects explicitly pickle-able
+  * Bugfix: Web based image handling in emails
+  * Bugfix: Fix exceptions on `Cfg` objects
+  * Tests: Add regressions tests
+  * Refactoring: Added typehints
+  * Docs: Various updates
