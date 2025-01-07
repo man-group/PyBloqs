@@ -38,7 +38,7 @@ def root(tag_name: str = "html", doctype: Optional[str] = None, **kwargs) -> bs4
     return tag
 
 
-def render(item: bs4.Tag, pretty: bool = True, encoding: str = "utf8") -> str:
+def render(item: bs4.Tag, pretty: bool = True, encoding: str = "utf-8") -> str:
     """
     Renders the given element into a string.
 
@@ -46,7 +46,7 @@ def render(item: bs4.Tag, pretty: bool = True, encoding: str = "utf8") -> str:
     :param pretty: Toggles pretty formatting of the resulting string.
     :return: Rendered content.
     """
-    return item.prettify(encoding=encoding).decode("utf8") if pretty else str(item)
+    return item.prettify(encoding=encoding).decode("utf-8") if pretty else str(item)
 
 
 def append_to(parent: bs4.PageElement, tag, **kwargs) -> bs4.Tag:
