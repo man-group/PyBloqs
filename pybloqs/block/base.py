@@ -60,6 +60,7 @@ class BaseBlock:
         static_output: bool = False,
         header_block: Optional["BaseBlock"] = None,
         footer_block: Optional["BaseBlock"] = None,
+        permit_compression: bool = True,
     ) -> str:
         """
         Returns html output of the block
@@ -68,6 +69,7 @@ class BaseBlock:
         :param static_output: Passed down to _write_block. Will render static version of blocks which support this.
         :param header_block: If not None, header_block is inlined into a HTML body as table.
         :param footer_block: If not None, footer_block is inlined into a HTML body as table.
+        :param permit_compression: If set, resources will be embedded as base64 gzipped files
         :return html-code of the block
         """
         # Render the contents
@@ -114,7 +116,8 @@ class BaseBlock:
         else:
             self._write_block(body, Cfg(), id_generator(), resource_deps=resource_deps, static_output=static_output)
 
-        script_inflate.write(head)
+        if permit_compression:
+            script_inflate.write(head)
         script_block_core.write(head)
 
         if static_output:
@@ -123,7 +126,7 @@ class BaseBlock:
 
         # Write out resources
         for res in resource_deps:
-            res.write(head)
+            res.write(head, permit_compression=permit_compression)
 
         # Render the whole document (the parent of the html tag)
         content = render(html.parent, pretty=pretty)

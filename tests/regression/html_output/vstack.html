@@ -109,7 +109,8 @@ return n;}
 var zip_inflate=function(str){var i,j;zip_inflate_start();zip_inflate_data=str;zip_inflate_pos=0;var buff=new Array(1024);var aout=[];while((i=zip_inflate_internal(buff,0,buff.length))>0){var cbuf=new Array(i);for(j=0;j<i;j++){cbuf[j]=String.fromCharCode(buff[j]);}
 aout[aout.length]=cbuf.join("");}
 zip_inflate_data=null;return aout.join("");}
-if(!window.RawDeflate)RawDeflate={};RawDeflate.inflate=zip_inflate;})();_pybloqs_load_sentinel_jsinflate = true;}
+if(!window.RawDeflate)RawDeflate={};RawDeflate.inflate=zip_inflate;})();
+_pybloqs_load_sentinel_jsinflate = true;}
   </script>
   <script type="text/javascript">
    if(typeof(_pybloqs_load_sentinel_block_core) == 'undefined'){function isIE(){var myNav=navigator.userAgent.toLowerCase();return(myNav.indexOf('msie')!=-1)?parseInt(myNav.split('msie')[1]):false;}
@@ -119,7 +120,8 @@ function registerWaitHandle(handle){if(!window.loadWaitHandleRegistry){window.lo
 loadWaitHandleRegistry[handle]=false;}
 function setLoaded(handle){loadWaitHandleRegistry[handle]=true;}
 function runWaitPoller(){var loadWaitPoller=setInterval(function(){if("loadWaitHandleRegistry"in window){var handleCount=0;for(var handle in loadWaitHandleRegistry){if(!loadWaitHandleRegistry.hasOwnProperty(handle)){handleCount++;if(!loadWaitHandleRegistry[handle]){return}}}}
-clearInterval(loadWaitPoller);window.print();},10);return loadWaitPoller;}_pybloqs_load_sentinel_block_core = true;}
+clearInterval(loadWaitPoller);window.print();},10);return loadWaitPoller;}
+_pybloqs_load_sentinel_block_core = true;}
   </script>
   <style type="text/css">
    .pybloqs {
