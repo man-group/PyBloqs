@@ -41,7 +41,7 @@ class Resource:
         """Generate the local path to the script using pkg_resources."""
         return resource_filename(__name__, file_name if file_name.endswith(extension) else file_name + "." + extension)
 
-    def write(self, parent: Optional[bs4.Tag]) -> bs4.Tag:
+    def write(self, parent: Optional[bs4.Tag], permit_compression: bool) -> bs4.Tag:
         raise NotImplementedError("write")
 
     def __hash__(self) -> int:
@@ -79,20 +79,20 @@ class JScript(Resource):
         super().__init__(file_name, "js", script_string, name)
         self.encode = encode
 
-    def write(self, parent: Optional[bs4.Tag] = None) -> bs4.Tag:
+    def write(self, parent: Optional[bs4.Tag] = None, permit_compression: bool = True) -> bs4.Tag:
         stream = StringIO()
 
         # Wrapper to make accidental multiple inclusion if the same code (e.g. with different file names) safe to load.
         sentinel_var_name = "_pybloqs_load_sentinel_{}".format(self.name.replace("-", "_"))
         stream.write(f"if(typeof({sentinel_var_name}) == 'undefined'){{")
 
-        if self.encode:
+        if self.encode and permit_compression:
             self.write_compressed(stream, self.content_string)
         else:
             stream.write(self.content_string)
 
         # Second part of wrapper
-        stream.write(f"{sentinel_var_name} = true;")
+        stream.write(f"\n{sentinel_var_name} = true;")
         stream.write("}")
 
         return js_elem(parent, stream.getvalue())
@@ -120,7 +120,7 @@ class Css(Resource):
         """
         super().__init__(file_name, "css", css_string, name)
 
-    def write(self, parent: Optional[bs4.Tag] = None) -> bs4.Tag:
+    def write(self, parent: Optional[bs4.Tag] = None, permit_compression: bool = True) -> bs4.Tag:
         return css_elem(parent, self.content_string)
 
 

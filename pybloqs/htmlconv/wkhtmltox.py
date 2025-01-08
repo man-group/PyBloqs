@@ -57,20 +57,20 @@ class WkhtmltopdfConverter(HTMLConverter):
         [cmd.extend([k, v]) for k, v in kwargs.items()]
 
         # Render without header and footer as those are handles explicitly below
-        content = block.render_html(static_output=True)
+        content = block.render_html(static_output=True, permit_compression=False)
         html_filename = HTMLConverter.write_html_to_tempfile(block, content)
 
         temp_files = [html_filename]
 
         if header_block is not None:
-            header_content = header_block.render_html(static_output=True)
+            header_content = header_block.render_html(static_output=True, permit_compression=False)
             header_filename = HTMLConverter.write_html_to_tempfile(header_block, header_content)
             cmd += ["--header-html", header_filename]
             cmd += ["--header-spacing", str(header_spacing)]
             temp_files.append(header_filename)
 
         if footer_block is not None:
-            footer_content = footer_block.render_html(static_output=True)
+            footer_content = footer_block.render_html(static_output=True, permit_compression=False)
             footer_filename = HTMLConverter.write_html_to_tempfile(footer_block, footer_content)
             cmd += ["--footer-html", footer_filename]
             cmd += ["--footer-spacing", str(footer_spacing)]
@@ -93,7 +93,7 @@ class WkhtmltoimageConverter(HTMLConverter):
         :param pdf_zoom: The zooming to apply when rendering the page.
         :param kwargs: Additional parameters. Passed to wkhtmltoimage.
         """
-        content = block.render_html(static_output=True)
+        content = block.render_html(static_output=True, permit_compression=False)
         html_filename = HTMLConverter.write_html_to_tempfile(block, content)
 
         cmd = []

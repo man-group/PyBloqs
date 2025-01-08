@@ -401,18 +401,13 @@ class Plot(BaseBlock):
             f"if(container){{clearInterval({js_timer_var_name});"
         )
 
-        # Write out the chart script into a separate buffer before running it through
-        # the encoding/compression
-        chart_buf = StringIO()
-        chart_buf.write("var cfg=")
-        self._write_dict(chart_buf, chart_cfg)
-        chart_buf.write(";")
+        stream.write("var cfg=")
+        self._write_dict(stream, chart_cfg)
+        stream.write(";")
 
-        chart_buf.write("var chart = new Highcharts." + self._chart_cls + "(cfg);")
+        stream.write("var chart = new Highcharts." + self._chart_cls + "(cfg);")
 
-        self._write_plot_postprocess(chart_buf)
-
-        JScript.write_compressed(stream, chart_buf.getvalue())
+        self._write_plot_postprocess(stream)
 
         stream.write("}},10);")
 

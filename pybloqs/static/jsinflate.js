@@ -101,7 +101,6 @@ if(i==-1){if(zip_eof)
 return 0;return-1;}
 n+=i;}
 return n;}
-var zip_inflate=function(str){var i,j;zip_inflate_start();zip_inflate_data=str;zip_inflate_pos=0;var buff=new Array(1024);var aout=[];while((i=zip_inflate_internal(buff,0,buff.length))>0){var cbuf=new Array(i);for(j=0;j<i;j++){cbuf[j]=String.fromCharCode(buff[j]);}
-aout[aout.length]=cbuf.join("");}
+var zip_inflate=function(str){var i,j;zip_inflate_start();zip_inflate_data=str;zip_inflate_pos=0;var buff=new Uint8Array(1024);var aout=[];var decoder=new TextDecoder("utf-8");while((i=zip_inflate_internal(buff,0,buff.length))>0){aout[aout.length]=decoder.decode(buff.slice(0,i));}
 zip_inflate_data=null;return aout.join("");}
 if(!window.RawDeflate)RawDeflate={};RawDeflate.inflate=zip_inflate;})();

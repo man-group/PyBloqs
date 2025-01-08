@@ -734,14 +734,13 @@ var zip_inflate = function(str) {
     zip_inflate_data = str;
     zip_inflate_pos = 0;
 
-    var buff = new Array(1024);
+    var buff = new Uint8Array(1024);
     var aout = [];
+	var decoder = new TextDecoder("utf-8");
     while((i = zip_inflate_internal(buff, 0, buff.length)) > 0) {
-	var cbuf = new Array(i);
-	for(j = 0; j < i; j++){
-	    cbuf[j] = String.fromCharCode(buff[j]);
-	}
-	aout[aout.length] = cbuf.join("");
+	// FIXME: This has a bug if the zip_inflate_internal breaks inside
+    //        a charpoint.
+	aout[aout.length] = decoder.decode(buff.slice(0, i));
     }
     zip_inflate_data = null; // G.C.
     return aout.join("");
