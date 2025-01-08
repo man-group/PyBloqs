@@ -1,8 +1,6 @@
-import sys
 from email.message import Message
-from unittest.mock import ANY, MagicMock, call, patch, sentinel
+from unittest.mock import MagicMock, call, patch, sentinel
 
-import pytest
 import yaml
 
 import pybloqs
@@ -54,57 +52,3 @@ def test_send():
     ]
 
     assert ex_calls == m_SMTP.mock_calls
-
-
-@pytest.mark.skipif(sys.version_info > (3, 0), reason="Python 3 strings are always unicode")
-def test_send_html_report_utf8():
-    with patch("pybloqs.email.smtplib.SMTP") as mock_smtp_constructor, patch("pybloqs.email.user_config", user_config):
-        bloq = pybloqs.VStack([pybloqs.Block("This should show euro '€'.")])
-        bloq.email(
-            title="Test bloqs email: utf-8",
-            from_address="lovelace@example.com",
-            recipients=["bayes@example.com", "cantor@example.com"],
-            cc=["fourier@example.com", "galois@example.com"],
-            bcc=["hilbert@example.com", "ito@example.com"],
-            convert_to_ascii=False,
-        )
-
-    mock_smtp_constructor.return_value.sendmail.assert_called_once_with(
-        "lovelace@example.com",
-        [
-            "bayes@example.com",
-            "cantor@example.com",
-            "fourier@example.com",
-            "galois@example.com",
-            "hilbert@example.com",
-            "ito@example.com",
-        ],
-        ANY,
-    )
-    msg = mock_smtp_constructor.return_value.sendmail.call_args[0][2]
-    assert "Subject: Test bloqs email: utf-8" in msg
-    assert "From: lovelace@example.com" in msg
-    assert "To: bayes@example.com,cantor@example.com" in msg
-    assert "Cc: fourier@example.com,galois@example.com" in msg
-    assert "hilbert@example.com" not in msg
-    assert "ito@example.com" not in msg
-    assert 'Content-Type: text/html; charset="utf-8"' in msg
-
-
-@pytest.mark.skipif(sys.version_info > (3, 0), reason="Python 3 strings are always unicode")
-def test_send_html_report_ascii():
-    with patch("pybloqs.email.smtplib.SMTP") as mock_smtp_constructor, patch("pybloqs.email.user_config", user_config):
-        bloq = pybloqs.VStack([pybloqs.Block("This should show euro '€'.")])
-        bloq.email(
-            title="Test bloqs email: ascii", from_address="lovelace@example.com", recipients=["bayes@example.com"]
-        )
-
-    mock_smtp_constructor.return_value.sendmail.assert_called_once_with(
-        "lovelace@example.com", ["bayes@example.com"], ANY
-    )
-    msg = mock_smtp_constructor.return_value.sendmail.call_args[0][2]
-    assert "Subject: Test bloqs email: ascii" in msg
-    assert "From: lovelace@example.com" in msg
-    assert "To: bayes@example.com" in msg
-    assert 'Content-Type: text/html; charset="us-ascii"' in msg
-    assert "This should show euro ''." in msg  # this has stripped out the non ascii / utf8 char

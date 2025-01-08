@@ -31,7 +31,7 @@ def encode_string(string: str, level: int = 9) -> bytes:
     :param level: Compression level
     :return: Compressed and encoded string
     """
-    return base64.b64encode(zlib.compress(string.encode("utf8"), level)[2:-4])
+    return base64.b64encode(zlib.compress(string.encode("utf-8"), level)[2:-4])
 
 
 def camelcase(value: str) -> str:
