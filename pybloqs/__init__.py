@@ -1,4 +1,4 @@
-from pkg_resources import DistributionNotFound, get_distribution
+from importlib.metadata import PackageNotFoundError, distribution
 
 from pybloqs.block.base import BaseBlock, HRule
 from pybloqs.block.convenience import Block
@@ -10,9 +10,9 @@ from pybloqs.block.wrap import Box, Paragraph
 from pybloqs.util import Cfg
 
 try:
-    __version__ = get_distribution(__name__).version
-except DistributionNotFound:
-    # package is not installed
+    dist = distribution(__package__)
+    __version__ = dist.version
+except PackageNotFoundError:
     __version__ = "<unknown>"
 
 __all__ = [

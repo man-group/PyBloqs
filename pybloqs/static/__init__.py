@@ -1,9 +1,9 @@
 import os
+from importlib.resources import files
 from io import StringIO
 from typing import Any, Iterator, Optional
 
 import bs4
-from pkg_resources import resource_filename
 
 from pybloqs.html import css_elem, js_elem
 from pybloqs.util import encode_string
@@ -39,7 +39,7 @@ class Resource:
     @classmethod
     def _local_path(cls, file_name: str, extension: str) -> str:
         """Generate the local path to the script using pkg_resources."""
-        return resource_filename(__name__, file_name if file_name.endswith(extension) else file_name + "." + extension)
+        return files(__package__).joinpath(file_name if file_name.endswith(extension) else file_name + "." + extension)
 
     def write(self, parent: Optional[bs4.Tag], permit_compression: bool) -> bs4.Tag:
         raise NotImplementedError("write")
