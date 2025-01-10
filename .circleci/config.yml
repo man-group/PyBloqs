@@ -107,6 +107,11 @@ jobs:
     docker:
       - image: cimg/python:3.8-browsers
     <<: *defaults
+  build_3_9:
+    working_directory: ~/manahl/PyBloqs_3_9
+    docker:
+      - image: cimg/python:3.9-browsers
+    <<: *defaults
   build_3_10:
     working_directory: ~/manahl/PyBloqs_3_10
     docker:
@@ -167,11 +172,13 @@ workflows:
   build_all:
     jobs:
       - build_3_8
+      - build_3_9
       - build_3_10
       - build_3_11
       - publish:
           requires:
             - build_3_8
+            - build_3_9
             - build_3_10
             - build_3_11
           filters:
