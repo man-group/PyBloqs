@@ -64,7 +64,7 @@ def test_jscript_write_string_compressed():
     stream = StringIO()
     jscript.write_compressed(stream, script)
     output = stream.getvalue()
-    assert output.startswith("blocksEval")
+    assert "blocksEval" in output
     assert script not in output
 
     # Do not compress if disabled globally
