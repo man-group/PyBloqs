@@ -8,7 +8,7 @@ from pybloqs.block.wrap import Box, Paragraph
 from pybloqs.util import Cfg
 
 try:
-    from importlib.metadata import PackageNotFoundError, distribution  # noqa
+    from importlib.metadata import PackageNotFoundError, distribution
 
     try:
         dist = distribution(__package__)
@@ -16,7 +16,7 @@ try:
     except PackageNotFoundError:
         __version__ = "<unknown>"
 except ImportError:
-    from pkg_resources import DistributionNotFound, get_distribution  # noqa
+    from pkg_resources import DistributionNotFound, get_distribution
 
     try:
         __version__ = get_distribution(__name__).version

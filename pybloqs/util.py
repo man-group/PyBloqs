@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, Iterator, Tuple, Union
 import numpy as np
 
 try:
-    from importlib.resources import files  # noqa
+    from importlib.resources import files
 
     def get_resource_path(package, resource_name) -> str:
         """
@@ -22,7 +22,7 @@ try:
         return str(files(package).joinpath(resource_name))
 
 except ImportError:
-    from pkg_resources import resource_filename  # noqa
+    from pkg_resources import resource_filename
 
     def get_resource_path(package, resource_name) -> str:
         """
