@@ -1,13 +1,11 @@
 from numbers import Number
 from typing import TYPE_CHECKING, Optional, Tuple, Union
 
-from importlib.resources import files
-
 from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
 
 if TYPE_CHECKING:
-    from pybloqs import BaseBlock
-_NODE_SCRIPT_LOC = files(__package__).joinpath("puppeteer.js")
+    from pybloqs import BaseBlock, get_resource_path
+_NODE_SCRIPT_LOC = get_resource_path(__package__, "puppeteer.js")
 
 
 class ChromeHeadlessConverter(HTMLConverter):
