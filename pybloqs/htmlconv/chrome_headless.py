@@ -1,8 +1,8 @@
 from numbers import Number
 from typing import TYPE_CHECKING, Optional, Tuple, Union
 
-from pybloqs import get_resource_path
 from pybloqs.htmlconv.html_converter import A4, PORTRAIT, HTMLConverter
+from pybloqs.util import get_resource_path
 
 if TYPE_CHECKING:
     from pybloqs import BaseBlock

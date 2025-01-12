@@ -4,9 +4,8 @@ from typing import Any, Iterator, Optional
 
 import bs4
 
-from pybloqs import get_resource_path
 from pybloqs.html import css_elem, js_elem
-from pybloqs.util import encode_string
+from pybloqs.util import encode_string, get_resource_path
 
 
 class Resource:

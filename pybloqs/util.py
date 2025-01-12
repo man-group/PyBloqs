@@ -8,6 +8,18 @@ from typing import Any, Callable, Dict, Iterator, Tuple, Union
 
 import numpy as np
 
+try:
+    from importlib.resources import files
+
+    def get_resource_path(package, resource_name):
+        return files(package).joinpath(resource_name)
+
+except ImportError:
+    from pkg_resources import resource_filename
+
+    def get_resource_path(package, resource_name):
+        return resource_filename(package, resource_name)
+
 
 def dt_epoch_msecs(value: Union[datetime.date, datetime.datetime]) -> float:
     """
