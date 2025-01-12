@@ -9,9 +9,9 @@ from typing import Any, Callable, Dict, Iterator, Tuple, Union
 import numpy as np
 
 try:
-    from importlib.resources import files
+    from importlib.resources import files  # noqa
 
-    def get_resource_path(package, resource_name):
+    def get_resource_path(package, resource_name) -> str:
         """
         Workaround for 3.8 - 3.12+ compatibility. Returns the resource path
 
@@ -19,12 +19,12 @@ try:
         :param resource_name: The name of the resource (file name)
         :return: Full resource path of the file
         """
-        return files(package).joinpath(resource_name)
+        return str(files(package).joinpath(resource_name))
 
 except ImportError:
-    from pkg_resources import resource_filename
+    from pkg_resources import resource_filename  # noqa
 
-    def get_resource_path(package, resource_name):
+    def get_resource_path(package, resource_name) -> str:
         """
         Workaround for 3.8 - 3.12+ compatibility. Returns the resource path
 
