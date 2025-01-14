@@ -84,7 +84,7 @@ class JScript(Resource):
 
         # Wrapper to make accidental multiple inclusion if the same code (e.g. with different file names) safe to load.
         sentinel_var_name = "_pybloqs_load_sentinel_{}".format(self.name.replace("-", "_"))
-        stream.write(f"if(typeof({sentinel_var_name}) == 'undefined'){{")
+        stream.write(f"if(typeof({sentinel_var_name}) == 'undefined'){{\n")
 
         if self.encode and permit_compression:
             self.write_compressed(stream, self.content_string)
@@ -100,9 +100,9 @@ class JScript(Resource):
     @classmethod
     def write_compressed(cls, stream: StringIO, data: str) -> None:
         if cls.global_encode:
-            stream.write('blocksEval(RawDeflate.inflate(atob("')
+            stream.write('(async function(){var code = await RawDeflate.inflate("')
             stream.write(encode_string(data).decode())
-            stream.write('")));')
+            stream.write('"); blocksEval(code);})()')
         else:
             stream.write(data)
 
