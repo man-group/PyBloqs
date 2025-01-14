@@ -7,34 +7,35 @@ keywords = ["ahl", "pdf", "html", "visualization", "report"]
 license = { file = "LICENSE" }
 readme = "README.md"
 classifiers = [
-  "Operating System :: OS Independent",
-  "Intended Audience :: Science/Research",
-  "Programming Language :: Python",
-  "Topic :: Scientific/Engineering",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "beautifulsoup4",
-  "matplotlib",
-  "markdown",
-  "html5lib",
-  "pandas",
-  "docutils",
-  "lxml",
-  "pyyaml",
-  "jinja2",
+    "beautifulsoup4",
+    "matplotlib",
+    "markdown",
+    "html5lib",
+    "pandas",
+    "docutils",
+    "lxml",
+    "pyyaml",
+    "jinja2",
 ]
 dynamic = ['version']
 
 [project.optional-dependencies]
 docs_and_notebook = [
-  "sphinx",
-  "nbsphinx",
-  "ipython[notebook]",
-  "sphinxcontrib-apidoc",
+    "sphinx",
+    "nbsphinx",
+    "ipython[notebook]",
+    "sphinxcontrib-apidoc",
 ]
 plotly = ["plotly", "kaleido"]
 bokeh = ["bokeh", "selenium"]
@@ -66,22 +67,22 @@ line-length = 120
 
 [tool.ruff.lint]
 select = [
-  "ANN2",
-  "COM",
-  "C4",
-  "E",
-  "F",
-  "G",
-  "I",
-  "LOG",
-  "PT",
-  "Q",
-  "RSE",
-  "RUF",
-  "SIM",
-  "T20",
-  "UP",
-  "W",
+    "ANN2",
+    "COM",
+    "C4",
+    "E",
+    "F",
+    "G",
+    "I",
+    "LOG",
+    "PT",
+    "Q",
+    "RSE",
+    "RUF",
+    "SIM",
+    "T20",
+    "UP",
+    "W",
 ]
 ignore = ["COM812", "E731", "PT011", "SIM108", "UP006", "UP007"]
 

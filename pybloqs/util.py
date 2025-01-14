@@ -8,6 +8,32 @@ from typing import Any, Callable, Dict, Iterator, Tuple, Union
 
 import numpy as np
 
+try:
+    from importlib.resources import files
+
+    def get_resource_path(package, resource_name) -> str:
+        """
+        Workaround for 3.8 - 3.12+ compatibility. Returns the resource path
+
+        :param package: The package name (pass __package__)
+        :param resource_name: The name of the resource (file name)
+        :return: Full resource path of the file
+        """
+        return str(files(package).joinpath(resource_name))
+
+except ImportError:
+    from pkg_resources import resource_filename
+
+    def get_resource_path(package, resource_name) -> str:
+        """
+        Workaround for 3.8 - 3.12+ compatibility. Returns the resource path
+
+        :param package: The package name (pass __package__)
+        :param resource_name: The name of the resource (file name)
+        :return: Full resource path of the file
+        """
+        return resource_filename(package, resource_name)
+
 
 def dt_epoch_msecs(value: Union[datetime.date, datetime.datetime]) -> float:
     """

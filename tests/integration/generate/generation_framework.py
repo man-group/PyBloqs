@@ -2,12 +2,16 @@ import logging
 import os
 import subprocess
 import sys
-from distutils.spawn import find_executable
 from functools import partial, wraps
 
 import matplotlib
 
 matplotlib.use("Agg")
+
+try:
+    from shutil import which  # noqa
+except ImportError:
+    from distutils.spawn import find_executable as which  # noqa
 
 
 def assert_report_generated(func=None, fmt="html", **kwargs):
@@ -37,7 +41,7 @@ def assert_report_generated(func=None, fmt="html", **kwargs):
             if sys.platform == "darwin":
                 logging.warning("Skipping call to pdfinfo as it is not available on this platform.")
             else:
-                if not find_executable("pdfinfo"):
+                if not which("pdfinfo"):
                     raise Exception('Could not find executable "pdfinfo". Will not check PDF file integrity')
                 else:
                     cmd = ["pdfinfo", tmp_file]
