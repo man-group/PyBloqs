@@ -477,7 +477,10 @@ class BaseBlock:
         :return: Data to be displayed
         """
         container = root("div")
-        self._write_block(container, Cfg(), id_generator())
+        resource_deps = DependencyTracker(default_css_main)
+        self._write_block(container, Cfg(), id_generator(), resource_deps=resource_deps)
+        for resource in resource_deps:
+            resource.write(container, permit_compression=False)
 
         # Write children into the output
         output = BytesIO()
