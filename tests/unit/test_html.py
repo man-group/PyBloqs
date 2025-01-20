@@ -54,6 +54,7 @@ def test_css_elem():
 
 
 def test_id_generator_sequential():
+    h._id_generator_sequential_counter = 0
     id_gen = h.id_generator_sequential()
 
     first_id = next(id_gen)

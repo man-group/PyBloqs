@@ -118,18 +118,21 @@ def id_generator_uuid() -> Generator[str, None, None]:
     Generates unique identifiers using the `uuid` package.
     """
     while True:
-        yield str(uuid.uuid4()).replace("-", "")
+        yield "uuid4" + str(uuid.uuid4()).replace("-", "")
+
+
+_id_generator_sequential_counter: int = 0
 
 
 def id_generator_sequential() -> Generator[str, None, None]:
     """
     Generatres unique identifiers sequentially from a known constant seed.
     """
-    counter = 0
+    global _id_generator_sequential_counter
 
     while True:
-        yield PYBLOQS_ID_PREFIX + str(counter)
-        counter += 1
+        yield PYBLOQS_ID_PREFIX + str(_id_generator_sequential_counter)
+        _id_generator_sequential_counter += 1
 
 
 def id_generator() -> Iterator[str]:
