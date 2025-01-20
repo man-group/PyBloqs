@@ -30,10 +30,10 @@ defaults: &defaults
         command: |
           virtualenv ci
           . ci/bin/activate
+          pip install --upgrade setuptools
           python setup.py load_highcharts --highcharts=node_modules/highcharts/,node_modules/highcharts/modules
           python setup.py load_wkhtmltopdf --wkhtmltopdf=wkhtmltox/bin
           pip install .[docs_and_notebook,plotly,bokeh,tests]
-          pip install --upgrade setuptools
     # Save dependency cache
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
