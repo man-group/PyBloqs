@@ -3,11 +3,14 @@ import glob
 import logging
 import os
 import sys
-from distutils.dir_util import mkpath
-from distutils.file_util import copy_file
+from shutil import copy2 as copy_file
 
 from setuptools import Command, setup
 from setuptools.command.install import install
+
+
+def mkpath(name):
+    os.makedirs(name, exist_ok=True)
 
 
 def _copy_hc_files(source_paths, dest_path):
