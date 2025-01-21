@@ -37,6 +37,8 @@ extensions = [
     #     'sphinx.ext.mathjax',
     "sphinx.ext.viewcode",
     "myst_nb",
+    "sphinx_copybutton",
+    "sphinx_togglebutton",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -6,8 +6,8 @@ Table of contents
 :::{toctree}
 :maxdepth: 1
 
-getting_started
-user_guide
-developer_guide
-api
+getting_started/index
+user_guide/index
+developer_guide/index
+api/index
 :::
