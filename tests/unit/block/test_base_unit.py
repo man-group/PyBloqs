@@ -5,6 +5,7 @@ import pytest
 
 import pybloqs.block.base as bbase
 import pybloqs.config as config
+import pybloqs.static as static
 
 
 def test_publish_block():
@@ -86,3 +87,10 @@ def test_save_filename_and_extension(filename, fmt, exp_name, exp_fmt, exp_outpu
         assert result == exp_name
     if exp_fmt is not None:
         assert result.split(".")[-1] == exp_fmt
+
+
+def test_write_html_resources():
+    with patch.object(bbase.BaseBlock, "_write_contents"):
+        b = bbase.BaseBlock()
+        b.resource_deps = (static.Css(css_string="*{color:limegreen;}", name="dummy"),)
+        assert "limegreen" in b._repr_html_()
