@@ -380,7 +380,9 @@ pybloqs.server.serve_block(refresh_block, "/refresh")
     alert_span.innerHTML = 'Loading micropip';
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
-    for (const pckage of ['setuptools', 'plotly', 'Flask', 'pybloqs']) {
+    for (const pckage of ['setuptools', 'plotly', 'Flask',
+'http://localhost:8000/pybloqs-1.3.3.dev31+g6db30cae.d20250121-py3-none-any.whl'
+]) {
       alert_span.innerHTML = 'Installing <code>'+ pckage + '</code>...';
       await micropip.install(pckage);
     }
