@@ -133,11 +133,10 @@ This renders as the following.
 
 <iframe src='/sample_block' style="width:100%;height:300px;"></iframe>
 
-Throughout this guide we will show `iframe`s demonstrating the principles of `pybloqs.server`. We encourage you to open the console of your browser's development tools and look at the HTTP requests being made. You can also look at the [server source file](./demo.py) directly.
 
 PyBloqs server provides you with the Flask application object it is using to serve the HTML at `pybloqs.server.app`. You can then either a WSGI server, or run it locally by calling `app.run()`.
 
-The `serve_block` function can be called as many times as you like to serve multiple blocks on different endpoints.
+The `serve_block` function can be called multiple times to serve multiple blocks on different endpoints.
 You can also set the page title and favicon of the resulting page.
 
 ### Providers
@@ -368,6 +367,37 @@ pybloqs.server.serve_block(refresh_block, "/refresh")
 ```
 
 <iframe src='/refresh' style="width:100%;height:150px;"></iframe>
+
+### How it Works
+
+PyBloqs server is built using [HTMX](https://htmx.org/) with a standard python webserver backend, currently [Flask](https://flask.palletsprojects.com/en/stable/).
+
+HTMX aims to provide, among [other things](https://htmx.org/essays/hateoas/), a clean API to insert snippets of HTML within a document. PyBloqs fundamentally are each snippets of HTML, so it a natural fit.
+
+The `@bloqs_provider` decorator wraps a function that generates a PyBloq in a new block type called a `BloqsProvider`. This block presents the `get_fragment` function which just returns the HTML content of the block, similarly to `BaseBlock._write_block`. The decorator then registers this function with the server at an endpoint given by the `id` of the block provider.
+
+`BloqsProvider`s also present as a `BaseBlock` themselves, but the content they render is (very similar to)
+```html
+<div hx-trigger="revealed" hx-get="/{ID OF BLOQS PROVIDER}">
+    Loading
+</div>
+```
+This snippet instructs HTMX to make an AJAX request to `/{ID OF BLOQS PROVIDER}` and replace the entire `<div/>` with the contents of the response.
+
+You can open the console of your browser's development tools now, and see the HTTP requests being made in order to render the above examples. You can also look at the [server source file](./demo.py) directly.
+
+#### Caveats
+
+##### Resources
+When used to render static HTML or images, PyBloqs has a mechanism to prevent resources (CSS and JavaScript) required by blocks from being embedded multiple times if multiple blocks require them.
+
+PyBloqs server also attempts to not duplicate resources.  If a request indicates that it hasn't received a particular resource yet, then the provider's `get_fragment` function will serve the resource next to the content. The fact that this resource has been sent is then stored in the `hx-headers` tag of the `<body/>` of the report. This instructs HTMX to send the data in the headers of every AJAX request it makes (which is how the provider knew that it hadn't served the resource in the first place).
+
+##### Parameters
+If you make a request to `/{ID OF BLOQS PROVIDER}?some=parameters&args=here&args=and&args=there` it will call the providing function with `*args=('here', 'and', 'there'), **kwargs={'some': 'parameter'}`. You can generate this link by calling `with_parameter` (or `with_parameters`) on a block provider. This will give you back a new provider which will render with the correct URL.
+
+##### Loading...
+Because providing the block might take some time for the server, the stub contains a `Loading...` message so the user does not just see a white page.  By default this is a small `<canvas/>` that shows the game of life playing out, but this can be customised.
 
 <script type="text/javascript">
   async function main(){
