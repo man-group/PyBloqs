@@ -24,6 +24,12 @@ $ pip install --editable .
 
 For full functionality, PyBloqs requires the following 3rd party programs and libraries. For many, the file location must be specified at install time.
 
+#### Flask
+If using [Pybloqs server](/server/index.html) the only additional dependency is [Flask](https://flask.palletsprojects.com/en/stable/). This can be installed with
+```
+pip install pybloqs[server]
+```
+
 #### wkhtmltox
 
 Pybloqs uses [wkhtmltox](https://wkhtmltopdf.org/) (LGPLv3) to render reports to PDF or images.
@@ -76,3 +82,4 @@ The following libraries are bundled in a default install of pybloqs.
  - [jsinflate.js](https://github.com/augustl/js-inflate) under the MIT License
  - [jquery.js](https://jquery.com) under the MIT License
  - [jquery-DataTables.js](https://datatables.net) under the MIT License
+ - [htmx](https://htmx.org/) under the Zero-clause BSD License
