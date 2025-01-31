@@ -9,5 +9,6 @@ Table of contents
 getting_started/index
 user_guide/index
 developer_guide/index
+server/index
 api/index
 :::

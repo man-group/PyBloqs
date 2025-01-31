@@ -41,6 +41,7 @@ plotly = ["plotly", "kaleido"]
 bokeh = ["bokeh", "selenium"]
 tests = ["mock", "pytest", "pytest-cov"]
 altair = ["altair"]
+server = ["Flask"]
 
 [project.urls]
 Homepage = "https://github.com/man-group/pybloqs"
@@ -59,6 +60,7 @@ exclude = ["node_modules", "logo", "wkhtmltox"]
 "pybloqs.static" = ["*.js", "css/*.css", "css/pybloqs_default/main.css"]
 "pybloqs.jinja" = ["table.html"]
 "pybloqs.htmlconv" = ["*.js"]
+"pybloqs.server.static" = ["*.js"]
 
 [tool.setuptools_scm]
 
