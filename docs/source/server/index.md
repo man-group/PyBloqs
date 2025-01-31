@@ -53,7 +53,7 @@ pybloqs.server.serve_block(
                     "Tabs": bloqs_provider(
                         lambda: Tabs(
                             {
-                                "Humans in space": humans_in_space,
+                                "Random Data": random_data,
                                 "Server time": server_time,
                             },
                             title="Tabs",
@@ -295,7 +295,7 @@ tabs = pybloqs.VStack(
         "Here is a tab block:",
         Tabs(
             {
-                "Humans in space": humans_in_space,
+                "Random data": random_data,
                 "Server time": server_time,
             }
         ),
@@ -368,7 +368,7 @@ pybloqs.server.serve_block(refresh_block, "/refresh")
 
 <iframe src='/refresh' style="width:100%;height:150px;"></iframe>
 
-### How it Works
+## How it Works
 
 PyBloqs server is built using [HTMX](https://htmx.org/) with a standard python webserver backend, currently [Flask](https://flask.palletsprojects.com/en/stable/).
 
@@ -384,7 +384,7 @@ The `@bloqs_provider` decorator wraps a function that generates a PyBloq in a ne
 ```
 This snippet instructs HTMX to make an AJAX request to `/{ID OF BLOQS PROVIDER}` and replace the entire `<div/>` with the contents of the response.
 
-You can open the console of your browser's development tools now, and see the HTTP requests being made in order to render the above examples. You can also look at the [server source file](./demo.py) directly.
+You can open the console of your browser's development tools now, and see the HTTP requests being made in order to render the above examples. You can also look at the [server source file](/server_demo.py) directly.
 
 #### Caveats
 
@@ -410,14 +410,13 @@ Because providing the block might take some time for the server, the stub contai
     alert_span.innerHTML = 'Loading micropip';
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
-    for (const pckage of ['setuptools', 'plotly', 'Flask',
-'http://localhost:8000/pybloqs-1.3.3.dev31+g6db30cae.d20250121-py3-none-any.whl'
-]) {
+    for (const pckage of ['setuptools', 'plotly', 'Flask', 'bs4', 'markdown', 'pybloqs'])
+    {
       alert_span.innerHTML = 'Installing <code>'+ pckage + '</code>...';
       await micropip.install(pckage);
     }
-    alert_span.innerHTML = 'Loading <code>demo.py</code>';
-    pyodide.runPython(await (await fetch("./demo.py")).text());
+    alert_span.innerHTML = 'Loading <code>server_demo.py</code>';
+    pyodide.runPython(await (await fetch("../server_demo.py")).text());
     alert_span.parentNode.parentNode.style.display = 'none';
     let app = pyodide.globals.get("app").toJs();
     function forward_request(method, route, headers) {
