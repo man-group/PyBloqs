@@ -384,7 +384,7 @@ The `@bloqs_provider` decorator wraps a function that generates a PyBloq in a ne
 ```
 This snippet instructs HTMX to make an AJAX request to `/{ID OF BLOQS PROVIDER}` and replace the entire `<div/>` with the contents of the response.
 
-You can open the console of your browser's development tools now, and see the HTTP requests being made in order to render the above examples. You can also look at the [server source file](./demo.py) directly.
+You can open the console of your browser's development tools now, and see the HTTP requests being made in order to render the above examples. You can also look at the [server source file](/server_demo.py) directly.
 
 #### Caveats
 
@@ -417,8 +417,8 @@ Because providing the block might take some time for the server, the stub contai
     }
     alert_span.innerHTML = 'Installing <code>pybloqs</code>...';
     await pyodide.runPython("import micropip; micropip.install('pybloqs==1.4.0.dev0', index_urls=['https://test.pypi.org/pypi/{package_name}/json'])");
-    alert_span.innerHTML = 'Loading <code>demo.py</code>';
-    pyodide.runPython(await (await fetch("./demo.py")).text());
+    alert_span.innerHTML = 'Loading <code>server_demo.py</code>';
+    pyodide.runPython(await (await fetch("../server_demo.py")).text());
     alert_span.parentNode.parentNode.style.display = 'none';
     let app = pyodide.globals.get("app").toJs();
     function forward_request(method, route, headers) {
