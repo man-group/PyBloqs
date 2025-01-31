@@ -410,13 +410,11 @@ Because providing the block might take some time for the server, the stub contai
     alert_span.innerHTML = 'Loading micropip';
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
-    for (const pckage of ['setuptools', 'plotly', 'Flask', 'bs4', 'markdown'])
+    for (const pckage of ['setuptools', 'plotly', 'Flask', 'bs4', 'markdown', 'pybloqs'])
     {
       alert_span.innerHTML = 'Installing <code>'+ pckage + '</code>...';
       await micropip.install(pckage);
     }
-    alert_span.innerHTML = 'Installing <code>pybloqs</code>...';
-    await pyodide.runPython("import micropip; micropip.install('pybloqs==1.4.0.dev0', index_urls=['https://test.pypi.org/pypi/{package_name}/json'])");
     alert_span.innerHTML = 'Loading <code>server_demo.py</code>';
     pyodide.runPython(await (await fetch("../server_demo.py")).text());
     alert_span.parentNode.parentNode.style.display = 'none';
