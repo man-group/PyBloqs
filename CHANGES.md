@@ -171,3 +171,13 @@
   * Tests: Add regressions tests
   * Refactoring: Added typehints
   * Docs: Various updates
+
+### 1.4.0 (2025-01-31)
+* Feature: Pybloqs server
+* Feature: Use browsers' DecompressionStream to do zlib decompression instead of rolling our own
+* Compat: Python 3.12 compatibility
+* Bugfix: Use `utf-8` instead of `utf8` and remove unused UTF-8 tests
+* Bugfix: Fix resource decompression when resource has multi-byte characters
+* Bugfix: Render resources in iPython cells
+* Bugfix: Make ids globally unique and HTML-valid for the session
+* CI: Add python 3.9 as a build target
