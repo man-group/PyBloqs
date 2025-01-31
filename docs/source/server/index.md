@@ -53,7 +53,7 @@ pybloqs.server.serve_block(
                     "Tabs": bloqs_provider(
                         lambda: Tabs(
                             {
-                                "Humans in space": humans_in_space,
+                                "Random Data": random_data,
                                 "Server time": server_time,
                             },
                             title="Tabs",
@@ -295,7 +295,7 @@ tabs = pybloqs.VStack(
         "Here is a tab block:",
         Tabs(
             {
-                "Humans in space": humans_in_space,
+                "Random data": random_data,
                 "Server time": server_time,
             }
         ),
@@ -368,7 +368,7 @@ pybloqs.server.serve_block(refresh_block, "/refresh")
 
 <iframe src='/refresh' style="width:100%;height:150px;"></iframe>
 
-### How it Works
+## How it Works
 
 PyBloqs server is built using [HTMX](https://htmx.org/) with a standard python webserver backend, currently [Flask](https://flask.palletsprojects.com/en/stable/).
 

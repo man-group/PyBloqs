@@ -5,21 +5,6 @@ import numpy as np
 import pandas as pd
 import pybloqs.server
 
-# We perform network requests differently depending on if we have the requests
-# module available or if we are running in the browser via pyodide
-try:
-    import requests
-
-    def request(url):
-        return requests.get(url).json()
-except ImportError:
-    import pyodide
-    import json
-
-    def request(url):
-        return json.load(pyodide.http.open_url(url))
-
-
 import pybloqs
 
 pd.options.plotting.backend = "plotly"
@@ -115,15 +100,16 @@ from pybloqs.server import bloqs_provider
 
 
 @bloqs_provider
-def humans_in_space() -> pybloqs.BaseBlock:
-    import time
-
-    time.sleep(2)
+def random_data() -> pybloqs.BaseBlock:
     return pybloqs.Block(
         pd.DataFrame(
-            request("http://api.open-notify.org/astros.json").get("people", [])
-        ).set_index("name"),
-        title="Humans in space",
+            {
+                "Column 1": np.random.normal(size=10),
+                "Column 2": np.random.normal(size=10),
+                "Column 3": np.random.normal(size=10),
+            }
+        ),
+        title="Random data",
     )
 
 
@@ -216,7 +202,7 @@ tabs = pybloqs.VStack(
         "Here is a tab block:",
         Tabs(
             {
-                "Humans in space": humans_in_space,
+                "Random data": random_data,
                 "Server time": server_time,
             }
         ),
@@ -257,7 +243,7 @@ pybloqs.server.serve_block(polling_block, "/poll")
 # poll_end
 
 pybloqs.server.serve_block(sample_block, "/sample_block")
-pybloqs.server.serve_block(humans_in_space(), "/astronauts")
+pybloqs.server.serve_block(random_data(), "/astronauts")
 # time_frozen
 pybloqs.server.serve_block(server_time(), "/server_time_frozen")
 # time_frozen_end
@@ -300,7 +286,7 @@ pybloqs.server.serve_block(
                     "Tabs": bloqs_provider(
                         lambda: Tabs(
                             {
-                                "Humans in space": humans_in_space,
+                                "Random data": random_data,
                                 "Server time": server_time,
                             },
                             title="Tabs",
@@ -310,7 +296,7 @@ pybloqs.server.serve_block(
                     "On-demand loading": bloqs_provider(
                         lambda: pybloqs.VStack(
                             [
-                                humans_in_space,
+                                random_data,
                                 pybloqs.Block(
                                     "Please scroll...",
                                     height="500px",
