@@ -41,6 +41,9 @@ class Select(pybloqs.BaseBlock):
 
         select = append_to(container, "select")
         select["hx-target"] = f"#{select_uid}"
+        select["hx-get"] = ""
+        # This gets the url from the value of the option
+        select["hx-on::config-request"] = "event.detail.path = this.value"
         select["aria-controls"] = select_uid
         select["style"] = "float: right; margin: 0.4em;"
 
@@ -56,6 +59,6 @@ class Select(pybloqs.BaseBlock):
             tab_contents = self.provider_generator(tab_title)
             option = append_to(select, "option")
             option.string = tab_title
-            option["hx-get"] = tab_contents.url
+            option["value"] = tab_contents.url
             if n == 0:
                 content_div["hx-get"] = tab_contents.url
