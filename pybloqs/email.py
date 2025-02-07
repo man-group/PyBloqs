@@ -156,7 +156,6 @@ def send_html_report(
     """
     # create the dom for querying/modifying the html document
     parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
-    html_str = "<a>foo</a>"
     dom = parser.parse(html_str)
 
     if not subject:
