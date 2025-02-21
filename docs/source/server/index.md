@@ -288,7 +288,7 @@ The module `pybloqs.server.block` provides a number of useful PyBloqs for use wi
 The `Tab` block dynamically loads the contents of each tab when it is displayed.
 
 ```
-from pybloqs.server.blocks import Tabs
+from pybloqs.server.block import Tabs
 
 tabs = pybloqs.VStack(
     [
@@ -329,7 +329,7 @@ The `Select` block exposes an identical API to the `Tab` block, but allows the u
 
 
 ```
-from pybloqs.server.blocks import Select
+from pybloqs.server.block import Select
 
 select = Select(
     options=["Ada", "Alan", "Alonzo"],
@@ -347,7 +347,7 @@ If you have a provider, you can easily construct a polling block that periodicia
 
 ```
 polling_block: pybloqs.BaseBlock = server_time.poll("5s")
-# or pybloqs.server.blocks.Poll(server_time, "5s")
+# or pybloqs.server.block.Poll(server_time, "5s")
 
 pybloqs.server.serve_block(polling_block, "/poll")
 ```
@@ -359,7 +359,7 @@ pybloqs.server.serve_block(polling_block, "/poll")
 On the other hand if you only want to reload the contents when the user requests it manually, you can use a refreshing block..
 
 ```
-from pybloqs.server.blocks import Refresh
+from pybloqs.server.block import Refresh
 
 refresh_block = Refresh(server_time)
 
