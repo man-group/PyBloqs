@@ -16,10 +16,15 @@ user_config = {
     "id_precision": 10,  # Number of digits to use from the id hash
 }
 
-try:
-    with open(os.path.expanduser("~/.pybloqs.cfg")) as config_file:
-        stored_config = yaml.load(config_file)
-        if stored_config is not None:
-            user_config.update(stored_config)
-except OSError:
-    pass
+
+def _load_overrides() -> None:
+    try:
+        with open(os.path.expanduser("~/.pybloqs.cfg")) as config_file:
+            stored_config = yaml.safe_load(config_file)
+            if stored_config is not None:
+                user_config.update(stored_config)
+    except OSError:
+        pass
+
+
+_load_overrides()
