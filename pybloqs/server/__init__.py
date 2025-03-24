@@ -81,7 +81,20 @@ def serve_block(
     _getapp().add_url_rule(route, endpoint=str(uuid4()), view_func=handler)
 
 
-def bloqs_provider(f) -> BloqsProvider:
-    provider = BloqsProvider(f)
-    _getapp().add_url_rule(provider.url, endpoint=provider._id, view_func=provider.get_fragment)
-    return provider
+def bloqs_provider(*args, **kwargs) -> BloqsProvider:
+    is_bare = len(args) == 1 and not kwargs and callable(args[0])
+    if is_bare:
+        f = args[0]
+        args = ()
+        kwargs = {}
+    elif args:
+        raise ValueError(f"Cannot call bloqs_provider with arguments {args}. Use kwargs instead.")
+
+    def wrapper(f: Callable) -> BloqsProvider:
+        provider = BloqsProvider(f, *args, **kwargs)
+        _getapp().add_url_rule(provider.url, endpoint=provider._id, view_func=provider.get_fragment)
+        return provider
+
+    if is_bare:
+        return wrapper(f)
+    return wrapper

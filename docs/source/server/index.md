@@ -376,6 +376,15 @@ HTMX aims to provide, among [other things](https://htmx.org/essays/hateoas/), a 
 
 The `@bloqs_provider` decorator wraps a function that generates a PyBloq in a new block type called a `BloqsProvider`. This block presents the `get_fragment` function which just returns the HTML content of the block, similarly to `BaseBlock._write_block`. The decorator then registers this function with the server at an endpoint given by the `id` of the block provider.
 
+:::{admonition} Setting the endpoint
+You can change the ID (and hence the URL that the block serves) by passing parameters to the decorator. In fact these are all forwarded to the constructor of the `BloqsProvider` object.
+```python
+@bloqs_provider(id_="some_name")  # serves on /some_name
+def some_provider() -> BaseBlock:
+    ...
+```
+:::
+
 `BloqsProvider`s also present as a `BaseBlock` themselves, but the content they render is (very similar to)
 ```html
 <div hx-trigger="revealed" hx-get="/{ID OF BLOQS PROVIDER}">
