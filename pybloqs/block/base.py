@@ -37,6 +37,7 @@ class BaseBlock:
         styles=None,
         classes: Union[str, Iterable[str]] = (),
         anchor=None,
+        id_: Optional[str] = None,
         **kwargs,
     ) -> None:
         self._settings = Cfg(
@@ -52,7 +53,7 @@ class BaseBlock:
         )
         # Anchor should not be inherited, so keep outside of Cfg
         self._anchor = anchor
-        self._id = uuid.uuid4().hex
+        self._id = id_ or uuid.uuid4().hex
 
     def render_html(
         self,

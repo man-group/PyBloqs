@@ -74,8 +74,8 @@ chebyshev_dataframe = pd.DataFrame(
 chebyshev_dataframe.index.name = "x"
 for i in range(2, 6):
     chebyshev_dataframe[f"T{i}"] = (
-        2 * chebyshev_dataframe[f"T{i-1}"] * chebyshev_dataframe["T1"]
-        - chebyshev_dataframe[f"T{i-2}"]
+        2 * chebyshev_dataframe[f"T{i - 1}"] * chebyshev_dataframe["T1"]
+        - chebyshev_dataframe[f"T{i - 2}"]
     )
 
 # simple_block
@@ -158,7 +158,7 @@ pybloqs.server.serve_block(very_tall, "/very_tall")
 
 
 # greet
-@bloqs_provider
+@bloqs_provider(id_="greet_block")
 def greet(
     name: str,
 ) -> pybloqs.BaseBlock:
