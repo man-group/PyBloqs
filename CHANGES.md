@@ -181,3 +181,12 @@
 * Bugfix: Render resources in iPython cells
 * Bugfix: Make ids globally unique and HTML-valid for the session
 * CI: Add python 3.9 as a build target
+
+### 1.4.1 (2025-03-24)
+* Feature: Permit specifying the endpoint that blocks serve on
+* Bugfix: Remove dummy code
+* Bugfix: Fix typos of `server.blocks` to `server.block`
+* Bugfix: Don't use async compression stream
+* Bugfix: Fix yaml.load error 
+* Bugfix: Small errors in HTMX shims
+
