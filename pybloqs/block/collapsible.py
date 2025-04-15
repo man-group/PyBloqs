@@ -27,7 +27,7 @@ class CollapsibleBlock(CompositeBlockMixin, BaseBlock):
     clash with standard block parameters.
     """
 
-    resource_deps: ClassVar[list] = [
+    resource_deps: ClassVar[tuple] = [
         Css(
             css_string="""
             details.pybloqs > summary {
