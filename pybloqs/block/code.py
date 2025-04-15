@@ -73,7 +73,7 @@ class Code(pybloqs.BaseBlock):
         clipboard_button = append_to(
             wrapper,
             "button",
-            onclick=f'writeClipboardText({sanitised_code})',
+            onclick=f"writeClipboardText({sanitised_code})",
             style="position:absolute; top:0.2rem; right:0.2rem; background: none; border: none;",
         )
         for child in list(parse(CLIPBOARD_SVG).children):
