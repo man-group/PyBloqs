@@ -64,5 +64,5 @@ class CollapsibleBlock(CompositeBlockMixin, BaseBlock):
     def _write_title(self, container) -> None:
         title = append_to(container, "summary")
         title["class"] = self._settings.classes
-        t = append_to(title, "H%s" % self._settings.title_level)
+        t = append_to(title, f"H{self._settings.title_level}")
         t.string = self._settings.title
