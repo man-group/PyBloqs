@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <script type="text/javascript">
+   if(typeof(_pybloqs_load_sentinel_jsinflate) == 'undefined'){
+(function(){function decompress(bytes){const input=new ReadableStream({start(c){c.enqueue(bytes);c.close();},}).pipeThrough(new DecompressionStream("deflate"));const reader=input.getReader();const chunks=[];return reader.read().then(function process({done,value}){if(done){const decompressedData=new Uint8Array(chunks.reduce((acc,chunk)=>acc+chunk.length,0));let offset=0;chunks.forEach(chunk=>{decompressedData.set(chunk,offset);offset+=chunk.length;});return decompressedData;}
+chunks.push(value);return reader.read().then(process);});}
+var zip_inflate=async function(str){const binaryString=atob(str);var bytes=new Uint8Array(binaryString.length);for(var i=0;i<binaryString.length;i++){bytes[i]=binaryString.charCodeAt(i);}
+return decompress(bytes).then(decompressed=>(new TextDecoder().decode(decompressed))).catch(console.error);}
+if(!window.RawDeflate)RawDeflate={};RawDeflate.inflate=zip_inflate;})();
+_pybloqs_load_sentinel_jsinflate = true;}
+  </script>
+  <script type="text/javascript">
+   if(typeof(_pybloqs_load_sentinel_block_core) == 'undefined'){
+function isIE(){var myNav=navigator.userAgent.toLowerCase();return(myNav.indexOf('msie')!=-1)?parseInt(myNav.split('msie')[1]):false;}
+var ieVersion=isIE();if(ieVersion&&ieVersion<10){alert("Internet Explorer 10 and older are not supported. Use Chrome, Firefox, Safari or IE 11 instead.");}
+function blocksEval(data){(window.execScript||function(data){window["eval"].call(window,data);})(data);}
+function registerWaitHandle(handle){if(!window.loadWaitHandleRegistry){window.loadWaitHandleRegistry={}}
+loadWaitHandleRegistry[handle]=false;}
+function setLoaded(handle){loadWaitHandleRegistry[handle]=true;}
+function runWaitPoller(){var loadWaitPoller=setInterval(function(){if("loadWaitHandleRegistry"in window){var handleCount=0;for(var handle in loadWaitHandleRegistry){if(!loadWaitHandleRegistry.hasOwnProperty(handle)){handleCount++;if(!loadWaitHandleRegistry[handle]){return}}}}
+clearInterval(loadWaitPoller);window.print();},10);return loadWaitPoller;}
+_pybloqs_load_sentinel_block_core = true;}
+  </script>
+  <style type="text/css">
+   .pybloqs {
+    font-family: Helvetica, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+}
+
+.pybloqs pre code {
+    display: block;
+    margin-left: 1em;
+    font-family: monospace;
+}
+
+@media print {
+	#footer {
+	    position: fixed;
+	    bottom: 0;
+	}
+}
+  </style>
+  <style type="text/css">
+   details.pybloqs > summary {
+                list-style: none;
+                cursor: pointer;
+            }
+
+            details.pybloqs > summary :where(h1,h2,h3,h4,h5,h6)::before {
+                content: '▶';
+                display: inline-block;
+                margin-right: 0.5em;
+                transition: transform 0.2s;
+            }
+
+            details[open].pybloqs > summary :where(h1,h2,h3,h4,h5,h6)::before {
+                transform: rotate(90deg);
+            }
+  </style>
+ </head>
+ <body>
+  <details class="pybloqs">
+   <summary class="pybloqs">
+    <H3>
+     A CollapsibleBlock
+    </H3>
+   </summary>
+   <div>
+    <div class="pybloqs">
+     this is a collapsible block.
+    </div>
+   </div>
+  </details>
+ </body>
+</html>

@@ -1,4 +1,5 @@
 from pybloqs.block.base import BaseBlock, HRule
+from pybloqs.block.collapsible import CollapsibleBlock
 from pybloqs.block.convenience import Block
 from pybloqs.block.image import ImgBlock, PlotBlock, set_plot_format
 from pybloqs.block.layout import Flow, Grid, HStack, VStack
@@ -28,6 +29,7 @@ __all__ = [
     "set_plot_format",
     "Block",
     "BaseBlock",
+    "CollapsibleBlock",
     "HRule",
     "Raw",
     "Grid",
