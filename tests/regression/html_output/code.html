@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <script type="text/javascript">
+   if(typeof(_pybloqs_load_sentinel_jsinflate) == 'undefined'){
+(function(){function decompress(bytes){const input=new ReadableStream({start(c){c.enqueue(bytes);c.close();},}).pipeThrough(new DecompressionStream("deflate"));const reader=input.getReader();const chunks=[];return reader.read().then(function process({done,value}){if(done){const decompressedData=new Uint8Array(chunks.reduce((acc,chunk)=>acc+chunk.length,0));let offset=0;chunks.forEach(chunk=>{decompressedData.set(chunk,offset);offset+=chunk.length;});return decompressedData;}
+chunks.push(value);return reader.read().then(process);});}
+var zip_inflate=async function(str){const binaryString=atob(str);var bytes=new Uint8Array(binaryString.length);for(var i=0;i<binaryString.length;i++){bytes[i]=binaryString.charCodeAt(i);}
+return decompress(bytes).then(decompressed=>(new TextDecoder().decode(decompressed))).catch(console.error);}
+if(!window.RawDeflate)RawDeflate={};RawDeflate.inflate=zip_inflate;})();
+_pybloqs_load_sentinel_jsinflate = true;}
+  </script>
+  <script type="text/javascript">
+   if(typeof(_pybloqs_load_sentinel_block_core) == 'undefined'){
+function isIE(){var myNav=navigator.userAgent.toLowerCase();return(myNav.indexOf('msie')!=-1)?parseInt(myNav.split('msie')[1]):false;}
+var ieVersion=isIE();if(ieVersion&&ieVersion<10){alert("Internet Explorer 10 and older are not supported. Use Chrome, Firefox, Safari or IE 11 instead.");}
+function blocksEval(data){(window.execScript||function(data){window["eval"].call(window,data);})(data);}
+function registerWaitHandle(handle){if(!window.loadWaitHandleRegistry){window.loadWaitHandleRegistry={}}
+loadWaitHandleRegistry[handle]=false;}
+function setLoaded(handle){loadWaitHandleRegistry[handle]=true;}
+function runWaitPoller(){var loadWaitPoller=setInterval(function(){if("loadWaitHandleRegistry"in window){var handleCount=0;for(var handle in loadWaitHandleRegistry){if(!loadWaitHandleRegistry.hasOwnProperty(handle)){handleCount++;if(!loadWaitHandleRegistry[handle]){return}}}}
+clearInterval(loadWaitPoller);window.print();},10);return loadWaitPoller;}
+_pybloqs_load_sentinel_block_core = true;}
+  </script>
+  <style type="text/css">
+   .pybloqs {
+    font-family: Helvetica, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+}
+
+.pybloqs pre code {
+    display: block;
+    margin-left: 1em;
+    font-family: monospace;
+}
+
+@media print {
+	#footer {
+	    position: fixed;
+	    bottom: 0;
+	}
+}
+  </style>
+  <style type="text/css">
+   pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.pybloqs_code .hll { background-color: #ffffcc }
+.pybloqs_code .pybloqs_c { color: #3D7B7B; font-style: italic } /* Comment */
+.pybloqs_code .pybloqs_err { border: 1px solid #FF0000 } /* Error */
+.pybloqs_code .pybloqs_k { color: #008000; font-weight: bold } /* Keyword */
+.pybloqs_code .pybloqs_o { color: #666666 } /* Operator */
+.pybloqs_code .pybloqs_ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.pybloqs_code .pybloqs_cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.pybloqs_code .pybloqs_cp { color: #9C6500 } /* Comment.Preproc */
+.pybloqs_code .pybloqs_cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.pybloqs_code .pybloqs_c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.pybloqs_code .pybloqs_cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.pybloqs_code .pybloqs_gd { color: #A00000 } /* Generic.Deleted */
+.pybloqs_code .pybloqs_ge { font-style: italic } /* Generic.Emph */
+.pybloqs_code .pybloqs_ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.pybloqs_code .pybloqs_gr { color: #E40000 } /* Generic.Error */
+.pybloqs_code .pybloqs_gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.pybloqs_code .pybloqs_gi { color: #008400 } /* Generic.Inserted */
+.pybloqs_code .pybloqs_go { color: #717171 } /* Generic.Output */
+.pybloqs_code .pybloqs_gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.pybloqs_code .pybloqs_gs { font-weight: bold } /* Generic.Strong */
+.pybloqs_code .pybloqs_gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.pybloqs_code .pybloqs_gt { color: #0044DD } /* Generic.Traceback */
+.pybloqs_code .pybloqs_kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.pybloqs_code .pybloqs_kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.pybloqs_code .pybloqs_kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.pybloqs_code .pybloqs_kp { color: #008000 } /* Keyword.Pseudo */
+.pybloqs_code .pybloqs_kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.pybloqs_code .pybloqs_kt { color: #B00040 } /* Keyword.Type */
+.pybloqs_code .pybloqs_m { color: #666666 } /* Literal.Number */
+.pybloqs_code .pybloqs_s { color: #BA2121 } /* Literal.String */
+.pybloqs_code .pybloqs_na { color: #687822 } /* Name.Attribute */
+.pybloqs_code .pybloqs_nb { color: #008000 } /* Name.Builtin */
+.pybloqs_code .pybloqs_nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.pybloqs_code .pybloqs_no { color: #880000 } /* Name.Constant */
+.pybloqs_code .pybloqs_nd { color: #AA22FF } /* Name.Decorator */
+.pybloqs_code .pybloqs_ni { color: #717171; font-weight: bold } /* Name.Entity */
+.pybloqs_code .pybloqs_ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.pybloqs_code .pybloqs_nf { color: #0000FF } /* Name.Function */
+.pybloqs_code .pybloqs_nl { color: #767600 } /* Name.Label */
+.pybloqs_code .pybloqs_nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.pybloqs_code .pybloqs_nt { color: #008000; font-weight: bold } /* Name.Tag */
+.pybloqs_code .pybloqs_nv { color: #19177C } /* Name.Variable */
+.pybloqs_code .pybloqs_ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.pybloqs_code .pybloqs_w { color: #bbbbbb } /* Text.Whitespace */
+.pybloqs_code .pybloqs_mb { color: #666666 } /* Literal.Number.Bin */
+.pybloqs_code .pybloqs_mf { color: #666666 } /* Literal.Number.Float */
+.pybloqs_code .pybloqs_mh { color: #666666 } /* Literal.Number.Hex */
+.pybloqs_code .pybloqs_mi { color: #666666 } /* Literal.Number.Integer */
+.pybloqs_code .pybloqs_mo { color: #666666 } /* Literal.Number.Oct */
+.pybloqs_code .pybloqs_sa { color: #BA2121 } /* Literal.String.Affix */
+.pybloqs_code .pybloqs_sb { color: #BA2121 } /* Literal.String.Backtick */
+.pybloqs_code .pybloqs_sc { color: #BA2121 } /* Literal.String.Char */
+.pybloqs_code .pybloqs_dl { color: #BA2121 } /* Literal.String.Delimiter */
+.pybloqs_code .pybloqs_sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.pybloqs_code .pybloqs_s2 { color: #BA2121 } /* Literal.String.Double */
+.pybloqs_code .pybloqs_se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.pybloqs_code .pybloqs_sh { color: #BA2121 } /* Literal.String.Heredoc */
+.pybloqs_code .pybloqs_si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.pybloqs_code .pybloqs_sx { color: #008000 } /* Literal.String.Other */
+.pybloqs_code .pybloqs_sr { color: #A45A77 } /* Literal.String.Regex */
+.pybloqs_code .pybloqs_s1 { color: #BA2121 } /* Literal.String.Single */
+.pybloqs_code .pybloqs_ss { color: #19177C } /* Literal.String.Symbol */
+.pybloqs_code .pybloqs_bp { color: #008000 } /* Name.Builtin.Pseudo */
+.pybloqs_code .pybloqs_fm { color: #0000FF } /* Name.Function.Magic */
+.pybloqs_code .pybloqs_vc { color: #19177C } /* Name.Variable.Class */
+.pybloqs_code .pybloqs_vg { color: #19177C } /* Name.Variable.Global */
+.pybloqs_code .pybloqs_vi { color: #19177C } /* Name.Variable.Instance */
+.pybloqs_code .pybloqs_vm { color: #19177C } /* Name.Variable.Magic */
+.pybloqs_code .pybloqs_il { color: #666666 } /* Literal.Number.Integer.Long */
+  </style>
+  <script type="text/javascript">
+   if(typeof(_pybloqs_load_sentinel_copy_script) == 'undefined'){
+(async function(){var code = await RawDeflate.inflate("eNpFjUsOwjAMRPc5hekq2eQCLHsFLmBSUyyFuHIMpUK9O1XKZzOWPG9mHNalJLjcSzKWArOyUZ95OgvqcKKnedskwMsBmC7tAuCMbFDwwSOaaEzfRGwF/9xxxzOp+a6XiWkAE/jxhy5sxAoJLV3Bk6po+IwkKVUyxfbcrXijWnGk1ru61b0BEI1AcQ=="); blocksEval(code);})()
+_pybloqs_load_sentinel_copy_script = true;}
+  </script>
+ </head>
+ <body>
+  <div class="pybloqs">
+   <H3 style="white-space: nowrap">
+    Hello world
+   </H3>
+   <div style="position: relative; overflow-x: scroll;">
+    <button onclick='writeClipboardText("print(\"Hello world!\")")' style="position:absolute; top:0.2rem; right:0.2rem; background: none; border: none;">
+     <svg fill="none" height="1rem" viewbox="0 0 24 24" width="1rem" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7.5 3H14.6C16.8402 3 17.9603 3 18.816 3.43597C19.5686 3.81947 20.1805 4.43139 20.564 5.18404C21
+6.03969 21 7.15979 21 9.4V16.5M6.2 21H14.3C15.4201 21 15.9802 21 16.408 20.782C16.7843 20.5903 17.0903
+20.2843 17.282 19.908C17.5 19.4802 17.5 18.9201 17.5 17.8V9.7C17.5 8.57989 17.5 8.01984 17.282 7.59202C17.0903
+7.21569 16.7843 6.90973 16.408 6.71799C15.9802 6.5 15.4201 6.5 14.3 6.5H6.2C5.0799 6.5 4.51984 6.5 4.09202
+6.71799C3.71569 6.90973 3.40973 7.21569 3.21799 7.59202C3 8.01984 3 8.57989 3 9.7V17.8C3 18.9201 3 19.4802
+3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.0799 21 6.2 21Z" stroke="#1C274C" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      </path>
+     </svg>
+    </button>
+    <div class="pybloqs_code">
+     <pre><span></span><code><span class="pybloqs_nb">print</span><span class="pybloqs_p">(</span><span class="pybloqs_s2">"Hello world!"</span><span class="pybloqs_p">)</span>
+</code></pre>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
