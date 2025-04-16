@@ -1,3 +1,4 @@
+import importlib
 import os
 import sys
 from pathlib import Path
@@ -22,7 +23,7 @@ def output_file(test_name: str) -> Path:
 def read_block_for_test(test: str) -> pybloqs.BaseBlock:
     with open(input_file(test)) as fp:
         input_string = fp.read()
-    return eval(input_string, {"pybloqs": pybloqs})
+    return eval(input_string, {"pybloqs": pybloqs, "importlib": importlib})
 
 
 @pytest.mark.parametrize("test", tests)

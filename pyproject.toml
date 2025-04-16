@@ -42,6 +42,7 @@ bokeh = ["bokeh", "selenium"]
 tests = ["mock", "pytest", "pytest-cov"]
 altair = ["altair"]
 server = ["Flask"]
+code = ["pygments"]
 
 [project.urls]
 Homepage = "https://github.com/man-group/pybloqs"
