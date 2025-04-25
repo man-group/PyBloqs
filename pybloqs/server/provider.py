@@ -70,18 +70,15 @@ class BloqsProvider(pybloqs.BaseBlock):
         # Write children into the output
         output = BytesIO()
 
-        for child in container.children:
-            output.write(render(child).encode("utf-8"))
-
-        container = root("div")
-        container["hx-swap-oob"] = "beforeend:head"
+        head_container = root("div")
+        head_container["hx-swap-oob"] = "beforeend:head"
         resources_added = []
         for dependency in resource_deps:
             if dependency.name not in already_sent_resources:
-                dependency.write(container)
+                dependency.write(head_container)
                 resources_added.append(dependency.name)
         if resources_added:
-            sentinel_js = append_to(container, "script")
+            sentinel_js = append_to(head_container, "script")
             sentinel_js["type"] = "text/javascript"
             sentinel_js.string = f"""
                 headers = JSON.parse(
@@ -99,7 +96,10 @@ class BloqsProvider(pybloqs.BaseBlock):
                     JSON.stringify(headers)
                   );
             """
-        output.write(render(container).encode("utf-8"))
+        output.write(render(head_container).encode("utf-8"))
+
+        for child in container.children:
+            output.write(render(child).encode("utf-8"))
 
         return output.getvalue().decode()
 
