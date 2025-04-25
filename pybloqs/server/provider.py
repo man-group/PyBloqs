@@ -123,7 +123,9 @@ class BloqsProvider(pybloqs.BaseBlock):
             if resource_deps is not None:
                 for res in self.resource_deps:
                     resource_deps.add(res)
-            div_to_replace = append_to(parent, "div", **{"hx-trigger": "revealed", "hx-swap": "outerHTML", "hx-get": self.url})
+            div_to_replace = append_to(
+                parent, "div", **{"hx-trigger": "revealed", "hx-swap": "outerHTML", "hx-get": self.url}
+            )
             if self.loading_block:
                 self.loading_block._write_block(
                     div_to_replace, parent_cfg, id_gen, resource_deps=resource_deps, static_output=static_output
