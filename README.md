@@ -101,6 +101,7 @@ PyBloqs has been under active development at [Man AHL](http://www.ahl.com/) sinc
 [![James Hylands](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/2422610?v=4&w=50&h=50&mask=circle)](https://github.com/jhylands)
 [![Kristof Szabo-Strell](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/6325336?v=4&w=50&h=50&mask=circle)](https://github.com/skristof)
 [![Jingwei Song](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/7952547?v=4&w=50&h=50&mask=circle)](https://github.com/sjw61)
+[![Qiuyan Ge](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/207586703?v=4&w=50&h=50&mask=circle)](https://github.com/qiuyan-ge)
 and many others at [Man Group](https://www.man.com/) and elsewhere...
 
 **Contributions welcome!**
