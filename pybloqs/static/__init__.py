@@ -101,9 +101,9 @@ class JScript(Resource):
     @classmethod
     def write_compressed(cls, stream: StringIO, data: str) -> None:
         if cls.global_encode:
-            stream.write('(async function(){var code = await RawDeflate.inflate("')
+            stream.write('blocksEval(RawDeflate.inflate(atob("')
             stream.write(encode_string(data).decode())
-            stream.write('"); blocksEval(code);})()')
+            stream.write('")));')
         else:
             stream.write(data)
 
