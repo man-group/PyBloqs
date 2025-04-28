@@ -190,3 +190,8 @@
 * Bugfix: Fix yaml.load error 
 * Bugfix: Small errors in HTMX shims
 
+### 1.4.2 (2025-04-28)
+* Feature: Collapsible blocks
+* Feature: Code blocks
+* Bugfix: Revert to old compression library to fix async race conditions
+* Bugfix: Replace innerHTML in server to avoid crash loops in nested blocks
