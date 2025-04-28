@@ -2,6 +2,8 @@ import importlib
 import os
 import sys
 from pathlib import Path
+import tempfile
+from typing import Literal
 
 import pytest
 
@@ -16,8 +18,8 @@ def input_file(test_name: str) -> Path:
     return ROOT_DIR / "pybloqs_input" / f"{test_name}.py"
 
 
-def output_file(test_name: str) -> Path:
-    return ROOT_DIR / "html_output" / f"{test_name}.html"
+def output_file(test_name: str, type: Literal["html", "png"]) -> Path:
+    return ROOT_DIR / f"{type}_output" / f"{test_name}.{type}"
 
 
 def read_block_for_test(test: str) -> pybloqs.BaseBlock:
@@ -27,18 +29,23 @@ def read_block_for_test(test: str) -> pybloqs.BaseBlock:
 
 
 @pytest.mark.parametrize("test", tests)
-def test_html_output(test):
+@pytest.mark.parametrize("format", ["html", "png"])
+def test_output(test: str, format: Literal["html", "png"]):
     input_block = read_block_for_test(test)
-    with open(output_file(test)) as fp:
+    with open(output_file(test, format), "rb") as fp:
         expected = fp.read()
-    assert input_block.render_html() == expected
+    with tempfile.NamedTemporaryFile(suffix=f".{format}") as temp:
+        input_block.save(temp.name)
+        got = temp.read()
+    assert got == expected
 
 
 def bless():
     for test in tests:
+        print("Rendering", test)
         input_block = read_block_for_test(test)
-        with open(output_file(test), "w") as f:
-            f.write(input_block.render_html())
+        input_block.save(output_file(test, "html"))
+        input_block.save(output_file(test, "png"))
 
 
 if __name__ == "__main__":
