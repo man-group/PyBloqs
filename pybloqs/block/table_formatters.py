@@ -715,7 +715,11 @@ class FmtHeatmap(TableFormatter):
             selection = df.loc[rows, columns]
 
         # Replace strings with nan as they otherwise confuse min() and max()
-        selection = selection.applymap(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
+        if hasattr(selection, "map"):
+            # pandas 2.1 warning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+            selection = selection.map(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
+        else:
+            selection = selection.applymap(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
 
         return selection
 
