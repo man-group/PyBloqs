@@ -1406,7 +1406,7 @@ class FmtHideInsignificant(TableFormatter):
 #
 
 
-def _pandas_df_map_compat(df, func):
+def _pandas_df_map_compat(df: pd.DataFrame, func) -> pd.DataFrame:
     """Apply function element-wise to DataFrame with pandas version compatibility to prevent deprecation warnings.
     pandas 2.1+ uses DataFrame.map(), older versions use DataFrame.applymap().
     """
