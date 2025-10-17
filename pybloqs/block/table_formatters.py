@@ -943,7 +943,11 @@ class FmtExpandMultiIndex(TableFormatter):
                             data_rows = pd.DataFrame("", columns=df.columns, index=[sub_index])
                         else:
                             df_subset = df.loc[index_tuple[: level_i + 1]]
-                            data_rows = self.operator(df_subset[_pandas_df_map_compat(df_subset, np.isreal)], axis=0).to_frame().T
+                            data_rows = (
+                                self.operator(df_subset[_pandas_df_map_compat(df_subset, np.isreal)], axis=0)
+                                .to_frame()
+                                .T
+                            )
                             data_rows = data_rows.fillna(0.0)
                             data_rows.loc[:, ~data_rows.columns.isin(columns)] = ""
                     n_rows = len(data_rows)
