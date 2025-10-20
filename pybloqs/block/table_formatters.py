@@ -715,11 +715,7 @@ class FmtHeatmap(TableFormatter):
             selection = df.loc[rows, columns]
 
         # Replace strings with nan as they otherwise confuse min() and max()
-        if hasattr(selection, "map"):
-            # pandas 2.1 warning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
-            selection = selection.map(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
-        else:
-            selection = selection.applymap(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
+        selection = _pandas_df_map_compat(selection, lambda x: np.nan if not isinstance(x, numbers.Number) else x)
 
         return selection
 
@@ -801,7 +797,7 @@ class FmtAppendTotalsRow(TableFormatter):
             columns = self.total_columns
         if self.operator is not OP_NONE:
             df_calculated = df[columns]
-            last_row = self.operator(df_calculated[df_calculated.applymap(np.isreal)], axis=0)
+            last_row = self.operator(df_calculated[_pandas_df_map_compat(df_calculated, np.isreal)], axis=0)
             last_row = last_row.fillna(0.0)
             last_row = last_row._append(pd.Series("", index=df.columns.difference(last_row.index)))
         else:
@@ -865,7 +861,7 @@ class FmtAppendTotalsColumn(TableFormatter):
         else:
             rows = self.total_rows
         if self.operator is not OP_NONE:
-            new_column = self.operator(df[df.applymap(np.isreal)], axis=1)
+            new_column = self.operator(df[_pandas_df_map_compat(df, np.isreal)], axis=1)
             new_column = new_column.fillna(0.0)
             new_column[~new_column.index.isin(rows)] = ""
         else:
@@ -947,7 +943,11 @@ class FmtExpandMultiIndex(TableFormatter):
                             data_rows = pd.DataFrame("", columns=df.columns, index=[sub_index])
                         else:
                             df_subset = df.loc[index_tuple[: level_i + 1]]
-                            data_rows = self.operator(df_subset[df_subset.applymap(np.isreal)], axis=0).to_frame().T
+                            data_rows = (
+                                self.operator(df_subset[_pandas_df_map_compat(df_subset, np.isreal)], axis=0)
+                                .to_frame()
+                                .T
+                            )
                             data_rows = data_rows.fillna(0.0)
                             data_rows.loc[:, ~data_rows.columns.isin(columns)] = ""
                     n_rows = len(data_rows)
@@ -1332,7 +1332,7 @@ class FmtHeatmapWithCenter(TableFormatter):
             selection = df.loc[rows, columns]
 
         # Replace strings with nan as they otherwise confuse min() and max()
-        selection = selection.applymap(lambda x: np.nan if not isinstance(x, numbers.Number) else x)
+        selection = _pandas_df_map_compat(selection, lambda x: np.nan if not isinstance(x, numbers.Number) else x)
 
         return selection
 
@@ -1399,6 +1399,21 @@ class FmtHideInsignificant(TableFormatter):
         except Exception:
             pass
         return data.cell
+
+
+#
+# Helper functions
+#
+
+
+def _pandas_df_map_compat(df: pd.DataFrame, func) -> pd.DataFrame:
+    """Apply function element-wise to DataFrame with pandas version compatibility to prevent deprecation warnings.
+    pandas 2.1+ uses DataFrame.map(), older versions use DataFrame.applymap().
+    """
+    if hasattr(df, "map"):
+        return df.map(func)
+    else:
+        return df.applymap(func)
 
 
 #
