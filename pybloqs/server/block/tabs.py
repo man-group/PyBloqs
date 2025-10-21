@@ -112,6 +112,5 @@ class Tabs(pybloqs.BaseBlock):
             if n == 0:
                 tab["aria-selected"] = "true"
                 content_div["hx-get"] = tab_contents.url
-                content_div["hx-indicator"] = f"#{loading_div['id']}, #{content_div['id']}"
             else:
                 tab["aria-selected"] = "false"
