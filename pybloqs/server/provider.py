@@ -124,7 +124,7 @@ class BloqsProvider(pybloqs.BaseBlock):
                 for res in self.resource_deps:
                     resource_deps.add(res)
             div_to_replace = append_to(
-                parent, "div", **{"hx-trigger": "revealed", "hx-swap": "outerHTML", "hx-get": self.url}
+                parent, "div", **{"hx-trigger": "intersect once", "hx-swap": "outerHTML", "hx-get": self.url}
             )
             if self.loading_block:
                 self.loading_block._write_block(
