@@ -195,3 +195,8 @@
 * Feature: Code blocks
 * Bugfix: Revert to old compression library to fix async race conditions
 * Bugfix: Replace innerHTML in server to avoid crash loops in nested blocks
+
+### 1.4.3 (2025-10-23)
+* Bugfix: Added pandas 1 and 2 compatibility to reduce logging noise
+* Bugfix: Removed double loading indicators in server tabs
+* Bugfix: Changed loading trigger for server blocks
