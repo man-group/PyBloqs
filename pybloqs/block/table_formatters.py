@@ -799,13 +799,18 @@ class FmtAppendTotalsRow(TableFormatter):
             df_calculated = df[columns]
             last_row = self.operator(df_calculated[_pandas_df_map_compat(df_calculated, np.isreal)], axis=0)
             last_row = last_row.fillna(0.0)
-            last_row = last_row._append(pd.Series("", index=df.columns.difference(last_row.index)))
+            non_numeric = df.columns.difference(last_row.index)
+            if len(non_numeric):
+                # Concatenating an empty object Series would widen a numeric row to object,
+                # which Series._append did not do, so only concatenate when there is
+                # actually a non-numeric column to blank out.
+                last_row = _pandas_append_series_compat(last_row, pd.Series("", index=non_numeric))
         else:
             last_row = pd.Series("", index=df.columns)
         last_row.name = self.row_name
         # Appending kills index name, save now and restore after appending
         index_name = df.index.name
-        df = df._append(last_row)
+        df = _pandas_append_row_compat(df, last_row)
         df.index.name = index_name
         return df
 
@@ -863,7 +868,13 @@ class FmtAppendTotalsColumn(TableFormatter):
         if self.operator is not OP_NONE:
             new_column = self.operator(df[_pandas_df_map_compat(df, np.isreal)], axis=1)
             new_column = new_column.fillna(0.0)
-            new_column[~new_column.index.isin(rows)] = ""
+            blank = ~new_column.index.isin(rows)
+            if blank.any():
+                # pandas 3 no longer silently upcasts a numeric Series when a string is
+                # assigned into it, so widen to object explicitly. pandas 2 upcast here
+                # anyway, and only when something was actually blanked, hence the guard.
+                new_column = new_column.astype(object)
+                new_column[blank] = ""
         else:
             new_column = pd.Series("", index=df.index)
         df_mod = df.copy()
@@ -949,7 +960,11 @@ class FmtExpandMultiIndex(TableFormatter):
                                 .T
                             )
                             data_rows = data_rows.fillna(0.0)
-                            data_rows.loc[:, ~data_rows.columns.isin(columns)] = ""
+                            blank = ~data_rows.columns.isin(columns)
+                            if blank.any():
+                                # See note in FmtAppendTotalsColumn._modify_dataframe.
+                                data_rows = data_rows.astype(object)
+                                data_rows.loc[:, blank] = ""
                     n_rows = len(data_rows)
                     data_rows.index = [sub_index] * n_rows
                     data_rows.loc[:, ORG_ROW_NAMES] = pd.Series([index_tuple[: level_i + 1]], index=data_rows.index)
@@ -1414,6 +1429,19 @@ def _pandas_df_map_compat(df: pd.DataFrame, func) -> pd.DataFrame:
         return df.map(func)
     else:
         return df.applymap(func)
+
+
+def _pandas_append_row_compat(df: pd.DataFrame, row: pd.Series) -> pd.DataFrame:
+    """Append a Series to a DataFrame as a new row, labelled with the Series name.
+
+    DataFrame._append is private and was removed in pandas 3.
+    """
+    return pd.concat([df, row.to_frame().T])
+
+
+def _pandas_append_series_compat(left: pd.Series, right: pd.Series) -> pd.Series:
+    """Concatenate two Series. Series._append is private and was removed in pandas 3."""
+    return pd.concat([left, right])
 
 
 #

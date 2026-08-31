@@ -574,7 +574,9 @@ def test_FmtAppendTotalsRow_modify_dataframe():
 
     fmt = pbtf.FmtAppendTotalsRow(operator=pbtf.OP_NONE)
     res = fmt._modify_dataframe(df)
-    expected = pd.Series(["", "", ""], name="Total", index=[pbtf.INDEX_COL_NAME, "aa", "bb"])
+    # dtype pinned: pandas 3 infers the new "str" dtype for a list of strings, while the
+    # appended row is object in both pandas 2 and 3 because it sits in a mixed frame.
+    expected = pd.Series(["", "", ""], name="Total", index=[pbtf.INDEX_COL_NAME, "aa", "bb"], dtype=object)
     assert expected.equals(res.iloc[-1])
 
     fmt = pbtf.FmtAppendTotalsRow(row_name=TEST_STRING)
