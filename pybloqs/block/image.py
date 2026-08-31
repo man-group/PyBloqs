@@ -66,8 +66,10 @@ def plot_format(plot_format: Optional[str] = None, dpi: Optional[int] = None) ->
     """
     old = get_plot_format()
     set_plot_format(plot_format, dpi)
-    yield
-    set_plot_format(*old)
+    try:
+        yield
+    finally:
+        set_plot_format(*old)
 
 
 def get_plot_format() -> Tuple[str, int]:
@@ -92,8 +94,11 @@ def set_plot_format(plot_format: Optional[str] = None, plot_dpi: Optional[int] =
     global _PLOT_MIME_TYPE
     global _PLOT_DPI
     if plot_format is not None:
+        # Look the mime type up before assigning either global, so an unsupported format
+        # leaves the existing settings untouched rather than half-applied.
+        mime_type = _MIME_TYPES[plot_format]
         _PLOT_FORMAT = plot_format
-        _PLOT_MIME_TYPE = _MIME_TYPES[plot_format]
+        _PLOT_MIME_TYPE = mime_type
 
     if plot_dpi is not None:
         _PLOT_DPI = plot_dpi

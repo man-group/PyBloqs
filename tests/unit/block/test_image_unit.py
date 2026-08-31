@@ -56,3 +56,22 @@ def test_plot_format_ctx_manager():
         assert i._PLOT_DPI == 1000
     assert old_fmt == i._PLOT_FORMAT
     assert old_dpi == i._PLOT_DPI
+
+
+def test_plot_format_ctx_manager_restores_on_exception():
+    old_fmt, old_dpi, old_mime = i._PLOT_FORMAT, i._PLOT_DPI, i._PLOT_MIME_TYPE
+    with pytest.raises(RuntimeError):
+        with i.plot_format("svg", 1000):
+            raise RuntimeError("failure while rendering")
+    assert i._PLOT_FORMAT == old_fmt
+    assert i._PLOT_DPI == old_dpi
+    assert i._PLOT_MIME_TYPE == old_mime
+
+
+def test_set_plot_format_unsupported_format_leaves_settings_unchanged():
+    old_fmt, old_dpi, old_mime = i._PLOT_FORMAT, i._PLOT_DPI, i._PLOT_MIME_TYPE
+    with pytest.raises(KeyError):
+        i.set_plot_format("jpeg")
+    assert i._PLOT_FORMAT == old_fmt
+    assert i._PLOT_DPI == old_dpi
+    assert i._PLOT_MIME_TYPE == old_mime
