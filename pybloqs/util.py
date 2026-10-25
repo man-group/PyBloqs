@@ -37,14 +37,14 @@ except ImportError:
 
 def dt_epoch_msecs(value: Union[datetime.date, datetime.datetime]) -> float:
     """
-    Calculate miliseconds since epoch start for python datetimes.
+    Calculate milliseconds since epoch start for python datetimes.
     """
     return int(calendar.timegm(value.timetuple())) * 1000
 
 
 def np_dt_epoch_msec(value: np.datetime64) -> float:
     """
-    Calculate miliseconds since epoch start for numpy datetimes.
+    Calculate milliseconds since epoch start for numpy datetimes.
     """
     return value.astype(int) / 1000
 

@@ -28,7 +28,7 @@ class WkhtmltopdfConverter(HTMLConverter):
         **kwargs: str,
     ) -> Tuple[bytes, bytes]:
         """
-        Use the wkhtmltohtml tool to convert the supplied HTML content to a PDF file.
+        Use the wkhtmltopdf tool to convert the supplied HTML content to a PDF file.
 
         :param block: The block to render
         :param output_file: File name for converter output.
@@ -56,7 +56,7 @@ class WkhtmltopdfConverter(HTMLConverter):
         cmd += ["--javascript-delay", str(kwargs.get("javascript_delay", 200))]
         [cmd.extend([k, v]) for k, v in kwargs.items()]
 
-        # Render without header and footer as those are handles explicitly below
+        # Render without header and footer as those are handled explicitly below
         content = block.render_html(static_output=True, permit_compression=False)
         html_filename = HTMLConverter.write_html_to_tempfile(block, content)
 

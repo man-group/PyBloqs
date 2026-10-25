@@ -126,7 +126,7 @@ _id_generator_sequential_counter: int = 0
 
 def id_generator_sequential() -> Generator[str, None, None]:
     """
-    Generatres unique identifiers sequentially from a known constant seed.
+    Generates unique identifiers sequentially from a known constant seed.
     """
     global _id_generator_sequential_counter
 

@@ -63,7 +63,7 @@ class Flow(CompositeBlockMixin, BaseBlock):
         fashion.
 
         :param contents: A list, tuple or set of elements.
-        :param cascade_cfg: Set to True to enable parmater cascading from this block. A value
+        :param cascade_cfg: Set to True to enable parameter cascading from this block. A value
                             of False means that child blocks do not inherit parameters from
                             this block.
         :param kwargs: Optional styling arguments. The `style` keyword argument has special
@@ -87,7 +87,7 @@ class VStack(CompositeBlockMixin, BaseBlock):
         Create vertical stack layout.
 
         :param contents: A list, tuple or set of elements.
-        :param cascade_cfg: Set to True to enable parmater cascading from this block. A value
+        :param cascade_cfg: Set to True to enable parameter cascading from this block. A value
                             of False means that child blocks do not inherit parameters from
                             this block.
         :param kwargs: Optional styling arguments. The `style` keyword argument has special
@@ -113,7 +113,7 @@ class Grid(CompositeBlockMixin, BaseBlock):
 
         :param contents: A list, tuple or set of elements.
         :param cols: Desired number of columns in the grid.
-        :param cascade_cfg: Set to True to enable parmater cascading from this block. A value
+        :param cascade_cfg: Set to True to enable parameter cascading from this block. A value
                             of False means that child blocks do not inherit parameters from
                             this block.
         :param kwargs: Optional styling arguments. The `style` keyword argument has special
@@ -169,7 +169,7 @@ class HStack(Grid):
 
         :param contents: A list, tuple or set of elements.
         :param cols: Desired number of columns in the grid.
-        :param cascade_cfg: Set to True to enable parmater cascading from this block. A value
+        :param cascade_cfg: Set to True to enable parameter cascading from this block. A value
                             of False means that child blocks do not inherit parameters from
                             this block.
         :param kwargs: Optional styling arguments. The `style` keyword argument has special

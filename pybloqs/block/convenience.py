@@ -42,7 +42,7 @@ def Block(
     :param title_wrap: Toggles whitespace wrapping of the title. (Default: False).
     :param inherit_cfg: Optional. Set to False to ensure that the block does not inherit
                         any parameters from parents.
-    :param cascade_cfg: Set to True to enable parmater cascading from this block. A value
+    :param cascade_cfg: Set to True to enable parameter cascading from this block. A value
                         of False means that child blocks do not inherit parameters from
                         this block.
     :param kwargs: Optional styling arguments. The `style` keyword argument has special
